@@ -1,0 +1,25 @@
+---
+name: 'Twilio Voice Call Action'
+description: 'This GitHub action sends voice call with the defined text.'
+# branding:
+#   icon: alert-octagon
+#   color: red
+inputs:
+  twilio_account_sid:
+    description: 'Twilio Account SID.'
+    required: true
+  twilio_auth_token:
+    description: 'Twilio Auth token.'
+    required: true
+  text:
+    description: 'Text that will be send by voice call.'
+    required: true
+  from:
+    description: 'Phone number in your Twilio account to send the voice call from.'
+    required: true
+  to:
+    description: 'Phone number to send the voice call to.'
+    required: true
+runs:
+  using: 'node12'
+  main: 'src/index.js'

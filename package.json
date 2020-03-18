@@ -1,0 +1,21 @@
+{
+  "name": "twilio-voice-call-action",
+  "version": "1.0.0",
+  "description": "This GitHub action sends voice call with the defined text.",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabasoad/twilio-voice-call-action.git"
+  },
+  "author": "Yevhen Fabizhevskyi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fabasoad/twilio-voice-call-action/issues"
+  },
+  "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
+    "twilio": "^3.40.0"
+  }
+}
