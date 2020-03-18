@@ -9,7 +9,7 @@ const fs = require('fs');
 const VOICE_FILE = 'src/voice.generated.xml';
 
 async function run() {
-  const oldContent = await fs.readFile('src/voice.xml', { encoding: 'utf8' });
+  const oldContent = fs.readFileSync('src/voice.xml', { encoding: 'utf8' });
   process.stdout.write(oldContent);
   const newContent = oldContent.replace('${text}', core.getInput('text'));
   await fs.writeFile(VOICE_FILE, newContent);
