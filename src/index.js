@@ -8,15 +8,18 @@ const fs = require('fs');
 
 const VOICE_FILE = 'src/voice.generated.xml';
 
-const oldContent = fs.readFileSync('src/voice.xml', 'utf8');
-const newContent = oldContent.replace('${text}', core.getInput('text'));
-fs.writeFileSync(VOICE_FILE, newContent);
-process.stdout.write(newContent);
+async function run() {
+  const oldContent = fs.readFileSync('src/voice.xml', 'utf8');
+  const newContent = oldContent.replace('${text}', core.getInput('text'));
+  fs.writeFileSync(VOICE_FILE, newContent);
 
-client.calls
-  .create({
-    from: core.getInput('from'),
-    to: core.getInput('to'),
-    url: VOICE_FILE
-  })
-  .then(call => process.stdout.write(call));
+  await client.calls
+    .create({
+      from: core.getInput('from'),
+      to: core.getInput('to'),
+      url: VOICE_FILE
+    })
+    .then(call => process.stdout.write(call));
+}
+
+run();
