@@ -23,6 +23,5 @@ client.calls
     process.stdout.write(call);
   })
   .catch(err => {
-    process.stdout.write('CATCH');
-    process.stdout.write(err);
+    core.setFailed(err);
   });
