@@ -8,25 +8,21 @@ const fs = require('fs');
 
 const VOICE_FILE = 'src/voice.generated.xml';
 
-async function run() {
-  const oldContent = fs.readFileSync('src/voice.xml', 'utf8');
-  const newContent = oldContent.replace('${text}', core.getInput('text'));
-  fs.writeFileSync(VOICE_FILE, newContent);
+const oldContent = fs.readFileSync('src/voice.xml', 'utf8');
+const newContent = oldContent.replace('${text}', core.getInput('text'));
+fs.writeFileSync(VOICE_FILE, newContent);
 
-  await client.calls
-    .create({
-      from: core.getInput('from'),
-      to: core.getInput('to'),
-      url: VOICE_FILE
-    })
-    .then(call => {
-      process.stdout.write('THEN');
-      process.stdout.write(call);
-    })
-    .catch(err => {
-      process.stdout.write('CATCH');
-      process.stdout.write(err);
-    });
-}
-
-run();
+client.calls
+  .create({
+    from: core.getInput('from'),
+    to: core.getInput('to'),
+    url: VOICE_FILE
+  })
+  .then(call => {
+    process.stdout.write('THEN');
+    process.stdout.write(call);
+  })
+  .catch(err => {
+    process.stdout.write('CATCH');
+    process.stdout.write(err);
+  });
