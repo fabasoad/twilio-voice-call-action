@@ -19,7 +19,7 @@ async function run() {
       to: core.getInput('to'),
       url: VOICE_FILE
     })
-    .then(call => process.stdout.write(call));
+    .then(call =>  process.stdout.write(call));
 }
 
 run();
