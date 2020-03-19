@@ -16,10 +16,10 @@ module.exports = (content, callback) => {
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
     got.post(MOCKY_URL, {
-        body: formData,
+        // body: formData,
         headers: headers,
         resolveBodyOnly: true,
-        form: true
+        form: formData
     }).then(({ url }) => {
         console.log('MOCKY RESP: ', url);
         callback(url);
