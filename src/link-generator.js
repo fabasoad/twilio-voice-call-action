@@ -3,21 +3,23 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 const got = require('got');
 const FormData = require('form-data');
 
-const MOCKY_URL = 'https://www.mocky.io/';
+const MOCKY_URL = 'https://mocky.io/';
 
-module.exports = (body, callback) => {
-    const form = new FormData();
-    form.append('statuscode', 201);
-    form.append('contenttype', 'application/xml');
-    form.append('charset', 'UTF-8');
-    form.append('body', body);
+module.exports = (content, callback) => {
+    const formData = new FormData();
+    formData.append('statuscode', 201);
+    formData.append('contenttype', 'application/xml');
+    formData.append('charset', 'UTF-8');
+    formData.append('body', content);
   
-    const headers = form.getHeaders();
-    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    const headers = formData.getHeaders();
+    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
     got.post(MOCKY_URL, {
-        body: form,
-        headers: headers
+        body: formData,
+        headers: headers,
+        resolveBodyOnly: true,
+        form: true
     }).then(({ body }) => {
         console.log('MOCKY RESP: ', body);
         callback(JSON.parse(body).url);
