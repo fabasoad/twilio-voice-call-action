@@ -39,4 +39,4 @@ jobs:
 ```
 
 ### Result
-Click [here](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/master/example.mp3) to listen.
+Find [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/master/example.mp3) file in the root of repository to listen.
