@@ -11,7 +11,7 @@ module.exports = (content, callback) => {
     formData.append('contenttype', 'application/xml');
     formData.append('charset', 'UTF-8');
     formData.append('body', content);
-  
+
     const headers = formData.getHeaders();
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
@@ -20,9 +20,9 @@ module.exports = (content, callback) => {
         headers: headers,
         resolveBodyOnly: true,
         form: true
-    }).then(({ body }) => {
-        console.log('MOCKY RESP: ', body);
-        callback(JSON.parse(body).url);
+    }).then(({ url }) => {
+        console.log('MOCKY RESP: ', url);
+        callback(url);
     }).catch(err => {
         console.log('ERROR: ', err);
     });
