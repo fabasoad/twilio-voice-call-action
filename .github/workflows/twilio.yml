@@ -16,6 +16,6 @@ jobs:
           text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
           from: '+1(832)6328398'
           to: '+81(70)15848038'
-          voice: man1
+          voice: man
           twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
           twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}

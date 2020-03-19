@@ -22,5 +22,5 @@ if (['man', 'woman', 'alice'].includes(voice)) {
     }
   })();
 } else {  
-  core.setFailed(`${voice} is not supported. Possible values: man, woman, alice.`);
+  core.setFailed(`'${voice}' voice is not supported. Possible values: man, woman, alice.`);
 }
