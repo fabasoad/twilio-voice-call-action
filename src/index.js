@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const client = require('twilio')(
   core.getInput('twilio_account_sid'),
   core.getInput('twilio_auth_token'),
-  { lazyLoading: true } 
+  { lazyLoading: true }
 );
 
 const text = core.getInput('text');
