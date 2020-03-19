@@ -12,6 +12,7 @@ Sign up to [Twilio](https://twilio.com) official web page. Then [register a new 
 3. `text` - _[Required]_ Text that will be send by voice call.
 4. `from` - _[Required]_ Phone number in your Twilio account to send the voice call from.
 5. `to` - _[Required]_ Phone number to send the voice call to.
+6. `voice` - _[Optional]_ Call voice. Possible values: `man`, `woman`, `alice`. Default is `alice`.
 
 ## Example usage
 

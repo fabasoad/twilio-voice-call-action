@@ -1,0 +1,21 @@
+---
+name: Twilio
+
+on: push
+
+jobs:
+  twilio-voice-call:
+    name: Twilio voice call
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run fabasoad/twilio-voice-call-action@v1.0.0
+        uses: ./
+        if: success()
+        with:
+          text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
+          from: '+1(832)6328398'
+          to: '+81(70)15848038'
+          voice: man
+          twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}

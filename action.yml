@@ -1,5 +1,5 @@
 ---
-name: 'Twilio Voice Call Action'
+name: 'Twilio Voice Call'
 description: 'This GitHub action sends voice call with the defined text.'
 branding:
   icon: voicemail
@@ -20,6 +20,10 @@ inputs:
   to:
     description: 'Phone number to send the voice call to.'
     required: true
+  voice:
+    description: Call voice.
+    required: false
+    default: alice
 runs:
   using: 'node12'
   main: 'src/index.js'

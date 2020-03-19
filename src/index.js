@@ -5,17 +5,22 @@ const client = require('twilio')(
   { lazyLoading: true }
 );
 
-const text = core.getInput('text');
-const content = `<Response><Say voice="alice">${text}</Say></Response>`;
+const voice = core.getInput('voice');
+if (['man', 'woman', 'alice'].includes(voice)) {
+  const text = core.getInput('text');
+  const content = `<Response><Say voice="alice">${text}</Say></Response>`;
 
-(async () => {
-  try {
-    await client.calls.create({
-      from: core.getInput('from'),
-      to: core.getInput('to'),
-      twiml: content
-    });
-  } catch (e) {
-    core.setFailed(e.message);
-  }
-})();
+  (async () => {
+    try {
+      await client.calls.create({
+        from: core.getInput('from'),
+        to: core.getInput('to'),
+        twiml: content
+      });
+    } catch (e) {
+      core.setFailed(e.message);
+    }
+  })();
+} else {  
+  core.setFailed(`${voice} is not supported. Possible values: man, woman, alice.`);
+}
