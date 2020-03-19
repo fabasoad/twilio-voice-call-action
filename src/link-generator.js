@@ -3,7 +3,7 @@ const FormData = require('form-data');
 
 const MOCKY_URL = 'https://mocky.io/';
 
-module.exports = async (content) => {
+module.exports = (content) => {
     const formData = new FormData();
     formData.append('statuscode', 201);
     formData.append('contenttype', 'application/xml');
