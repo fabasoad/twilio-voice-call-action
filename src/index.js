@@ -8,7 +8,7 @@ const client = require('twilio')(
 const voice = core.getInput('voice');
 if (['man', 'woman', 'alice'].includes(voice)) {
   const text = core.getInput('text');
-  const content = `<Response><Say voice="alice">${text}</Say></Response>`;
+  const content = `<Response><Say voice="${voice}">${text}</Say></Response>`;
 
   (async () => {
     try {
