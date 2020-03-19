@@ -10,7 +10,7 @@ const content = `<Response><Say voice="alice">${text}</Say></Response>`;
 
 (async () => {
   try {
-    const call = await client.calls.create({
+    await client.calls.create({
       from: core.getInput('from'),
       to: core.getInput('to'),
       twiml: content

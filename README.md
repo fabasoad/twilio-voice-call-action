@@ -1,5 +1,5 @@
 # Twilio voice call action
-![](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases) ![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg)
+![](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases) ![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg) [![Total alerts](https://img.shields.io/lgtm/alerts/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/context:javascript) [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/fabasoad/twilio-voice-call-action/badge.svg?targetFile=package.json)](https://snyk.io/test/github/fabasoad/twilio-voice-call-action?targetFile=package.json)
 
 This action sends Twilio voice call.
 
@@ -39,4 +39,4 @@ jobs:
 ```
 
 ### Result
-Click [here](https://github.com/fabasoad/twilio-voice-call-action/blob/master/example.ogg) to listen.
+Click [here](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/master/example.mp3) to listen.
