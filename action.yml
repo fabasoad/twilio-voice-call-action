@@ -1,9 +1,9 @@
 ---
 name: 'Twilio Voice Call Action'
 description: 'This GitHub action sends voice call with the defined text.'
-# branding:
-#   icon: alert-octagon
-#   color: red
+branding:
+  icon: voicemail
+  color: white
 inputs:
   twilio_account_sid:
     description: 'Twilio Account SID.'
