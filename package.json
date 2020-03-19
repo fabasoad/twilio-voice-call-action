@@ -16,8 +16,6 @@
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",
-    "form-data": "^3.0.0",
-    "got": "^10.6.0",
-    "twilio": "^3.40.0"
+    "twilio": "^3.41.1"
   }
 }

@@ -1,4 +1,0 @@
-<Response>
-  <Say voice="alice">${text}</Say>
-  <Play>http://demo.twilio.com/docs/classic.mp3</Play>
-</Response>
