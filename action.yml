@@ -21,7 +21,7 @@ inputs:
     description: 'Phone number to send the voice call to.'
     required: true
   voice:
-    description: Call voice.
+    description: 'Call voice. Possible values: man, woman, alice.'
     required: false
     default: alice
 runs:
