@@ -10,13 +10,9 @@ module.exports = async (content) => {
     formData.append('charset', 'UTF-8');
     formData.append('body', content);
 
-    const headers = formData.getHeaders();
-    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-
     return got.post(MOCKY_URL, {
-        // body: formData,
-        headers: headers,
-        resolveBodyOnly: true,
-        form: formData
+        body: formData,
+        headers: formData.getHeaders(),
+        resolveBodyOnly: true
     });
 };
