@@ -1,4 +1,5 @@
 const got = require('got');
+const FormData = require('form-data');
 
 const MOCKY_URL = 'https://www.mocky.io/';
 
