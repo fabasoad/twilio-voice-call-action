@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: fabasoad/twilio-voice-call-action@v1.1.1
+      - uses: fabasoad/twilio-voice-call-action@master
         if: success()
         with:
           text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
