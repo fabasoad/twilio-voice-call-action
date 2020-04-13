@@ -6,9 +6,12 @@ on: push
 jobs:
   unit_tests:
     name: Unit Tests
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:      
       - uses: actions/checkout@v2.1.0
+        with:
+          ref: v1.1.1
       - uses: Adzz/jest_test_action@v1.0.0
         with:
           package-manager: npm
