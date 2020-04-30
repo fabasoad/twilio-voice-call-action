@@ -6,3 +6,41 @@ patch:
   SNYK-JS-LODASH-567746:
     - twilio > lodash:
         patched: '2020-04-30T14:52:27.955Z'
+    - snyk > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/ruby-semver > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > inquirer > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-config > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-mvn-plugin > @snyk/java-call-graph-builder > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > snyk-mvn-plugin > @snyk/java-call-graph-builder > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/ruby-semver > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T14:54:48.744Z'
