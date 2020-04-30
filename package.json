@@ -21,18 +21,22 @@
   },
   "scripts": {
     "build": "ncc build -m src/index.js",
-    "test": "mocha __tests__"
+    "test": "mocha __tests__",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",
-    "twilio": "^3.42.1"
+    "twilio": "^3.42.1",
+    "snyk": "^1.315.1"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.22.1",
     "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "mocha-param": "^2.0.1"
-  }
+  },
+  "snyk": true
 }
