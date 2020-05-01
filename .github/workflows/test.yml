@@ -4,7 +4,7 @@ name: Test
 on:
   push:
     paths:
-      - issues.txt
+      - issues.md
 
 jobs:
   create_issue:
@@ -17,4 +17,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          filename: issues.txt
+          filename: issues.md
