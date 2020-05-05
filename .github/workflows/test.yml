@@ -12,9 +12,9 @@ jobs:
       - uses: actions/checkout@v2.1.0
       - name: Set env var
         run: |
-          echo "Failed to test 1"
-          echo "Failed to test 2"
-          [[ 1 eq 1 ]] && echo "faileeed" && exit 1
+          echo "Failed to test 1" >&2
+          echo "Failed to test 2" >&2
+          exit 1
       - name: Dump GitHub context
         if: failure()
         env:
