@@ -1,0 +1,21 @@
+---
+name: Test
+
+on: push
+
+jobs:
+  test:
+    name: Test env var
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:      
+      - uses: actions/checkout@v2.1.0
+      - name: Set env var
+        run: |
+          echo "::set-env name=TEST_FILE_NAME::test-${{ github.sha }}"
+      - name: Create file
+        run: |
+          mkdir temp
+          cd temp
+          touch $TEST_FILE_NAME
+          ls -la
