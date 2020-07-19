@@ -30,7 +30,7 @@
     "@actions/core": "^1.2.4",
     "@actions/github": "^2.1.1",
     "twilio": "^3.43.0",
-    "snyk": "^1.316.1"
+    "snyk": "^1.321.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.22.1",
