@@ -1,5 +1,5 @@
 # Twilio voice call action
-![](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases) ![CI (latest)](https://github.com/fabasoad/twilio-voice-call-action/workflows/CI%20(latest)/badge.svg) ![CI (master)](https://github.com/fabasoad/twilio-voice-call-action/workflows/CI%20(master)/badge.svg) ![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg) [![Total alerts](https://img.shields.io/lgtm/alerts/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/context:javascript) [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/fabasoad/twilio-voice-call-action/badge.svg?targetFile=package.json)](https://snyk.io/test/github/fabasoad/twilio-voice-call-action?targetFile=package.json)
+![](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases) ![CI (latest)](https://github.com/fabasoad/twilio-voice-call-action/workflows/CI%20(latest)/badge.svg) ![CI (main)](https://github.com/fabasoad/twilio-voice-call-action/workflows/CI%20(main)/badge.svg) ![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg) [![Total alerts](https://img.shields.io/lgtm/alerts/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/fabasoad/twilio-voice-call-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fabasoad/twilio-voice-call-action/context:javascript) [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/fabasoad/twilio-voice-call-action/badge.svg?targetFile=package.json)](https://snyk.io/test/github/fabasoad/twilio-voice-call-action?targetFile=package.json)
 
 This action sends Twilio voice call.
 
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: fabasoad/twilio-voice-call-action@master
+      - uses: fabasoad/twilio-voice-call-action@main
         if: success()
         with:
           text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
@@ -42,4 +42,4 @@ jobs:
 ```
 
 ### Result
-Download [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/master/example.mp3) file to listen.
+Download [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/main/example.mp3) file to listen.
