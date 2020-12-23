@@ -1,0 +1,24 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "fixAll.eslint": true,
+    "source.organizeImports": true,
+  },
+  "cSpell.words": [
+    "Autobuild",
+    "UNSECURE",
+    "appium",
+    "codeql",
+    "ibiqlik",
+    "issuehunt",
+    "lcov",
+    "liberapay",
+    "linebreak",
+    "paambaati",
+    "readonly",
+    "twilio",
+    "vercel",
+    "yamllint"
+  ],
+  "editor.rulers": [ 80 ]
+}

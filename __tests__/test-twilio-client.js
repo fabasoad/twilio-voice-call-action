@@ -51,6 +51,6 @@ describe('Test Twilio call', () => {
         return;
       }
     }
-    assert.Throw();
+    assert.throw();
   });
 });

@@ -1,3 +1,6 @@
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .env
+.nyc_output
+coverage
 node_modules
