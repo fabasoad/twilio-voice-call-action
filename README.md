@@ -5,16 +5,18 @@
 This action sends Twilio voice call.
 
 ## Prerequisites
+
 Sign up to [Twilio](https://twilio.com) official web page. Then [register a new number](https://www.twilio.com/console/voice/numbers) to use it as `from` parameter. If you use free trial account you have to [add verified phone number](https://support.twilio.com/hc/en-us/articles/223180048-Adding-a-Verified-Phone-Number-or-Caller-ID-with-Twilio) to use it as `to` parameter. Account SID and Auth token you can find on a [Dashboard page](https://www.twilio.com/console).
 
 ## Inputs
+
 | Name               | Required | Description                                                     | Default | Possible values         |
 |--------------------|----------|-----------------------------------------------------------------|---------|-------------------------|
-| twilio_account_sid | Yes      | Twilio account SID                                              |         | &lt;String&gt;          |
-| twilio_auth_token  | Yes      | Twilio auth token                                               |         | &lt;String&gt;          |
-| text               | Yes      | Text that will be send by voice call.                           |         | &lt;String&gt;          |
-| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | &lt;String&gt;          |
-| to                 | Yes      | Phone number to send the voice call to                          |         | &lt;String&gt;          |
+| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_        |
+| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_        |
+| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_        |
+| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_        |
+| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_        |
 | voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice` |
 
 ## Example usage
@@ -43,4 +45,5 @@ jobs:
 ```
 
 ### Result
-Download [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/main/example.mp3) file to listen.
+
+Download [example.mp3](example.mp3) file to listen.
