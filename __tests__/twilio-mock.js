@@ -6,7 +6,9 @@ module.exports = (voice, text, fromExpected, toExpected) => ({
       try {
         assert.equal(fromExpected, from);
         assert.equal(toExpected, to);
-        assert.equal(`<Response><Say voice="${voice}">${text}</Say></Response>`, twiml);
+        assert.equal(
+          `<Response><Say voice="${voice}">${text}</Say></Response>`, twiml
+        );
         resolve();
       } catch ({ message }) {
         reject(message);
