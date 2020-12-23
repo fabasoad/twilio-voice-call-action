@@ -46,4 +46,4 @@ jobs:
 
 ### Result
 
-Download [example.mp3](example.mp3) file to listen.
+Download [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/main/example.mp3) file to listen.
