@@ -5,6 +5,7 @@
     "source.organizeImports": true,
   },
   "cSpell.words": [
+    "axios",
     "Autobuild",
     "UNSECURE",
     "appium",
