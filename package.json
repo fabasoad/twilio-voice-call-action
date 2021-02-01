@@ -1,6 +1,6 @@
 {
   "name": "twilio-voice-call-action",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
   "repository": {
@@ -35,12 +35,12 @@
   "dependencies": {
     "@actions/core": "1.2.6",
     "@actions/github": "4.0.0",
-    "twilio": "3.55.0"
+    "twilio": "3.55.1"
   },
   "devDependencies": {
     "@vercel/ncc": "0.27.0",
     "chai": "4.2.0",
-    "eslint": "7.18.0",
+    "eslint": "7.19.0",
     "eslint-config-google": "0.14.0",
     "git-branch-is": "4.0.0",
     "husky": "5.0.6",
@@ -48,7 +48,7 @@
     "mocha": "8.2.1",
     "mocha-param": "2.0.1",
     "nyc": "15.1.0",
-    "snyk": "1.437.4"
+    "snyk": "1.440.1"
   },
   "snyk": true
 }
