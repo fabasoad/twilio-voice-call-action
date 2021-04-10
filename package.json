@@ -35,10 +35,10 @@
   "dependencies": {
     "@actions/core": "1.2.6",
     "@actions/github": "4.0.0",
-    "twilio": "3.59.0"
+    "twilio": "3.60.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "0.27.0",
+    "@vercel/ncc": "0.28.2",
     "chai": "4.3.4",
     "eslint": "7.23.0",
     "eslint-config-google": "0.14.0",
@@ -48,7 +48,7 @@
     "mocha": "8.3.2",
     "mocha-param": "2.0.1",
     "nyc": "15.1.0",
-    "snyk": "1.520.0"
+    "snyk": "1.530.0"
   },
   "snyk": true
 }
