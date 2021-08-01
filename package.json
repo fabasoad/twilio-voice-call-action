@@ -38,7 +38,7 @@
     "twilio": "3.65.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "0.28.6",
+    "@vercel/ncc": "0.29.0",
     "chai": "4.3.4",
     "eslint": "7.29.0",
     "eslint-config-google": "0.14.0",
