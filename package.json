@@ -35,7 +35,7 @@
   "dependencies": {
     "@actions/core": "1.5.0",
     "@actions/github": "5.0.0",
-    "twilio": "3.66.1"
+    "twilio": "3.67.1"
   },
   "devDependencies": {
     "@vercel/ncc": "0.29.0",
