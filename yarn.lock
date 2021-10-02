@@ -2218,10 +2218,10 @@ tunnel@0.0.6:
   resolved "https://registry.yarnpkg.com/tunnel/-/tunnel-0.0.6.tgz#72f1314b34a5b192db012324df2cc587ca47f92c"
   integrity sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
 
-twilio@3.67.1:
-  version "3.67.1"
-  resolved "https://registry.yarnpkg.com/twilio/-/twilio-3.67.1.tgz#7734c1c186b1309ca58555dd13ff7a2140f3d056"
-  integrity sha512-JpdPLqPyYpMyrW39ByUbHimqeHpcWuMv7DD1R215C5wf8dS9EzYfAHqFvrZCEOZkdpB3QeR0UZfvh96jb8FB7Q==
+twilio@3.68.0:
+  version "3.68.0"
+  resolved "https://registry.yarnpkg.com/twilio/-/twilio-3.68.0.tgz#73c78ce1d3dba166249c1f893b81e0af406feb13"
+  integrity sha512-xVFx/TbibpQtYwkDzuqPS8fsBGg8ZZ2iUtGU68dC9Dv1cngmxePcvxmyFxgPEd6wpnexJHHrCyiSr+LBaBEcDg==
   dependencies:
     axios "^0.21.1"
     dayjs "^1.8.29"
