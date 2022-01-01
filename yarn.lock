@@ -2033,10 +2033,10 @@ signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.6.tgz#24e630c4b0f03fea446a2bd299e62b4a6ca8d0af"
   integrity sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==
 
-snyk@1.789.0:
-  version "1.789.0"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.789.0.tgz#c73f5e9e15f0fa2a0833c94d71ce137863842430"
-  integrity sha512-DaLrZuFyIHoXdUm6umRovVebTGLWHC6V5ouYCtQUwGSFCia2RhDWZOptEE+MJNrbr1xxJPxTp3ZfwjiXt3//jA==
+snyk@1.813.0:
+  version "1.813.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.813.0.tgz#d0cea2241d92dced040bf677cd34cec405093b4a"
+  integrity sha512-zkDSNxlbB3E4LWh9YB21sGJDd3EcvxX069jWB5qWw8hDeeLMZwyCTwsuYkqeZI1djroT4n+nO9A2jiGoIGasjA==
 
 source-map@^0.5.0:
   version "0.5.7"
