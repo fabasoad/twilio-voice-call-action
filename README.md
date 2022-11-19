@@ -12,7 +12,11 @@ This action sends Twilio voice call.
 
 ## Prerequisites
 
-Sign up to [Twilio](https://twilio.com) official web page. Then [register a new number](https://www.twilio.com/console/voice/numbers) to use it as `from` parameter. If you use free trial account you have to [add verified phone number](https://support.twilio.com/hc/en-us/articles/223180048-Adding-a-Verified-Phone-Number-or-Caller-ID-with-Twilio) to use it as `to` parameter. Account SID and Auth token you can find on a [Dashboard page](https://www.twilio.com/console).
+Sign up to [Twilio](https://twilio.com) official web page. Then [register a new
+number](https://www.twilio.com/console/voice/numbers) to use it as `from` parameter.
+If you use free trial account you have to [add verified phone number](https://support.twilio.com/hc/en-us/articles/223180048-Adding-a-Verified-Phone-Number-or-Caller-ID-with-Twilio)
+to use it as `to` parameter. Account SID and Auth token you can find on a [Dashboard
+page](https://www.twilio.com/console).
 
 ## Inputs
 
