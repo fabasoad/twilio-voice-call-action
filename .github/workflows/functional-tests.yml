@@ -2,9 +2,13 @@
 name: Functional Tests
 
 on:
-  push:
-    branches:
-      - 'feature-log-level'
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Text for a call'
+        required: false
+        default: 'Call from functional tests triggered by ${{ github.actor }}'
+        type: string
 
 jobs:
   twilio-voice-call:
@@ -18,6 +22,6 @@ jobs:
         with:
           twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
           twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}
-          text: 'Call from functional tests triggered by ${{ github.actor }}'
+          text: ${{ inputs.text }}
           from: ${{ secrets.TWILIO_NUMBER_FROM }}
           to: ${{ secrets.TWILIO_NUMBER_TO }}
