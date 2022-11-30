@@ -10,7 +10,7 @@ on:
       text:
         description: 'Text for a call'
         required: false
-        default: 'Call from functional tests triggered by ${{ github.actor }}'
+        default: 'Call from functional tests'
         type: string
 
 jobs:
