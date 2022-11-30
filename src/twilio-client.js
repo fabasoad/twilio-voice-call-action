@@ -5,9 +5,9 @@ class TwilioClientException extends Error {
 }
 
 class TwilioClient {
-  constructor(sid, token, twilioRetriever =
-  (s, t) => require('twilio')(s, t, { lazyLoading: true })) {
-    this.client = twilioRetriever(sid, token);
+  constructor(sid, token, logLevel, twilioRetriever =
+  (s, t, l) => require('twilio')(s, t, { lazyLoading: true, logLevel: l })) {
+    this.client = twilioRetriever(sid, token, logLevel);
     this.SUPPORTED_VOICES = ['man', 'woman', 'alice'];
   }
 
