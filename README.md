@@ -20,14 +20,15 @@ page](https://www.twilio.com/console).
 
 ## Inputs
 
-| Name               | Required | Description                                                     | Default | Possible values         |
-|--------------------|----------|-----------------------------------------------------------------|---------|-------------------------|
-| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_        |
-| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_        |
-| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_        |
-| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_        |
-| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_        |
-| voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice` |
+| Name               | Required | Description                                                     | Default | Possible values                  |
+|--------------------|----------|-----------------------------------------------------------------|---------|----------------------------------|
+| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_                 |
+| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_                 |
+| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_                 |
+| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_                 |
+| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_                 |
+| voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice`          |
+| twilio_log_level   | No       | Log level of the output from twilio call request                | `debug` | `debug`, `info`, `warn`, `error` |
 
 ## Example usage
 
