@@ -1,0 +1,23 @@
+---
+name: Functional Tests
+
+on:
+  pull_request:
+    branches:
+      - 'feature-log-level'
+
+jobs:
+  twilio-voice-call:
+    name: Twilio voice call
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Make a call
+        uses: ./
+        with:
+          twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          text: 'Call from functional tests triggered by ${{ github.actor }}'
+          from: ${{ secrets.TWILIO_NUMBER_FROM }}
+          to: ${{ secrets.TWILIO_NUMBER_TO }}

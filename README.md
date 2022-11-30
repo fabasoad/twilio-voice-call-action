@@ -2,7 +2,7 @@
 
 ![Releases](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases)
 ![Unit Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Unit%20Tests/badge.svg)
-![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg)
+![Functional Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Functional%20Tests/badge.svg)
 ![Security Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Security%20Tests/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/test_coverage)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/test_coverage)

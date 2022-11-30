@@ -28,10 +28,10 @@ A clear and concise description of what is happening now.
 
 If applicable, add screenshots to help explain your problem.
 
-#### Technical information (please complete the following information):
+#### Technical information (please complete the following information)
 
- - OS: [e.g. Windows 10 Enterprise v.1909 (OS Build 18363.720)]
- - `twilio-voice-call-action` version [e.g. 1.1.1]
+- OS: [e.g. Windows 10 Enterprise v.1909 (OS Build 18363.720)]
+- `twilio-voice-call-action` version [e.g. 1.1.1]
 
 #### Additional context
 
