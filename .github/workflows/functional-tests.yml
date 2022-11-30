@@ -2,9 +2,6 @@
 name: Functional Tests
 
 on:
-  push:
-    branches:
-      - 'feature-log-level'
   workflow_dispatch:
     inputs:
       text:
