@@ -2,7 +2,7 @@
 name: Functional Tests
 
 on:
-  pull_request:
+  push:
     branches:
       - 'feature-log-level'
 
