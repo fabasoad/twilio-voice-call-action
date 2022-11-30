@@ -25,6 +25,10 @@ inputs:
     description: 'Call voice. Possible values: man, woman, alice.'
     required: false
     default: alice
+  twilio_log_level:
+    description: 'Twilio log level.'
+    required: false
+    default: 'debug'
 runs:
   using: 'node16'
   main: 'dist/index.js'

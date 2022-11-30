@@ -1,0 +1,27 @@
+---
+name: Functional Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Text for a call'
+        required: false
+        default: 'Call from functional tests'
+        type: string
+
+jobs:
+  twilio-voice-call:
+    name: Twilio voice call
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Make a call
+        uses: ./
+        with:
+          twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          text: ${{ inputs.text }}
+          from: ${{ secrets.TWILIO_NUMBER_FROM }}
+          to: ${{ secrets.TWILIO_NUMBER_TO }}

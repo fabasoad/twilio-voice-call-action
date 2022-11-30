@@ -2,7 +2,8 @@ const core = require('@actions/core');
 const { TwilioClient } = require('./twilio-client');
 const client = new TwilioClient(
   core.getInput('twilio_account_sid'),
-  core.getInput('twilio_auth_token')
+  core.getInput('twilio_auth_token'),
+  core.getInput('twilio_log_level')
 );
 (async () => {
   try {

@@ -2,7 +2,7 @@
 
 ![Releases](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases)
 ![Unit Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Unit%20Tests/badge.svg)
-![YAML Lint](https://github.com/fabasoad/twilio-voice-call-action/workflows/YAML%20Lint/badge.svg)
+![Functional Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Functional%20Tests/badge.svg)
 ![Security Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Security%20Tests/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/test_coverage)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/test_coverage)
@@ -20,14 +20,15 @@ page](https://www.twilio.com/console).
 
 ## Inputs
 
-| Name               | Required | Description                                                     | Default | Possible values         |
-|--------------------|----------|-----------------------------------------------------------------|---------|-------------------------|
-| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_        |
-| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_        |
-| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_        |
-| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_        |
-| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_        |
-| voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice` |
+| Name               | Required | Description                                                     | Default | Possible values                  |
+|--------------------|----------|-----------------------------------------------------------------|---------|----------------------------------|
+| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_                 |
+| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_                 |
+| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_                 |
+| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_                 |
+| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_                 |
+| voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice`          |
+| twilio_log_level   | No       | Log level of the output from twilio call request                | `debug` | `debug`, `info`, `warn`, `error` |
 
 ## Example usage
 
