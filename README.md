@@ -44,8 +44,8 @@ jobs:
     name: Twilio voice call
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: fabasoad/twilio-voice-call-action@main
+      - uses: actions/checkout@v3
+      - uses: fabasoad/twilio-voice-call-action@v1
         if: success()
         with:
           text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
