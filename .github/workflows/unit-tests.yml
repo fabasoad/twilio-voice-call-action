@@ -1,7 +1,7 @@
 ---
 name: Unit Tests
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - 'main'
@@ -14,17 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node_modules
-        id: cache
+      - name: Cache yarn dependencies
+        id: yarn-cache
         uses: actions/cache@v3
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            .yarn/cache
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/.yarnrc.yml') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Compile
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        run: yarn install --ignore-scripts
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install
       - name: Lint
         run: yarn run lint
       - name: Unit tests
