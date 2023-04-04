@@ -1,5 +1,6 @@
 # Twilio voice call action
 
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 ![Releases](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases)
 ![Unit Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Unit%20Tests/badge.svg)
 ![Functional Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Functional%20Tests/badge.svg)
