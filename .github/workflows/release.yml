@@ -1,14 +1,14 @@
 ---
-name: Create release
+name: Release
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   push:
     tags:
       - 'v*.*.*'
 
 jobs:
-  create_release:
-    name: Release
+  create-release:
+    name: Create release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
