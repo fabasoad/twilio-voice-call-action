@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "ncc build -m src/index.js",
+    "lint": "eslint src __tests__",
     "test": "nyc mocha __tests__"
   },
   "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
