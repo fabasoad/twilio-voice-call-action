@@ -2,9 +2,10 @@
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 ![Releases](https://img.shields.io/github/v/release/fabasoad/twilio-voice-call-action?include_prereleases)
-![Unit Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Unit%20Tests/badge.svg)
-![Functional Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Functional%20Tests/badge.svg)
-![Security Tests](https://github.com/fabasoad/twilio-voice-call-action/workflows/Security%20Tests/badge.svg)
+![unit-tests](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/unit-tests.yml/badge.svg)
+![functional-tests](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/functional-tests.yml/badge.svg)
+![security](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/security.yml/badge.svg)
+![pre-commit](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/pre-commit.yml/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/test_coverage)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/test_coverage)
 [![Known Vulnerabilities](https://snyk.io/test/github/fabasoad/twilio-voice-call-action/badge.svg?targetFile=package.json)](https://snyk.io/test/github/fabasoad/twilio-voice-call-action?targetFile=package.json)

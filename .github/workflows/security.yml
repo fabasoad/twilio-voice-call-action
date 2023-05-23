@@ -1,7 +1,7 @@
 ---
-name: Security Tests
+name: Security
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   push:
     branches:
       - 'main'
@@ -12,7 +12,7 @@ defaults:
     shell: sh
 
 jobs:
-  codeql_tests:
+  codeql:
     name: CodeQL
     runs-on: ubuntu-latest
     strategy:
