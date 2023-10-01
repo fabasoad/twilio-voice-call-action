@@ -5,6 +5,6 @@ ignore:
   SNYK-JS-SEMVER-3247795:
     - '*':
         reason: Introduced by twilio. Waiting for new release.
-        expires: 2023-10-01T00:00:00.000Z
+        expires: 2023-11-01T00:00:00.000Z
         created: 2023-07-16T05:43:16.355Z
 patch: {}
