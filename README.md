@@ -5,7 +5,7 @@
 ![unit-tests](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/unit-tests.yml/badge.svg)
 ![functional-tests](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/functional-tests.yml/badge.svg)
 ![security](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/security.yml/badge.svg)
-![pre-commit](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/pre-commit.yml/badge.svg)
+![linting](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/linting.yml/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/test_coverage)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/test_coverage)
 [![Known Vulnerabilities](https://snyk.io/test/github/fabasoad/twilio-voice-call-action/badge.svg?targetFile=package.json)](https://snyk.io/test/github/fabasoad/twilio-voice-call-action?targetFile=package.json)
