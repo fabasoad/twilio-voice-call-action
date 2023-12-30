@@ -20,3 +20,4 @@ jobs:
         uses: zattoo/reviewers@4.1.0
         with:
           source: ".github/REVIEWERS"
+          token: ${{ secrets.GITHUB_TOKEN }}
