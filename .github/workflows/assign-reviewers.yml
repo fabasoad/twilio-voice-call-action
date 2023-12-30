@@ -3,7 +3,10 @@ name: Reviewers
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
+  push:
+    paths:
+      - .github/REVIEWERS
 
 jobs:
   assign-reviewers:
