@@ -13,7 +13,7 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
       - name: Use REVIEWERS
-        uses: ohnogumi/assign-reviewers@v0.0.5
+        uses: ohnogumi/auto-reviewers@v0.0.5
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
           config: ".github/REVIEWERS"
