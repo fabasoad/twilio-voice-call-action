@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - .github/REVIEWERS
+      - .github/workflows/assign-reviewers.yml
 
 jobs:
   assign-reviewers:
