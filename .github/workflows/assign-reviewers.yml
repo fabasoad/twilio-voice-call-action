@@ -16,7 +16,6 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
       - name: Use REVIEWERS
-        uses: ohnogumi/auto-reviewers@v0.0.5
+        uses: zattoo/reviewers@v4.1.0
         with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          config: ".github/REVIEWERS"
+          source: ".github/REVIEWERS"
