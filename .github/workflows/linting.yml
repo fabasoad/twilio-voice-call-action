@@ -34,6 +34,13 @@ jobs:
         uses: sibiraj-s/action-eslint@v3
         with:
           all-files: "true"
+          ignore-patterns: |
+            .github
+            .nyc_output
+            .yarn
+            coverage
+            dist
+            node_modules
           eslint-args: "-o eslint-results.sarif -f ${{ github.workspace }}/node_modules/@microsoft/eslint-formatter-sarif/sarif.js"
           extensions: "js,jsx,ts,tsx"
           annotations: true
