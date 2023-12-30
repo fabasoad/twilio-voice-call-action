@@ -16,6 +16,6 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
       - name: Use REVIEWERS
-        uses: zattoo/reviewers@v4.1.0
+        uses: zattoo/reviewers@4.1.0
         with:
           source: ".github/REVIEWERS"
