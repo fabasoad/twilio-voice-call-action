@@ -21,3 +21,4 @@ jobs:
         with:
           source: ".github/REVIEWERS"
           token: ${{ secrets.GITHUB_TOKEN }}
+          ignore: yarn.lock
