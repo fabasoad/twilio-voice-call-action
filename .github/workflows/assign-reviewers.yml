@@ -4,10 +4,6 @@ name: Reviewers
 on:
   pull_request:
     types: [opened, reopened]
-  push:
-    paths:
-      - .github/REVIEWERS
-      - .github/workflows/assign-reviewers.yml
 
 jobs:
   assign-reviewers:
