@@ -17,8 +17,7 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
       - name: Use REVIEWERS
-        uses: zattoo/reviewers@4.1.0
+        uses: dovetail/codewatchers@v0.0.6
         with:
-          source: ".github/REVIEWERS"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ignore: yarn.lock
+          codewatchers-filename: "REVIEWERS"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
