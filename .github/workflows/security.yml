@@ -51,6 +51,7 @@ jobs:
         id: scan-directory
         uses: anchore/scan-action@v3
         with:
+          by-cve: "true"
           path: "."
       - name: Upload to GHAS
         if: always()
