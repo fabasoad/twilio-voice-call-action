@@ -33,7 +33,6 @@
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "3.0.0",
     "@vercel/ncc": "0.38.1",
-    "chai": "5.0.0",
     "eslint": "8.56.0",
     "eslint-config-google": "0.14.0",
     "mocha": "10.2.0",

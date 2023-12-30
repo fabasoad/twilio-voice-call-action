@@ -883,13 +883,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assertion-error@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "assertion-error@npm:2.0.1"
-  checksum: a0789dd882211b87116e81e2648ccb7f60340b34f19877dd020b39ebb4714e475eb943e14ba3e22201c221ef6645b7bfe10297e76b6ac95b48a9898c1211ce66
-  languageName: node
-  linkType: hard
-
 "asynckit@npm:^0.4.0":
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
@@ -1061,19 +1054,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:5.0.0":
-  version: 5.0.0
-  resolution: "chai@npm:5.0.0"
-  dependencies:
-    assertion-error: "npm:^2.0.1"
-    check-error: "npm:^2.0.0"
-    deep-eql: "npm:^5.0.1"
-    loupe: "npm:^3.0.0"
-    pathval: "npm:^2.0.0"
-  checksum: c23d1bb3912cc36d12861d7e4010bb992aabf923a8d393bc71e776218c39f5f40778ab9f398ff962dd26857edee07ce732c9ad28a678feb1b76f99384d2e4a90
-  languageName: node
-  linkType: hard
-
 "chalk@npm:^2.0.0, chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
@@ -1092,13 +1072,6 @@ __metadata:
     ansi-styles: "npm:^4.1.0"
     supports-color: "npm:^7.1.0"
   checksum: cb3f3e594913d63b1814d7ca7c9bafbf895f75fbf93b92991980610dfd7b48500af4e3a5d4e3a8f337990a96b168d7eb84ee55efdce965e2ee8efc20f8c8f139
-  languageName: node
-  linkType: hard
-
-"check-error@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "check-error@npm:2.0.0"
-  checksum: 120f252c2e1ad82ef82a616662805345c6c361347bfd6203f8a28c53a158811dd0ea21278f29c8136cc9df12fc7f077d1a07124569d98fb396b3072d08f2f092
   languageName: node
   linkType: hard
 
@@ -1276,13 +1249,6 @@ __metadata:
   version: 4.0.0
   resolution: "decamelize@npm:4.0.0"
   checksum: b7d09b82652c39eead4d6678bb578e3bebd848add894b76d0f6b395bc45b2d692fb88d977e7cfb93c4ed6c119b05a1347cef261174916c2e75c0a8ca57da1809
-  languageName: node
-  linkType: hard
-
-"deep-eql@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "deep-eql@npm:5.0.1"
-  checksum: f8846820213462cdca23700873810c8bc01263dcc6a1e0f8694964b64f48a6dcb1f323ef7bb8678b15553f4b82420eda19092d4ae2e2709c56af7ea77bd8e6ab
   languageName: node
   linkType: hard
 
@@ -1773,13 +1739,6 @@ __metadata:
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
   checksum: b9769a836d2a98c3ee734a88ba712e62703f1df31b94b784762c433c27a386dd6029ff55c2a920c392e33657d80191edbf18c61487e198844844516f843496b9
-  languageName: node
-  linkType: hard
-
-"get-func-name@npm:^2.0.1":
-  version: 2.0.2
-  resolution: "get-func-name@npm:2.0.2"
-  checksum: 3f62f4c23647de9d46e6f76d2b3eafe58933a9b3830c60669e4180d6c601ce1b4aa310ba8366143f55e52b139f992087a9f0647274e8745621fa2af7e0acf13b
   languageName: node
   linkType: hard
 
@@ -2391,15 +2350,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loupe@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "loupe@npm:3.0.2"
-  dependencies:
-    get-func-name: "npm:^2.0.1"
-  checksum: 256467bf10afaca4a5dd79b32e36fcd042bc2a247232e940c62bcc07cb114c2d7a549218eb103598e7cdb8bd32c6601fe230d80e03b8d49782973d4da11c08ed
-  languageName: node
-  linkType: hard
-
 "lru-cache@npm:^5.1.1":
   version: 5.1.1
   resolution: "lru-cache@npm:5.1.1"
@@ -2899,13 +2849,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pathval@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "pathval@npm:2.0.0"
-  checksum: b91575bf9cdf01757afd7b5e521eb8a0b874a49bc972d08e0047cfea0cd3c019f5614521d4bc83d2855e3fcc331db6817dfd533dd8f3d90b16bc76fad2450fc1
-  languageName: node
-  linkType: hard
-
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -3395,7 +3338,6 @@ __metadata:
     "@actions/github": "npm:6.0.0"
     "@microsoft/eslint-formatter-sarif": "npm:3.0.0"
     "@vercel/ncc": "npm:0.38.1"
-    chai: "npm:5.0.0"
     eslint: "npm:8.56.0"
     eslint-config-google: "npm:0.14.0"
     mocha: "npm:10.2.0"

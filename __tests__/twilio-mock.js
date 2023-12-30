@@ -1,4 +1,4 @@
-const { assert } = require('chai');
+const assert = require('assert');
 
 module.exports = (voice, text, fromExpected, toExpected) => ({
   calls: {
