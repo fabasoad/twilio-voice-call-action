@@ -1,4 +1,4 @@
-const { assert } = require('chai');
+const assert = require('assert');
 const itParam = require('mocha-param');
 const { TwilioClient, TwilioClientException } = require('../src/twilio-client');
 const twilioMockFactory = require('./twilio-mock');
