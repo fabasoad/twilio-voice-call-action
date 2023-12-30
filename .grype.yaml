@@ -1,2 +1,2 @@
 ignore:
-  - vulnerability: CVE-2022-25883
+  - vulnerability: GHSA-c2qf-rxjj-qqgw-semver
