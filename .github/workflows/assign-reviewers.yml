@@ -13,7 +13,6 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
       - name: Use REVIEWERS
-        uses: dovetail/codewatchers@v0.0.6
+        uses: fabasoad/reviewers-action@feat/v0
         with:
-          codewatchers-filename: "REVIEWERS"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers-filename: "REVIEWERS"
