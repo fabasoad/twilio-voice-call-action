@@ -3400,13 +3400,13 @@ __metadata:
     mocha: "npm:10.4.0"
     mocha-param: "npm:2.0.1"
     nyc: "npm:15.1.0"
-    twilio: "npm:5.0.4"
+    twilio: "npm:5.1.1"
   languageName: unknown
   linkType: soft
 
-"twilio@npm:5.0.4":
-  version: 5.0.4
-  resolution: "twilio@npm:5.0.4"
+"twilio@npm:5.1.1":
+  version: 5.1.1
+  resolution: "twilio@npm:5.1.1"
   dependencies:
     axios: "npm:^1.6.8"
     dayjs: "npm:^1.11.9"
@@ -3415,7 +3415,7 @@ __metadata:
     qs: "npm:^6.9.4"
     scmp: "npm:^2.1.0"
     xmlbuilder: "npm:^13.0.2"
-  checksum: 10/653a90a0c1210baefc356b498a83281b57cd0d2ef5edf118e01160dd5bec9a9d07a43d1ff646ae8f3f278cc97b837cee1eaab002e3255dc94d73b50b3d8a0976
+  checksum: 10/d566f610eb7c659a7ebbc7003bea6563d67688358b0741fd08395629ad722fbd155ccdb37b8862b6035aaaf14e25e5d6d65b5d18b72995110d8de42ddc443df2
   languageName: node
   linkType: hard
 

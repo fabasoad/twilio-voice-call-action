@@ -5,9 +5,9 @@ on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
     inputs:
       text:
-        description: 'Text for a call'
+        description: "Text for a call"
         required: false
-        default: 'Call from functional tests'
+        default: "Call from functional tests"
         type: string
 
 jobs:
