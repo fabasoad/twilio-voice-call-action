@@ -841,11 +841,11 @@ __metadata:
   linkType: hard
 
 "braces@npm:~3.0.2":
-  version: 3.0.2
-  resolution: "braces@npm:3.0.2"
+  version: 3.0.3
+  resolution: "braces@npm:3.0.3"
   dependencies:
-    fill-range: "npm:^7.0.1"
-  checksum: 10/966b1fb48d193b9d155f810e5efd1790962f2c4e0829f8440b8ad236ba009222c501f70185ef732fef17a4c490bb33a03b90dab0631feafbdf447da91e8165b1
+    fill-range: "npm:^7.1.1"
+  checksum: 10/fad11a0d4697a27162840b02b1fad249c1683cbc510cd5bf1a471f2f8085c046d41094308c577a50a03a579dd99d5a6b3724c4b5e8b14df2c4443844cfcda2c6
   languageName: node
   linkType: hard
 
@@ -1473,12 +1473,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fill-range@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "fill-range@npm:7.0.1"
+"fill-range@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "fill-range@npm:7.1.1"
   dependencies:
     to-regex-range: "npm:^5.0.1"
-  checksum: 10/e260f7592fd196b4421504d3597cc76f4a1ca7a9488260d533b611fc3cefd61e9a9be1417cb82d3b01ad9f9c0ff2dbf258e1026d2445e26b0cf5148ff4250429
+  checksum: 10/a7095cb39e5bc32fada2aa7c7249d3f6b01bd1ce461a61b0adabacccabd9198500c6fb1f68a7c851a657e273fce2233ba869638897f3d7ed2e87a2d89b4436ea
   languageName: node
   linkType: hard
 
@@ -3400,13 +3400,13 @@ __metadata:
     mocha: "npm:10.4.0"
     mocha-param: "npm:2.0.1"
     nyc: "npm:15.1.0"
-    twilio: "npm:5.0.4"
+    twilio: "npm:5.1.1"
   languageName: unknown
   linkType: soft
 
-"twilio@npm:5.0.4":
-  version: 5.0.4
-  resolution: "twilio@npm:5.0.4"
+"twilio@npm:5.1.1":
+  version: 5.1.1
+  resolution: "twilio@npm:5.1.1"
   dependencies:
     axios: "npm:^1.6.8"
     dayjs: "npm:^1.11.9"
@@ -3415,7 +3415,7 @@ __metadata:
     qs: "npm:^6.9.4"
     scmp: "npm:^2.1.0"
     xmlbuilder: "npm:^13.0.2"
-  checksum: 10/653a90a0c1210baefc356b498a83281b57cd0d2ef5edf118e01160dd5bec9a9d07a43d1ff646ae8f3f278cc97b837cee1eaab002e3255dc94d73b50b3d8a0976
+  checksum: 10/d566f610eb7c659a7ebbc7003bea6563d67688358b0741fd08395629ad722fbd155ccdb37b8862b6035aaaf14e25e5d6d65b5d18b72995110d8de42ddc443df2
   languageName: node
   linkType: hard
 
