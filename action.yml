@@ -3,7 +3,7 @@ name: 'Twilio Voice Call'
 author: Yevhen Fabizhevskyi
 description: 'This GitHub action sends voice call with the defined text.'
 branding:
-  icon: voicemail
+  icon: phone-incoming
   color: white
 inputs:
   twilio_account_sid:

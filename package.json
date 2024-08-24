@@ -33,9 +33,9 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@vercel/ncc": "0.38.1",
-    "mocha": "10.6.0",
+    "mocha": "10.7.3",
     "mocha-param": "2.0.1",
-    "nyc": "15.1.0"
+    "nyc": "17.0.0"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.4.1"
 }
