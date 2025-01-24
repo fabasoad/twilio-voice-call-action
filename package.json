@@ -28,7 +28,7 @@
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/github": "6.0.0",
-    "twilio": "5.4.0"
+    "twilio": "5.4.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
