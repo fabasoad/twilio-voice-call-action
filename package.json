@@ -6,7 +6,8 @@
   "scripts": {
     "build": "ncc build -m src/index.ts",
     "lint": "biome lint --write src",
-    "test": "jest --config=jest.config.json --coverage"
+    "test": "jest --reporters=default --config=jest.config.json --coverage",
+    "test:ci": "jest --reporters=github-actions --reporters=summary --config=jest.config.json --coverage"
   },
   "repository": {
     "type": "git",
