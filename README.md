@@ -11,6 +11,16 @@
 
 This action sends Twilio voice call.
 
+## Supported OS
+
+<!-- prettier-ignore-start -->
+| OS      |                    |
+|---------|--------------------|
+| Windows | :white_check_mark: |
+| Linux   | :white_check_mark: |
+| macOS   | :white_check_mark: |
+<!-- prettier-ignore-end -->
+
 ## Prerequisites
 
 Sign up to [Twilio](https://twilio.com) official web page. Then [register a new
@@ -21,42 +31,34 @@ page](https://www.twilio.com/console).
 
 ## Inputs
 
-| Name               | Required | Description                                                     | Default | Possible values                  |
-|--------------------|----------|-----------------------------------------------------------------|---------|----------------------------------|
-| twilio_account_sid | Yes      | Twilio account SID                                              |         | _&lt;String&gt;_                 |
-| twilio_auth_token  | Yes      | Twilio auth token                                               |         | _&lt;String&gt;_                 |
-| text               | Yes      | Text that will be send by voice call.                           |         | _&lt;String&gt;_                 |
-| from               | Yes      | Phone number in your Twilio account to send the voice call from |         | _&lt;String&gt;_                 |
-| to                 | Yes      | Phone number to send the voice call to                          |         | _&lt;String&gt;_                 |
-| voice              | No       | Call voice                                                      | `alice` | `man`, `woman`, `alice`          |
-| twilio_log_level   | No       | Log level of the output from twilio call request                | `debug` | `debug`, `info`, `warn`, `error` |
-
-## Example usage
-
-### Workflow configuration
-
 ```yaml
-name: Twilio
-
-on: push
-
-jobs:
-  twilio-voice-call:
-    name: Twilio voice call
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: fabasoad/twilio-voice-call-action@v1
-        if: success()
-        with:
-          text: 'GitHub actions build number ${{ github.run_number }} passed successfully.'
-          from: '+1(123)4567890'
-          to: '+1(123)4567809'
-          twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}
+- uses: fabasoad/twilio-voice-call-action@v1
+  with:
+    # (Required) Twilio Account SID.
+    twilio_account_sid: "${{ secrets.TWILIO_ACCOUNT_SID }}"
+    # (Required) Twilio Auth token.
+    twilio_auth_token: "${{ secrets.TWILIO_AUTH_TOKEN }}"
+    # (Required) Text that will be sent by voice call.
+    text: "GitHub actions build number ${{ github.run_number }} passed successfully."
+    # (Required) Phone number in your Twilio account to send the voice call from.
+    from: '+1(123)4567890'
+    # (Required) Phone number to send the voice call to.
+    to: '+1(123)4567809'
+    # (Optional) Call voice. Possible values: man, woman, alice. Defaults to "alice".
+    voice: "alice"
+    # (Optional) Twilio log level. Defaults to "debug".
+    twilio_log_level: "debug"
 ```
 
-### Result
+## Outputs
+
+None.
+
+## Example phone call
 
 Download [example.mp3](https://raw.githubusercontent.com/fabasoad/twilio-voice-call-action/main/example.mp3)
 file to listen.
+
+## Contributions
+
+![Alt](https://repobeats.axiom.co/api/embed/379948bad849c09fd6752bbdcd4aec28c0c25617.svg "Repobeats analytics image")
