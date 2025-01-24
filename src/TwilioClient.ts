@@ -1,6 +1,6 @@
 import { Twilio } from 'twilio'
 
-class TwilioVoiceNotSupportedException extends Error {
+export class TwilioVoiceNotSupportedException extends Error {
   constructor(voice: string, supportedVoices: string[]) {
     super(`'${voice}' voice is not supported. Possible values: ${supportedVoices.join(', ')}.`);
   }
