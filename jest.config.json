@@ -6,7 +6,7 @@
     "!**/node_modules/**"
   ],
   "coverageReporters": [
-    "lcov", "json", "text", "text-summary"
+    "lcov", "json-summary", "text", "text-summary"
   ],
   "coverageThreshold": {
     "global": {
