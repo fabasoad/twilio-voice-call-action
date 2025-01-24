@@ -6,7 +6,7 @@
     "!**/node_modules/**"
   ],
   "coverageReporters": [
-    "lcov", "text", "text-summary"
+    "json", "lcov", "text", "text-summary"
   ],
   "coverageThreshold": {
     "global": {
@@ -19,9 +19,6 @@
   "moduleFileExtensions": [
     "js",
     "ts"
-  ],
-  "reporters": [
-    ["github-actions", { "silent": false }], "summary"
   ],
   "testEnvironment": "node",
   "testMatch": [
