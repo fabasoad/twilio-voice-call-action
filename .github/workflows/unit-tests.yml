@@ -6,15 +6,16 @@ on: # yamllint disable-line rule:truthy
     paths:
       - .github/workflows/unit-tests.yml
       - .tool-versions
-      - .nycrc.json
+      - jest.config.json
       - package.json
       - src/**
+      - tsconfig.json
   push:
     branches:
       - main
 
 jobs:
-  mocha:
-    name: Mocha
+  jest:
+    name: Jest
     uses: fabasoad/reusable-workflows/.github/workflows/wf-js-unit-tests.yml@main
     secrets: inherit # pragma: allowlist secret

@@ -1,0 +1,33 @@
+{
+  "clearMocks": true,
+  "collectCoverageFrom": [
+    "**/*.ts",
+    "!**/*.d.ts",
+    "!**/node_modules/**"
+  ],
+  "coverageReporters": [
+    "lcov", "text", "text-summary"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "branches": 0,
+      "functions": 25,
+      "lines": 40,
+      "statements": 40
+    }
+  },
+  "moduleFileExtensions": [
+    "js",
+    "ts"
+  ],
+  "testEnvironment": "node",
+  "testMatch": [
+    "**/*.spec.ts"
+  ],
+  "testRunner": "jest-circus/runner",
+  "testTimeout": 20000,
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "verbose": true
+}

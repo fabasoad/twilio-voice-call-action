@@ -1,11 +1,6 @@
-.vscode
-.env
-.idea
-.nyc_output
 coverage
 
 # yarn
-node_modules
 yarn-error.log
 .pnp.*
 .yarn/*

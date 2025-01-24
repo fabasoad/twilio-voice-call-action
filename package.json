@@ -1,8 +1,13 @@
 {
   "name": "twilio-voice-call-action",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build -m src/index.ts",
+    "lint": "biome lint --write src",
+    "test": "jest --config=jest.config.json --coverage"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fabasoad/twilio-voice-call-action.git"
@@ -19,11 +24,6 @@
   "bugs": {
     "url": "https://github.com/fabasoad/twilio-voice-call-action/issues"
   },
-  "scripts": {
-    "build": "ncc build -m src/index.js",
-    "lint": "biome lint --write src",
-    "test": "nyc mocha __tests__"
-  },
   "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
   "dependencies": {
     "@actions/core": "1.11.1",
@@ -32,10 +32,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/jest": "29.5.14",
     "@vercel/ncc": "0.38.3",
-    "mocha": "11.1.0",
-    "mocha-param": "2.0.1",
-    "nyc": "17.1.0"
+    "jest": "29.7.0",
+    "jest-circus": "29.7.0",
+    "ts-jest": "29.2.5",
+    "typescript": "5.7.3"
   },
   "packageManager": "yarn@4.6.0"
 }
