@@ -20,6 +20,9 @@
     "js",
     "ts"
   ],
+  "reporters": [
+    ["github-actions", { "silent": false }], "summary"
+  ],
   "testEnvironment": "node",
   "testMatch": [
     "**/*.spec.ts"
