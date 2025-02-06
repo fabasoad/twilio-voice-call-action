@@ -60,7 +60,7 @@ repos:
           - --hook-args=--log-level debug
         stages: ["pre-push"]
   - repo: https://github.com/google/osv-scanner
-    rev: v1.9.2
+    rev: v2.0.0-beta1
     hooks:
       - id: osv-scanner
         args:
