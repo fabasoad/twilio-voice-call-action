@@ -28,7 +28,7 @@
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/github": "6.0.0",
-    "twilio": "5.4.3"
+    "twilio": "5.4.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -36,7 +36,7 @@
     "@vercel/ncc": "0.38.3",
     "jest": "29.7.0",
     "jest-circus": "29.7.0",
-    "ts-jest": "29.2.5",
+    "ts-jest": "29.2.6",
     "typescript": "5.7.3"
   },
   "packageManager": "yarn@4.6.0"

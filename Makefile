@@ -1,4 +1,4 @@
-.PHONY: audit build clean install reinstall lint start test upgrade
+.PHONY: audit build clean install reinstall lint test upgrade
 
 .DEFAULT_GOAL := build
 
