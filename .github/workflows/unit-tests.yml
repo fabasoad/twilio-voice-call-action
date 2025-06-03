@@ -10,7 +10,6 @@ on: # yamllint disable-line rule:truthy
       - package.json
       - src/**
       - tsconfig.json
-      - biome.json # to remove
   push:
     branches:
       - main
@@ -21,5 +20,3 @@ jobs:
     name: Jest
     uses: fabasoad/reusable-workflows/.github/workflows/wf-js-unit-tests.yml@fix/cache
     secrets: inherit # pragma: allowlist secret
-    with:
-      report-coverage: true
