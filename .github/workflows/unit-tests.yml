@@ -10,7 +10,6 @@ on: # yamllint disable-line rule:truthy
       - package.json
       - src/**
       - tsconfig.json
-      - biome.json # to remove
   push:
     branches:
       - main
