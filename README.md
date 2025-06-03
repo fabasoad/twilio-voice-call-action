@@ -6,8 +6,7 @@
 ![functional-tests](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/functional-tests.yml/badge.svg)
 ![security](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/security.yml/badge.svg)
 ![linting](https://github.com/fabasoad/twilio-voice-call-action/actions/workflows/linting.yml/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/maintainability)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/99ae71f3775872bc4338/test_coverage)](https://codeclimate.com/github/fabasoad/twilio-voice-call-action/test_coverage)
+[![codecov](https://codecov.io/gh/fabasoad/twilio-voice-call-action/branch/main/graph/badge.svg?token=50U8UQWIKB)](https://codecov.io/gh/fabasoad/twilio-voice-call-action)
 
 This action sends Twilio voice call.
 
