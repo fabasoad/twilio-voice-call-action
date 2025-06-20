@@ -24,4 +24,5 @@ test:
 	@yarn run test
 
 upgrade:
+	@pre-commit autoupdate
 	@yarn upgrade-interactive
