@@ -10,6 +10,9 @@ on: # yamllint disable-line rule:truthy
         default: "Call from functional tests"
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   twilio-voice-call:
     name: Twilio voice call
