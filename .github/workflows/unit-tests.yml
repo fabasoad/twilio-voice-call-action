@@ -19,4 +19,5 @@ jobs:
   jest:
     name: Jest
     uses: fabasoad/reusable-workflows/.github/workflows/wf-js-unit-tests.yml@main
+    permissions: {}
     secrets: inherit # pragma: allowlist secret
