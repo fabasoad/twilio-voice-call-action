@@ -34,9 +34,9 @@ page](https://www.twilio.com/console).
 - uses: fabasoad/twilio-voice-call-action@v1
   with:
     # (Required) Twilio Account SID.
-    twilio_account_sid: "${{ secrets.TWILIO_ACCOUNT_SID }}"
+    twilio-account-sid: "${{ secrets.TWILIO_ACCOUNT_SID }}"
     # (Required) Twilio Auth token.
-    twilio_auth_token: "${{ secrets.TWILIO_AUTH_TOKEN }}"
+    twilio-auth-token: "${{ secrets.TWILIO_AUTH_TOKEN }}"
     # (Required) Text that will be sent by voice call.
     text: "GitHub actions build number ${{ github.run_number }} passed successfully."
     # (Required) Phone number in your Twilio account to send the voice call from.
@@ -46,7 +46,7 @@ page](https://www.twilio.com/console).
     # (Optional) Call voice. Possible values: man, woman, alice. Defaults to "alice".
     voice: "alice"
     # (Optional) Twilio log level. Defaults to "debug".
-    twilio_log_level: "debug"
+    twilio-log-level: "debug"
 ```
 
 ## Outputs

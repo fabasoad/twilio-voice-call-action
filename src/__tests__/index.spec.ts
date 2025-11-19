@@ -8,8 +8,8 @@ jest.mock('@actions/core', () => ({
   getInput: jest.fn((name: string) => {
     switch (name) {
       case 'twilio_account_sid': return 'account-sid-test'
-      case 'twilio_auth_token': return 'auth-token-test'
-      case 'twilio_log_level': return 'log-level-test'
+      case 'twilio-auth-token': return 'auth-token-test'
+      case 'twilio-log-level': return 'log-level-test'
       case 'voice': return 'voice-test'
       case 'text': return 'text-test'
       case 'from': return 'from-test'
