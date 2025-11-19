@@ -7,7 +7,7 @@ import { TwilioClient } from '../TwilioClient'
 jest.mock('@actions/core', () => ({
   getInput: jest.fn((name: string) => {
     switch (name) {
-      case 'twilio_account_sid': return 'account-sid-test'
+      case 'twilio-account-sid': return 'account-sid-test'
       case 'twilio-auth-token': return 'auth-token-test'
       case 'twilio-log-level': return 'log-level-test'
       case 'voice': return 'voice-test'
