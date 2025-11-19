@@ -31,7 +31,7 @@ page](https://www.twilio.com/console).
 ## Inputs
 
 ```yaml
-- uses: fabasoad/twilio-voice-call-action@v1
+- uses: fabasoad/twilio-voice-call-action@v3
   with:
     # (Required) Twilio Account SID.
     twilio-account-sid: "${{ secrets.TWILIO_ACCOUNT_SID }}"
