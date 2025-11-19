@@ -21,8 +21,8 @@ jobs:
       - name: Make a call
         uses: ./
         with:
-          twilio_account_sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          twilio_auth_token: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          twilio-account-sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          twilio-auth-token: ${{ secrets.TWILIO_AUTH_TOKEN }}
           text: ${{ inputs.text }}
           from: ${{ secrets.TWILIO_NUMBER_FROM }}
           to: ${{ secrets.TWILIO_NUMBER_TO }}

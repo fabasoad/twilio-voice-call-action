@@ -10,3 +10,4 @@ jobs:
   maintenance:
     name: Maintenance
     uses: fabasoad/reusable-workflows/.github/workflows/wf-update-license.yml@main
+    permissions: {}

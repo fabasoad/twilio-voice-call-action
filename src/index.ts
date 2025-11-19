@@ -3,9 +3,9 @@ import { TwilioClient } from './TwilioClient'
 
 export default async function run() {
   const twilioClient = new TwilioClient({
-    accountSid: getInput('twilio_account_sid', { required: true, trimWhitespace: true }),
-    authToken: getInput('twilio_auth_token', { required: true, trimWhitespace: true }),
-    logLevel: getInput('twilio_log_level', { required: false, trimWhitespace: true })
+    accountSid: getInput('twilio-account-sid', { required: true, trimWhitespace: true }),
+    authToken: getInput('twilio-auth-token', { required: true, trimWhitespace: true }),
+    logLevel: getInput('twilio-log-level', { required: false, trimWhitespace: true })
   })
   try {
     await twilioClient.call(

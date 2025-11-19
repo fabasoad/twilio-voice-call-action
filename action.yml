@@ -6,10 +6,10 @@ branding:
   icon: phone-incoming
   color: white
 inputs:
-  twilio_account_sid:
+  twilio-account-sid:
     description: Twilio Account SID.
     required: true
-  twilio_auth_token:
+  twilio-auth-token:
     description: Twilio Auth token.
     required: true
   text:
@@ -25,10 +25,10 @@ inputs:
     description: "Call voice. Possible values: man, woman, alice."
     required: false
     default: alice
-  twilio_log_level:
+  twilio-log-level:
     description: Twilio log level.
     required: false
     default: debug
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
