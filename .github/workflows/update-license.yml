@@ -5,7 +5,6 @@ on: # yamllint disable-line rule:truthy
   schedule:
     # Every January 1st at 14:00 JST
     - cron: "0 5 1 1 *"
-  workflow_dispatch: {}
 
 jobs:
   maintenance:
