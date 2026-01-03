@@ -12,4 +12,3 @@ jobs:
     uses: fabasoad/reusable-workflows/.github/workflows/wf-github-release.yml@main
     permissions:
       contents: write
-      packages: write
