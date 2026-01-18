@@ -27,7 +27,7 @@
   "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
   "dependencies": {
     "@actions/core": "~2.0.2",
-    "@actions/github": "~6.0.1",
+    "@actions/github": "~7.0.0",
     "twilio": "~5.11.2"
   },
   "devDependencies": {
