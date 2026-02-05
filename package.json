@@ -1,6 +1,6 @@
 {
   "name": "twilio-voice-call-action",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "twilio": "~5.12.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.3.13",
+    "@biomejs/biome": "~2.3.14",
     "@types/jest": "~30.0.0",
     "esbuild": "~0.27.2",
     "jest": "~30.2.0",
