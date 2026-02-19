@@ -4468,14 +4468,14 @@ __metadata:
     jest: "npm:~30.2.0"
     jest-circus: "npm:~30.2.0"
     ts-jest: "npm:~29.4.6"
-    twilio: "npm:~5.12.1"
+    twilio: "npm:~5.12.2"
     typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
-"twilio@npm:~5.12.1":
-  version: 5.12.1
-  resolution: "twilio@npm:5.12.1"
+"twilio@npm:~5.12.2":
+  version: 5.12.2
+  resolution: "twilio@npm:5.12.2"
   dependencies:
     axios: "npm:^1.12.0"
     dayjs: "npm:^1.11.9"
@@ -4484,7 +4484,7 @@ __metadata:
     qs: "npm:^6.14.1"
     scmp: "npm:^2.1.0"
     xmlbuilder: "npm:^13.0.2"
-  checksum: 10/b9baedbe6c09d9878ce94fcd163d7c2e8232c9057db49384ed0f3af6660ff363d47960da80bc8410be79deab9414fe4ad74b129dd83a1964156d0ea93b32b217
+  checksum: 10/7be07b3743500cb14bbaf41d31e7c226f1a4087789ea9d935c83fe73d1a5753b4ce45e92f3caf46557912c98ef728967b11fb331720a941e4ba4600dcf4ddb8a
   languageName: node
   linkType: hard
 
