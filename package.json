@@ -31,9 +31,9 @@
     "twilio": "~5.13.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.4.10",
+    "@biomejs/biome": "~2.4.11",
     "@types/jest": "~30.0.0",
-    "@types/node": "~25.5.0",
+    "@types/node": "~25.5.2",
     "esbuild": "~0.27.7",
     "jest": "~30.3.0",
     "jest-circus": "~30.3.0",
