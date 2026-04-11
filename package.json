@@ -1,6 +1,6 @@
 {
   "name": "twilio-voice-call-action",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
   "scripts": {
@@ -27,14 +27,14 @@
   "homepage": "https://github.com/fabasoad/twilio-voice-call-action#readme",
   "dependencies": {
     "@actions/core": "~3.0.0",
-    "@actions/github": "~9.0.0",
+    "@actions/github": "~9.1.0",
     "twilio": "~5.13.1"
   },
   "devDependencies": {
     "@biomejs/biome": "~2.4.11",
     "@types/jest": "~30.0.0",
-    "@types/node": "~25.5.2",
-    "esbuild": "~0.27.7",
+    "@types/node": "~25.6.0",
+    "esbuild": "~0.28.0",
     "jest": "~30.3.0",
     "jest-circus": "~30.3.0",
     "ts-jest": "~29.4.9",

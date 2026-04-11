@@ -1,4 +1,4 @@
-import { Twilio } from 'twilio'
+import { Twilio } from 'twilio';
 
 export class TwilioVoiceNotSupportedException extends Error {
   constructor(voice: string, supportedVoices: string[]) {
@@ -9,19 +9,19 @@ export class TwilioVoiceNotSupportedException extends Error {
 export type TwilioClientProps = {
   accountSid: string,
   authToken: string,
-  logLevel: string
+  logLevel: string,
 }
 
 export class TwilioClient {
-  private readonly client: Twilio
-  private readonly supportedVoices: string[]
+  private readonly client: Twilio;
+  private readonly supportedVoices: string[];
 
   constructor({ accountSid, authToken, logLevel }: TwilioClientProps) {
     this.client = new Twilio(accountSid, authToken, {
       lazyLoading: true,
-      logLevel
+      logLevel,
     })
-    this.supportedVoices = ['man', 'woman', 'alice']
+    this.supportedVoices = ['man', 'woman', 'alice'];
   }
 
   async call(voice: string, text: string, from: string, to: string): Promise<void> {
@@ -29,10 +29,10 @@ export class TwilioClient {
       await this.client.calls.create({
         from: from,
         to: to,
-        twiml: `<Response><Say voice="${voice}">${text}</Say></Response>`
+        twiml: `<Response><Say voice="${voice}">${text}</Say></Response>`,
       });
     } else {
-      throw new TwilioVoiceNotSupportedException(voice, this.supportedVoices)
+      throw new TwilioVoiceNotSupportedException(voice, this.supportedVoices);
     }
   }
 }
