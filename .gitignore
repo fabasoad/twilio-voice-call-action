@@ -1,12 +1,4 @@
 coverage
-
-# yarn
-yarn-error.log
+.claude/settings.local.json
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
 node_modules
