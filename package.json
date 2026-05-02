@@ -1,12 +1,14 @@
 {
   "name": "twilio-voice-call-action",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
     "lint": "biome lint --write src",
-    "test": "jest --config=jest.config.json --json --outputFile=jest-report.json --coverage"
+    "test": "jest --config=jest.config.json --json --outputFile=jest-report.json --coverage",
+    "clean": "rm -rf coverage && rm -rf temp",
+    "clean:unsafe": "rm -f package-lock.json && rm -rf node_modules && rm -rf dist"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,7 @@
   "dependencies": {
     "@actions/core": "~3.0.1",
     "@actions/github": "~9.1.1",
-    "twilio": "~5.13.1"
+    "twilio": "~6.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "~2.4.13",
@@ -39,6 +41,5 @@
     "jest-circus": "~30.3.0",
     "ts-jest": "~29.4.9",
     "typescript": "~6.0.3"
-  },
-  "packageManager": "yarn@4.13.0"
+  }
 }
