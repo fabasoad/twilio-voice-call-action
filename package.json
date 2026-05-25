@@ -4,7 +4,7 @@
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --outfile=dist/index.js",
     "lint": "biome lint --write src",
     "test": "jest --config=jest.config.json --json --outputFile=jest-report.json --coverage",
     "clean": "rm -rf coverage && rm -rf temp",
