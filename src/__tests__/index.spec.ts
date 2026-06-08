@@ -1,11 +1,15 @@
-const setFailedFn = jest.fn();
-const twilioClientCallFn = jest.fn();
+import { vi, describe, test, expect, afterEach } from 'vitest';
+
+const { setFailedFn, twilioClientCallFn } = vi.hoisted(() => ({
+  setFailedFn: vi.fn(),
+  twilioClientCallFn: vi.fn(),
+}));
 
 import run from '../index';
 import { TwilioClient } from '../TwilioClient';
 
-jest.mock('@actions/core', () => ({
-  getInput: jest.fn((name: string) => {
+vi.mock('@actions/core', () => ({
+  getInput: vi.fn((name: string) => {
     switch (name) {
       case 'twilio-account-sid': return 'account-sid-test';
       case 'twilio-auth-token': return 'auth-token-test';
@@ -17,16 +21,17 @@ jest.mock('@actions/core', () => ({
       default: return '';
     }
   }),
-  setFailed: jest.fn((message: string) => setFailedFn(message)),
+  setFailed: vi.fn((message: string) => setFailedFn(message)),
 }))
 
-jest.mock('../TwilioClient', () => ({
-  TwilioClient: jest.fn(() => ({
-    call: jest.fn((voice: string, text: string, from: string, to: string) =>
+vi.mock('../TwilioClient', () => {
+  class TwilioClient {
+    call = vi.fn((voice: string, text: string, from: string, to: string) =>
       twilioClientCallFn(voice, text, from, to)
-    ),
-  })),
-}))
+    );
+  }
+  return { TwilioClient: vi.fn(TwilioClient) };
+})
 
 describe('Main entrypoint', () => {
   describe('Positive scenarios', () => {
