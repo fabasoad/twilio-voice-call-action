@@ -1,22 +1,22 @@
+import { vi, describe, test, expect } from 'vitest';
 import { TwilioClient, TwilioVoiceNotSupportedException } from '../TwilioClient';
 import type { ClientOpts } from 'twilio';
 
-const twilioFn = jest.fn();
-const twilioCallsCreateFn = jest.fn();
+const twilioFn = vi.fn();
+const twilioCallsCreateFn = vi.fn();
 
-jest.mock('twilio', () => ({
-  Twilio: jest.fn((username?: string, password?: string, opts?: ClientOpts) => {
-    twilioFn(username, password, opts);
-    return {
-      calls: {
-        // biome-ignore lint/suspicious/noExplicitAny: used for tests
-        create: jest.fn((...createArgs: any[]) =>
-          twilioCallsCreateFn(...createArgs)
-        ),
-      }
-    };
-  })
-}))
+vi.mock('twilio', () => {
+  class Twilio {
+    // biome-ignore lint/suspicious/noExplicitAny: used for tests
+    calls: { create: (...args: any[]) => any };
+    constructor(username?: string, password?: string, opts?: ClientOpts) {
+      twilioFn(username, password, opts);
+      // biome-ignore lint/suspicious/noExplicitAny: used for tests
+      this.calls = { create: (...createArgs: any[]) => twilioCallsCreateFn(...createArgs) };
+    }
+  }
+  return { Twilio };
+})
 
 describe('Twilio Client', () => {
   const expectedAccountSid = 'account-sid-test';
