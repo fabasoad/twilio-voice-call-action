@@ -36,7 +36,7 @@
     "@biomejs/biome": "~2.4.16",
     "@types/node": "~25.9.3",
     "@vitest/coverage-v8": "~4.1.8",
-    "esbuild": "~0.28.0",
+    "esbuild": "~0.28.1",
     "typescript": "~6.0.3",
     "vitest": "~4.1.8"
   }
