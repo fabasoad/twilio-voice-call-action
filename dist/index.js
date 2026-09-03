@@ -29567,121 +29567,6 @@ var require_browser = __commonJS({
   }
 });
 
-// node_modules/has-flag/index.js
-var require_has_flag = __commonJS({
-  "node_modules/has-flag/index.js"(exports2, module2) {
-    "use strict";
-    module2.exports = (flag, argv = process.argv) => {
-      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-      const position = argv.indexOf(prefix + flag);
-      const terminatorPosition = argv.indexOf("--");
-      return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
-    };
-  }
-});
-
-// node_modules/supports-color/index.js
-var require_supports_color = __commonJS({
-  "node_modules/supports-color/index.js"(exports2, module2) {
-    "use strict";
-    var os3 = require("os");
-    var tty = require("tty");
-    var hasFlag = require_has_flag();
-    var { env } = process;
-    var forceColor;
-    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
-      forceColor = 0;
-    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
-      forceColor = 1;
-    }
-    if ("FORCE_COLOR" in env) {
-      if (env.FORCE_COLOR === "true") {
-        forceColor = 1;
-      } else if (env.FORCE_COLOR === "false") {
-        forceColor = 0;
-      } else {
-        forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
-      }
-    }
-    function translateLevel(level) {
-      if (level === 0) {
-        return false;
-      }
-      return {
-        level,
-        hasBasic: true,
-        has256: level >= 2,
-        has16m: level >= 3
-      };
-    }
-    function supportsColor(haveStream, streamIsTTY) {
-      if (forceColor === 0) {
-        return 0;
-      }
-      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
-        return 3;
-      }
-      if (hasFlag("color=256")) {
-        return 2;
-      }
-      if (haveStream && !streamIsTTY && forceColor === void 0) {
-        return 0;
-      }
-      const min = forceColor || 0;
-      if (env.TERM === "dumb") {
-        return min;
-      }
-      if (process.platform === "win32") {
-        const osRelease = os3.release().split(".");
-        if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
-          return Number(osRelease[2]) >= 14931 ? 3 : 2;
-        }
-        return 1;
-      }
-      if ("CI" in env) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
-          return 1;
-        }
-        return min;
-      }
-      if ("TEAMCITY_VERSION" in env) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
-      }
-      if (env.COLORTERM === "truecolor") {
-        return 3;
-      }
-      if ("TERM_PROGRAM" in env) {
-        const version = parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env.TERM_PROGRAM) {
-          case "iTerm.app":
-            return version >= 3 ? 3 : 2;
-          case "Apple_Terminal":
-            return 2;
-        }
-      }
-      if (/-256(color)?$/i.test(env.TERM)) {
-        return 2;
-      }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
-        return 1;
-      }
-      if ("COLORTERM" in env) {
-        return 1;
-      }
-      return min;
-    }
-    function getSupportLevel(stream) {
-      const level = supportsColor(stream, stream && stream.isTTY);
-      return translateLevel(level);
-    }
-    module2.exports = {
-      supportsColor: getSupportLevel,
-      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
-      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
-    };
-  }
-});
-
 // node_modules/debug/src/node.js
 var require_node = __commonJS({
   "node_modules/debug/src/node.js"(exports2, module2) {
@@ -29700,7 +29585,7 @@ var require_node = __commonJS({
     );
     exports2.colors = [6, 2, 3, 4, 5, 1];
     try {
-      const supportsColor = require_supports_color();
+      const supportsColor = require("supports-color");
       if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
         exports2.colors = [
           20,
@@ -30883,22 +30768,82 @@ var require_axios = __commonJS({
     var hasOwnProperty = (({
       hasOwnProperty: hasOwnProperty2
     }) => (obj, prop) => hasOwnProperty2.call(obj, prop))(Object.prototype);
+    var isUnsafeObjectKey = (prop) => typeof prop === "string" && (prop === "__proto__" || prop === "constructor" || prop === "prototype");
+    var isPrototypeBoundary = (obj, prototype2, source) => obj === Object.prototype || !source && prototype2 === null;
+    var isSafeAndFullyMutable = (obj) => {
+      if (!Object.isExtensible(obj)) {
+        return false;
+      }
+      const props = Object.getOwnPropertyNames(obj);
+      if (Object.getOwnPropertySymbols) {
+        props.push(...Object.getOwnPropertySymbols(obj));
+      }
+      return props.every((prop) => {
+        if (isUnsafeObjectKey(prop)) {
+          return false;
+        }
+        const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+        return !!descriptor && descriptor.configurable && descriptor.writable === true;
+      });
+    };
     var hasOwnInPrototypeChain = (thing, prop) => {
       let obj = thing;
       const seen = [];
-      while (obj != null && obj !== Object.prototype) {
+      while (obj != null) {
         if (seen.indexOf(obj) !== -1) {
           return false;
         }
         seen.push(obj);
+        const prototype2 = getPrototypeOf(obj);
+        if (isPrototypeBoundary(obj, prototype2, obj === thing)) {
+          return false;
+        }
         if (hasOwnProperty(obj, prop)) {
           return true;
         }
-        obj = getPrototypeOf(obj);
+        obj = prototype2;
       }
       return false;
     };
     var getSafeProp = (obj, prop) => obj != null && hasOwnInPrototypeChain(obj, prop) ? obj[prop] : void 0;
+    var toSafeFlatObject = (thing) => {
+      if (thing == null || typeof thing !== "object" && typeof thing !== "function") {
+        return thing;
+      }
+      const sourcePrototype = getPrototypeOf(thing);
+      if (sourcePrototype === null && isSafeAndFullyMutable(thing)) {
+        return thing;
+      }
+      const result = /* @__PURE__ */ Object.create(null);
+      const merged = /* @__PURE__ */ Object.create(null);
+      const seen = [];
+      let current = thing;
+      while (current != null) {
+        if (seen.indexOf(current) !== -1) {
+          break;
+        }
+        seen.push(current);
+        const prototype2 = current === thing ? sourcePrototype : getPrototypeOf(current);
+        if (isPrototypeBoundary(current, prototype2, current === thing)) {
+          break;
+        }
+        const props = Object.getOwnPropertyNames(current);
+        if (Object.getOwnPropertySymbols) {
+          props.push(...Object.getOwnPropertySymbols(current));
+        }
+        for (const prop of props) {
+          if (isUnsafeObjectKey(prop)) {
+            continue;
+          }
+          if (!hasOwnProperty(merged, prop)) {
+            result[prop] = thing[prop];
+            merged[prop] = true;
+          }
+        }
+        current = prototype2;
+      }
+      return result;
+    };
     var kindOf = /* @__PURE__ */ ((cache) => (thing) => {
       const str = toString.call(thing);
       return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
@@ -30935,9 +30880,9 @@ var require_axios = __commonJS({
         return false;
       }
       const prototype2 = getPrototypeOf(val);
-      return (prototype2 === null || prototype2 === Object.prototype || getPrototypeOf(prototype2) === null) && // Treat any genuine (non-Object.prototype-polluted) Symbol.toStringTag or
-      // Symbol.iterator as evidence the value is a tagged/iterable type rather
-      // than a plain object, while ignoring keys injected onto Object.prototype.
+      return (prototype2 === null || prototype2 === Object.prototype || getPrototypeOf(prototype2) === null) && // Treat safe own/inherited Symbol.toStringTag or Symbol.iterator members as
+      // evidence the value is tagged/iterable, while ignoring members reachable
+      // only through shared or terminal prototype boundaries.
       !hasOwnInPrototypeChain(val, toStringTag) && !hasOwnInPrototypeChain(val, iterator);
     };
     var isEmptyObject = (val) => {
@@ -31349,6 +31294,7 @@ var require_axios = __commonJS({
       // an alias to avoid ESLint no-prototype-builtins detection
       hasOwnInPrototypeChain,
       getSafeProp,
+      toSafeFlatObject,
       reduceDescriptors,
       freezeMethods,
       toObjectSet,
@@ -31429,7 +31375,7 @@ var require_axios = __commonJS({
       });
       return byteStringHeaders;
     }
-    var $internals = /* @__PURE__ */ Symbol("internals");
+    var $internals$1 = /* @__PURE__ */ Symbol("internals");
     function normalizeHeader(header) {
       return header && String(header).trim().toLowerCase();
     }
@@ -31725,7 +31671,7 @@ var require_axios = __commonJS({
         return computed;
       }
       static accessor(header) {
-        const internals = this[$internals] = this[$internals] = {
+        const internals = this[$internals$1] = this[$internals$1] = {
           accessors: {}
         };
         const accessors = internals.accessors;
@@ -31946,19 +31892,16 @@ var require_axios = __commonJS({
         throw new TypeError("target must be an object");
       }
       formData = formData || new (FormData$1 || FormData)();
-      options = utils$1.toFlatObject(options, {
-        metaTokens: true,
-        dots: false,
-        indexes: false
-      }, false, function defined(option, source) {
-        return !utils$1.isUndefined(source[option]);
-      });
-      const metaTokens = options.metaTokens;
-      const visitor = options.visitor || defaultVisitor;
-      const dots = options.dots;
-      const indexes = options.indexes;
-      const _Blob = options.Blob || typeof Blob !== "undefined" && Blob;
-      const maxDepth = options.maxDepth === void 0 ? DEFAULT_FORM_DATA_MAX_DEPTH : options.maxDepth;
+      const option = (name, fallback) => {
+        const value = utils$1.getSafeProp(options, name);
+        return utils$1.isUndefined(value) ? fallback : value;
+      };
+      const metaTokens = option("metaTokens", true);
+      const visitor = option("visitor") || defaultVisitor;
+      const dots = option("dots", false);
+      const indexes = option("indexes", false);
+      const _Blob = option("Blob") || typeof Blob !== "undefined" && Blob;
+      const maxDepth = option("maxDepth", DEFAULT_FORM_DATA_MAX_DEPTH);
       const useBlob = _Blob && utils$1.isSpecCompliantForm(formData);
       const stack = [];
       if (!utils$1.isFunction(visitor)) {
@@ -32117,9 +32060,47 @@ var require_axios = __commonJS({
       }
       return url2;
     }
+    var $internals = /* @__PURE__ */ Symbol("internals");
+    function countHandlers(handlers) {
+      return handlers ? handlers.length : 0;
+    }
+    function trimHandlers(handlers) {
+      if (!handlers) {
+        return;
+      }
+      while (handlers.length && handlers[handlers.length - 1] === null) {
+        handlers.pop();
+      }
+    }
+    function syncHandlerEntries(manager, internals) {
+      const handlers = manager.handlers;
+      const length = countHandlers(handlers);
+      if (handlers !== internals.handlersRef) {
+        internals.handlersRef = handlers;
+        internals.handlerEntries.clear();
+      } else if (length !== internals.handlersLength) {
+        if (!length) {
+          internals.handlerEntries.clear();
+        } else {
+          internals.handlerEntries.forEach(function removeStaleEntry(entry, id) {
+            if (handlers[entry.index] !== entry.handler) {
+              internals.handlerEntries.delete(id);
+            }
+          });
+        }
+      }
+      internals.handlersLength = length;
+    }
     var InterceptorManager = class {
       constructor() {
         this.handlers = [];
+        this[$internals] = {
+          handlersRef: this.handlers,
+          handlersLength: this.handlers.length,
+          handlerEntries: /* @__PURE__ */ new Map(),
+          iterationDepth: 0,
+          nextId: 0
+        };
       }
       /**
        * Add a new interceptor to the stack
@@ -32131,13 +32112,25 @@ var require_axios = __commonJS({
        * @return {Number} An ID used to remove interceptor later
        */
       use(fulfilled, rejected, options) {
-        this.handlers.push({
+        const handler = {
           fulfilled,
           rejected,
           synchronous: options ? options.synchronous : false,
           runWhen: options ? options.runWhen : null
+        };
+        const internals = this[$internals];
+        if (this.handlers == null) {
+          this.handlers = [];
+        }
+        syncHandlerEntries(this, internals);
+        const id = internals.nextId++;
+        this.handlers.push(handler);
+        internals.handlerEntries.set(id, {
+          handler,
+          index: this.handlers.length - 1
         });
-        return this.handlers.length - 1;
+        internals.handlersLength = this.handlers.length;
+        return id;
       }
       /**
        * Remove an interceptor from the stack
@@ -32147,8 +32140,19 @@ var require_axios = __commonJS({
        * @returns {void}
        */
       eject(id) {
-        if (this.handlers[id]) {
-          this.handlers[id] = null;
+        const internals = this[$internals];
+        syncHandlerEntries(this, internals);
+        const entry = internals.handlerEntries.get(id);
+        if (entry) {
+          internals.handlerEntries.delete(id);
+          if (this.handlers[entry.index] !== entry.handler) {
+            return;
+          }
+          this.handlers[entry.index] = null;
+          if (!internals.iterationDepth) {
+            trimHandlers(this.handlers);
+            internals.handlersLength = this.handlers.length;
+          }
         }
       }
       /**
@@ -32159,6 +32163,7 @@ var require_axios = __commonJS({
       clear() {
         if (this.handlers) {
           this.handlers = [];
+          syncHandlerEntries(this, this[$internals]);
         }
       }
       /**
@@ -32172,11 +32177,22 @@ var require_axios = __commonJS({
        * @returns {void}
        */
       forEach(fn) {
-        utils$1.forEach(this.handlers, function forEachHandler(h) {
-          if (h !== null) {
-            fn(h);
+        const internals = this[$internals];
+        syncHandlerEntries(this, internals);
+        internals.iterationDepth++;
+        try {
+          utils$1.forEach(this.handlers, function forEachHandler(h) {
+            if (h !== null) {
+              fn(h);
+            }
+          });
+        } finally {
+          if (!--internals.iterationDepth) {
+            syncHandlerEntries(this, internals);
+            trimHandlers(this.handlers);
+            internals.handlersLength = countHandlers(this.handlers);
           }
-        });
+        }
       }
     };
     var transitionalDefaults = {
@@ -32312,6 +32328,7 @@ var require_axios = __commonJS({
       }
       return null;
     }
+    var methodList = Object.freeze(["get", "delete", "head", "options", "post", "put", "patch", "purge", "link", "unlink", "query"]);
     var own = (obj, key) => obj != null && utils$1.hasOwnProp(obj, key) ? obj[key] : void 0;
     function stringifySafely(rawValue, parser, encoder) {
       if (utils$1.isString(rawValue)) {
@@ -32417,7 +32434,7 @@ var require_axios = __commonJS({
         }
       }
     };
-    utils$1.forEach(["delete", "get", "head", "post", "put", "patch", "query"], (method) => {
+    utils$1.forEach(methodList, (method) => {
       defaults.headers[method] = {};
     });
     function transformData(fns, response) {
@@ -32474,18 +32491,18 @@ var require_axios = __commonJS({
       }
       return baseURL.slice(0, end) + "/" + relativeURL.replace(/^\/+/, "");
     }
-    var malformedHttpProtocol = /^https?:(?!\/\/)/i;
-    var httpProtocolControlCharacters = /[\t\n\r]/g;
-    function stripLeadingC0ControlOrSpace(url2) {
-      let i = 0;
-      while (i < url2.length && url2.charCodeAt(i) <= 32) {
-        i++;
-      }
-      return url2.slice(i);
-    }
+    var urlParserControlCharacters = /[\t\n\r]/g;
     function normalizeURLForProtocolCheck(url2) {
-      return stripLeadingC0ControlOrSpace(url2).replace(httpProtocolControlCharacters, "");
+      if (typeof url2 !== "string") {
+        return url2;
+      }
+      let start = 0;
+      while (start < url2.length && url2.charCodeAt(start) <= 32) {
+        start++;
+      }
+      return url2.slice(start).replace(urlParserControlCharacters, "");
     }
+    var malformedHttpProtocol = /^https?:(?!\/\/)/i;
     function redactFragment(fragment) {
       if (!fragment) {
         return fragment;
@@ -32586,12 +32603,12 @@ var require_axios = __commonJS({
     function getEnv(key) {
       return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || "";
     }
-    var VERSION = "1.19.0";
+    var VERSION = "1.20.0";
     function parseProtocol(url2) {
       const match = /^([-+\w]{1,25}):(?:\/\/)?/.exec(url2);
       return match && match[1] || "";
     }
-    var DATA_URL_PATTERN = /^([^,;]+\/[^,;]+)?((?:;[^,;=]+=[^,;]+)*)(;base64)?,([\s\S]*)$/;
+    var DATA_URL_PATTERN = /^([^,;/]+\/[^,;/]+)?((?:;[^,;=]+=[^,;]+)*)(;base64)?,([\s\S]*)$/;
     function fromDataURI(uri, asBlob, options) {
       const _Blob = options && options.Blob || platform2.classes.Blob;
       const protocol = parseProtocol(uri);
@@ -32868,7 +32885,7 @@ var require_axios = __commonJS({
         this.sessions = /* @__PURE__ */ Object.create(null);
       }
       getSession(authority, options) {
-        options = Object.assign({
+        options = Object.assign(/* @__PURE__ */ Object.create(null), {
           sessionTimeout: 1e3
         }, options);
         let authoritySessions = this.sessions[authority];
@@ -32933,6 +32950,7 @@ var require_axios = __commonJS({
           };
         }
         session.once("close", removeSession);
+        session.once("error", removeSession);
         let entry = [session, options];
         authoritySessions ? authoritySessions.push(entry) : authoritySessions = this.sessions[authority] = [entry];
         return session;
@@ -32951,6 +32969,13 @@ var require_axios = __commonJS({
       } : fn;
     };
     var LOOPBACK_HOSTNAMES = /* @__PURE__ */ new Set(["localhost", "0.0.0.0"]);
+    var trimTrailingDots = (value) => {
+      let end = value.length;
+      while (end && value.charCodeAt(end - 1) === 46) {
+        end--;
+      }
+      return end === value.length ? value : value.slice(0, end);
+    };
     var isIPv4Loopback = (host) => {
       const parts = host.split(".");
       if (parts.length !== 4) return false;
@@ -32983,7 +33008,7 @@ var require_axios = __commonJS({
       if (h.charAt(0) === "[" && h.charAt(h.length - 1) === "]") {
         h = h.slice(1, -1);
       }
-      h = h.replace(/\.+$/, "");
+      h = trimTrailingDots(h);
       if (!/^[0-9.xXa-fA-F]+$/.test(h)) return host;
       const parts = h.split(".");
       if (parts.some((p) => p === "")) return host;
@@ -33095,6 +33120,40 @@ var require_axios = __commonJS({
       }
       return host;
     };
+    var IPV4_OCTET_RE = /^(?:0|[1-9]\d{0,2})$/;
+    var ipv4ToBytes = (host) => {
+      const parts = host.split(".");
+      return parts.length === 4 && parts.every((part) => IPV4_OCTET_RE.test(part) && Number(part) <= 255) ? parts.map(Number) : null;
+    };
+    var IPV6_GROUP_RE = /^[0-9a-f]{1,4}$/i;
+    var ipv6ToBytes = (host) => {
+      const halves = host.split("::");
+      if (halves.length > 2) {
+        return null;
+      }
+      const groups = halves[0] ? halves[0].split(":") : [];
+      if (halves.length === 2) {
+        const rear = halves[1] ? halves[1].split(":") : [];
+        const missing = 8 - groups.length - rear.length;
+        if (missing < 1) {
+          return null;
+        }
+        groups.push(...new Array(missing).fill("0"), ...rear);
+      }
+      if (groups.length !== 8 || groups.some((group) => !IPV6_GROUP_RE.test(group))) {
+        return null;
+      }
+      return groups.flatMap((group) => {
+        const value = Number.parseInt(group, 16);
+        return [value >> 8 & 255, value & 255];
+      });
+    };
+    var ipToBytes = (host) => {
+      if (typeof host !== "string" || !host) {
+        return null;
+      }
+      return host.indexOf(":") !== -1 ? ipv6ToBytes(host) : ipv4ToBytes(host);
+    };
     var normalizeNoProxyHost = (hostname) => {
       if (!hostname) {
         return hostname;
@@ -33102,12 +33161,98 @@ var require_axios = __commonJS({
       if (hostname.charAt(0) === "[" && hostname.charAt(hostname.length - 1) === "]") {
         hostname = hostname.slice(1, -1);
       }
-      const trimmed = hostname.replace(/\.+$/, "");
+      const trimmed = trimTrailingDots(hostname);
       const ipv4 = normalizeIPAddress(trimmed);
       if (ipv4 !== trimmed) {
         return ipv4;
       }
       return unmapIPv4MappedIPv6(trimmed);
+    };
+    var normalizeCidrBase = (input) => {
+      let base = input;
+      const startsBracket = base.charAt(0) === "[";
+      const endsBracket = base.charAt(base.length - 1) === "]";
+      const hasBracket = base.includes("[") || base.includes("]");
+      if (startsBracket || endsBracket) {
+        if (!startsBracket || !endsBracket) {
+          return null;
+        }
+        base = base.slice(1, -1);
+        if (base.indexOf(":") === -1 || base.includes("[") || base.includes("]")) {
+          return null;
+        }
+      } else if (hasBracket) {
+        return null;
+      }
+      if (!base || base.charAt(base.length - 1) === ".") {
+        return null;
+      }
+      const wasIPv6 = base.indexOf(":") !== -1;
+      if (wasIPv6) {
+        try {
+          base = new URL(`http://[${base}]/`).hostname.slice(1, -1);
+        } catch (_err) {
+          return null;
+        }
+      } else {
+        base = normalizeIPAddress(base);
+        if (!ipv4ToBytes(base)) {
+          return null;
+        }
+      }
+      return {
+        normalized: unmapIPv4MappedIPv6(base),
+        wasIPv6
+      };
+    };
+    var CIDR_ENTRY_RE = /^(.+)\/(0|[1-9]\d{0,2})$/;
+    var parseCidrEntry = (entry) => {
+      if (entry.indexOf("/") === -1) {
+        return void 0;
+      }
+      const match = CIDR_ENTRY_RE.exec(entry);
+      if (!match) {
+        return null;
+      }
+      let prefix = Number(match[2]);
+      const parsedBase = normalizeCidrBase(match[1]);
+      if (!parsedBase) {
+        return null;
+      }
+      const {
+        normalized,
+        wasIPv6
+      } = parsedBase;
+      if (wasIPv6 && normalized.indexOf(":") === -1) {
+        if (prefix < 96) {
+          return null;
+        }
+        prefix -= 96;
+      }
+      const bytes = ipToBytes(normalized);
+      if (!bytes || prefix > bytes.length * 8) {
+        return null;
+      }
+      return {
+        bytes,
+        prefix
+      };
+    };
+    var isInSubnet = (addressBytes, networkBytes, prefix) => {
+      const fullBytes = prefix >> 3;
+      for (let i = 0; i < fullBytes; i++) {
+        if (addressBytes[i] !== networkBytes[i]) {
+          return false;
+        }
+      }
+      const remainingBits = prefix & 7;
+      if (remainingBits) {
+        const mask = 255 << 8 - remainingBits & 255;
+        if ((addressBytes[fullBytes] & mask) !== (networkBytes[fullBytes] & mask)) {
+          return false;
+        }
+      }
+      return true;
     };
     function shouldBypassProxy(location) {
       let parsed;
@@ -33125,12 +33270,17 @@ var require_axios = __commonJS({
       }
       const port = Number.parseInt(parsed.port, 10) || DEFAULT_PORTS[parsed.protocol.split(":", 1)[0]] || 0;
       const hostname = normalizeNoProxyHost(parsed.hostname.toLowerCase());
+      const hostnameBytes = ipToBytes(hostname);
       return noProxy.split(/[\s,]+/).some((entry) => {
         if (!entry) {
           return false;
         }
         if (entry === "*") {
           return true;
+        }
+        const cidr = parseCidrEntry(entry);
+        if (cidr !== void 0) {
+          return cidr !== null && !!hostnameBytes && hostnameBytes.length === cidr.bytes.length && isInSubnet(hostnameBytes, cidr.bytes, cidr.prefix);
         }
         let [entryHost, entryPort] = parseNoProxyEntry(entry);
         entryHost = normalizeNoProxyHost(entryHost);
@@ -33212,13 +33362,14 @@ var require_axios = __commonJS({
         }
       };
       const flush = () => lastArgs && invoke(lastArgs);
-      return [throttled, flush];
+      const flushWith = (...args) => invoke(args);
+      return [throttled, flush, flushWith];
     }
     var progressEventReducer = (listener, isDownloadStream, freq = 3) => {
       let bytesNotified = 0;
       const _speedometer = speedometer(50, 250);
       return throttle((e) => {
-        if (!e || typeof e.loaded !== "number") {
+        if (!e || !utils$1.isNumber(e.loaded)) {
           return;
         }
         const rawLoaded = e.loaded;
@@ -33372,6 +33523,12 @@ var require_axios = __commonJS({
     var isHttps = /https:?/;
     var kAxiosSocketListener = /* @__PURE__ */ Symbol("axios.http.socketListener");
     var kAxiosCurrentReq = /* @__PURE__ */ Symbol("axios.http.currentReq");
+    function handleSocketError(err) {
+      const current = this[kAxiosCurrentReq];
+      if (current && !current.destroyed) {
+        current.destroy(err);
+      }
+    }
     var kAxiosInstalledTunnel = /* @__PURE__ */ Symbol("axios.http.installedTunnel");
     var tunnelingAgentCache = /* @__PURE__ */ new Map();
     var tunnelingAgentCacheUser = /* @__PURE__ */ new WeakMap();
@@ -33480,10 +33637,10 @@ var require_axios = __commonJS({
         return false;
       }
     }
-    function setProxy(options, configProxy, location, isRedirect, configHttpsAgent, configHttpAgent) {
+    function setProxy(options, configProxy, location, isRedirect, configHttpsAgent, configHttpAgent, allowEnvProxy = true) {
       let proxy = configProxy;
       const proxyEnvAgent = getProxyEnvAgent(options, configHttpAgent, configHttpsAgent);
-      if (!proxy && proxy !== false && !isNodeEnvProxyEnabled(proxyEnvAgent)) {
+      if (!proxy && proxy !== false && allowEnvProxy && !isNodeEnvProxyEnabled(proxyEnvAgent)) {
         const proxyUrl = getProxyForUrl(location);
         if (proxyUrl) {
           if (!shouldBypassProxy(location)) {
@@ -33574,8 +33731,9 @@ var require_axios = __commonJS({
         }
       }
       options.beforeRedirects.proxy = function beforeRedirect(redirectOptions) {
-        setProxy(redirectOptions, configProxy, redirectOptions.href, true, configHttpsAgent, configHttpAgent);
+        setProxy(redirectOptions, configProxy, redirectOptions.href, true, configHttpsAgent, configHttpAgent, allowEnvProxy);
       };
+      return Boolean(proxy || configProxy !== false && allowEnvProxy && isNodeEnvProxyEnabled(proxyEnvAgent));
     }
     var isHttpAdapterSupported = typeof process !== "undefined" && utils$1.kindOf(process) === "process";
     var wrapAsync = (asyncExecutor) => {
@@ -33603,7 +33761,7 @@ var require_axios = __commonJS({
       family
     }) => {
       if (!utils$1.isString(address)) {
-        throw TypeError("address must be a string");
+        throw new AxiosError("address must be a string", AxiosError.ERR_BAD_OPTION_VALUE);
       }
       return {
         address,
@@ -33614,6 +33772,30 @@ var require_axios = __commonJS({
       address,
       family
     });
+    var normalizedLookupCache = /* @__PURE__ */ new WeakMap();
+    var normalizeLookup = (lookup) => {
+      let normalized = normalizedLookupCache.get(lookup);
+      if (normalized) {
+        return normalized;
+      }
+      const callbackLookup = callbackify(lookup, (value) => utils$1.isArray(value) ? value : [value]);
+      normalized = (hostname, opt, cb) => {
+        callbackLookup(hostname, opt, (err, arg0, arg1) => {
+          if (err) {
+            return cb(err);
+          }
+          let addresses;
+          try {
+            addresses = utils$1.isArray(arg0) ? arg0.map((addr) => buildAddressEntry(addr)) : [buildAddressEntry(arg0, arg1)];
+          } catch (error2) {
+            return cb(error2);
+          }
+          opt.all ? cb(err, addresses) : cb(err, addresses[0].address, addresses[0].family);
+        });
+      };
+      normalizedLookupCache.set(lookup, normalized);
+      return normalized;
+    };
     var http2Transport = {
       request(options, cb) {
         const authority = options.protocol + "//" + options.hostname + ":" + (options.port || (options.protocol === "https:" ? 443 : 80));
@@ -33658,6 +33840,7 @@ var require_axios = __commonJS({
         let family = own2("family");
         let httpVersion = own2("httpVersion");
         if (httpVersion === void 0) httpVersion = 1;
+        const rawHttpVersion = httpVersion;
         let http2Options = own2("http2Options");
         const httpAgent = own2("httpAgent");
         const httpsAgent = own2("httpsAgent");
@@ -33674,25 +33857,20 @@ var require_axios = __commonJS({
         let rejected = false;
         let req;
         let connectPhaseTimer;
-        httpVersion = +httpVersion;
+        try {
+          httpVersion = +httpVersion;
+        } catch (err) {
+          throw new AxiosError("Invalid protocol version: value is not a number", AxiosError.ERR_BAD_OPTION_VALUE, config);
+        }
         if (Number.isNaN(httpVersion)) {
-          throw TypeError(`Invalid protocol version: '${config.httpVersion}' is not a number`);
+          throw new AxiosError(`Invalid protocol version: '${rawHttpVersion}' is not a number`, AxiosError.ERR_BAD_OPTION_VALUE, config);
         }
         if (httpVersion !== 1 && httpVersion !== 2) {
-          throw TypeError(`Unsupported protocol version '${httpVersion}'`);
+          throw new AxiosError(`Unsupported protocol version '${httpVersion}'`, AxiosError.ERR_BAD_OPTION_VALUE, config);
         }
         const isHttp2 = httpVersion === 2;
         if (lookup) {
-          const _lookup = callbackify(lookup, (value) => utils$1.isArray(value) ? value : [value]);
-          lookup = (hostname, opt, cb) => {
-            _lookup(hostname, opt, (err, arg0, arg1) => {
-              if (err) {
-                return cb(err);
-              }
-              const addresses = utils$1.isArray(arg0) ? arg0.map((addr) => buildAddressEntry(addr)) : [buildAddressEntry(arg0, arg1)];
-              opt.all ? cb(err, addresses) : cb(err, addresses[0].address, addresses[0].family);
-            });
-          };
+          lookup = normalizeLookup(lookup);
         }
         const abortEmitter = new events.EventEmitter();
         function abort(reason) {
@@ -33885,6 +34063,11 @@ var require_axios = __commonJS({
           }));
         }
         headers.set("Accept-Encoding", utils$1.hasOwnProp(transitional, "advertiseZstdAcceptEncoding") && transitional.advertiseZstdAcceptEncoding === true ? ACCEPT_ENCODING_WITH_ZSTD : ACCEPT_ENCODING, false);
+        if (isHttp2 && lookup) {
+          http2Options = Object.assign(/* @__PURE__ */ Object.create(null), http2Options, {
+            lookup
+          });
+        }
         const options = Object.assign(/* @__PURE__ */ Object.create(null), {
           path: path$1,
           method,
@@ -33898,9 +34081,11 @@ var require_axios = __commonJS({
           family,
           beforeRedirect: dispatchBeforeRedirect,
           beforeRedirects: /* @__PURE__ */ Object.create(null),
-          http2Options
+          http2Options,
+          createConnection: void 0
         });
         !utils$1.isUndefined(lookup) && (options.lookup = lookup);
+        let proxyApplied = false;
         if (socketPath) {
           if (typeof socketPath !== "string") {
             return reject(new AxiosError("socketPath must be a string", AxiosError.ERR_BAD_OPTION_VALUE, config));
@@ -33918,7 +34103,18 @@ var require_axios = __commonJS({
         } else {
           options.hostname = parsed.hostname.startsWith("[") ? parsed.hostname.slice(1, -1) : parsed.hostname;
           options.port = parsed.port;
-          setProxy(options, configProxy, protocol + "//" + parsed.hostname + (parsed.port ? ":" + parsed.port : "") + options.path, false, httpsAgent, httpAgent);
+          proxyApplied = setProxy(
+            options,
+            configProxy,
+            protocol + "//" + parsed.hostname + (parsed.port ? ":" + parsed.port : "") + options.path,
+            false,
+            httpsAgent,
+            httpAgent,
+            // The HTTP/2 transport connects independently of HTTP/1 agents, so it
+            // cannot apply either axios-resolved or agent-local environment proxies.
+            // Explicit proxy config is still processed and rejected below.
+            !isHttp2
+          );
         }
         let transport;
         let isNativeTransport = false;
@@ -33928,6 +34124,9 @@ var require_axios = __commonJS({
           options.agent = isHttpsRequest ? httpsAgent : httpAgent;
         }
         if (isHttp2) {
+          if (proxyApplied) {
+            return reject(new AxiosError("HTTP/2 requests with a proxy are not supported", AxiosError.ERR_NOT_SUPPORT, config));
+          }
           transport = http2Transport;
         } else {
           const configTransport = own2("transport");
@@ -34125,12 +34324,7 @@ var require_axios = __commonJS({
             socket.setKeepAlive(true, 1e3 * 60);
           }
           if (!socket[kAxiosSocketListener]) {
-            socket.on("error", function handleSocketError(err) {
-              const current = socket[kAxiosCurrentReq];
-              if (current && !current.destroyed) {
-                current.destroy(err);
-              }
-            });
+            socket.on("error", handleSocketError);
             socket[kAxiosSocketListener] = true;
           }
           socket[kAxiosCurrentReq] = req;
@@ -34346,7 +34540,7 @@ var require_axios = __commonJS({
         transformResponse: defaultToConfig2,
         paramsSerializer: defaultToConfig2,
         timeout: defaultToConfig2,
-        timeoutMessage: defaultToConfig2,
+        timeoutErrorMessage: defaultToConfig2,
         withCredentials: defaultToConfig2,
         withXSRFToken: defaultToConfig2,
         adapter: defaultToConfig2,
@@ -34414,10 +34608,11 @@ var require_axios = __commonJS({
         }
       }
       if (utils$1.isFormData(data)) {
+        const getHeaders = utils$1.getSafeProp(data, "getHeaders");
         if (platform2.hasStandardBrowserEnv || platform2.hasStandardBrowserWebWorkerEnv || utils$1.isReactNative(data)) {
           headers.setContentType(void 0);
-        } else if (utils$1.isFunction(data.getHeaders)) {
-          setFormDataHeaders(headers, data.getHeaders(), own2("formDataHeaderPolicy"));
+        } else if (utils$1.isFunction(getHeaders)) {
+          setFormDataHeaders(headers, getHeaders.call(data), own2("formDataHeaderPolicy"));
         }
       }
       if (platform2.hasStandardBrowserEnv) {
@@ -34447,7 +34642,7 @@ var require_axios = __commonJS({
         } = _config;
         let onCanceled;
         let uploadThrottled, downloadThrottled;
-        let flushUpload, flushDownload;
+        let flushUpload, flushDownload, flushDownloadWithEvent;
         function done() {
           flushUpload && flushUpload();
           flushDownload && flushDownload();
@@ -34457,7 +34652,27 @@ var require_axios = __commonJS({
         let request = new XMLHttpRequest();
         request.open(_config.method.toUpperCase(), _config.url, true);
         request.timeout = _config.timeout;
-        function onloadend() {
+        function onloadend(event) {
+          if (!request) {
+            return;
+          }
+          if (request.status === 0 && (parseProtocol(normalizeURLForProtocolCheck(_config.url)) || parseProtocol(platform2.origin)) !== "file" && !(request.responseURL && request.responseURL.startsWith("file:"))) {
+            reject(new AxiosError("Request aborted", AxiosError.ECONNABORTED, config, request));
+            done();
+            request = null;
+            return;
+          }
+          try {
+            if (event) {
+              flushDownloadWithEvent && flushDownloadWithEvent(event);
+            } else {
+              flushDownload && flushDownload();
+            }
+          } catch (err) {
+            setTimeout(() => {
+              throw err;
+            });
+          }
           if (!request) {
             return;
           }
@@ -34532,7 +34747,7 @@ var require_axios = __commonJS({
           request.responseType = _config.responseType;
         }
         if (onDownloadProgress) {
-          [downloadThrottled, flushDownload] = progressEventReducer(onDownloadProgress, true);
+          [downloadThrottled, flushDownload, flushDownloadWithEvent] = progressEventReducer(onDownloadProgress, true);
           request.addEventListener("progress", downloadThrottled);
         }
         if (onUploadProgress && request.upload) {
@@ -34694,6 +34909,17 @@ var require_axios = __commonJS({
       });
     };
     var DEFAULT_CHUNK_SIZE = 64 * 1024;
+    var DEFAULT_REQUEST_OPTIONS = {
+      cache: "default",
+      redirect: "follow",
+      referrer: "about:client",
+      referrerPolicy: "",
+      mode: "cors",
+      integrity: "",
+      keepalive: false,
+      priority: "auto",
+      window: null
+    };
     var {
       isFunction
     } = utils$1;
@@ -34822,7 +35048,8 @@ var require_axios = __commonJS({
           withCredentials = "same-origin",
           fetchOptions,
           maxContentLength,
-          maxBodyLength
+          maxBodyLength,
+          maxRedirects
         } = resolveConfig(config);
         const hasMaxContentLength = utils$1.isNumber(maxContentLength) && maxContentLength > -1;
         const hasMaxBodyLength = utils$1.isNumber(maxBodyLength) && maxBodyLength > -1;
@@ -34923,17 +35150,44 @@ var require_axios = __commonJS({
             }
           }
           headers.set("User-Agent", "axios/" + VERSION, false);
-          const resolvedOptions = {
-            ...fetchOptions,
+          const safeFetchOptions = fetchOptions == null ? fetchOptions : Object.assign(/* @__PURE__ */ Object.create(null), fetchOptions);
+          if (safeFetchOptions) {
+            delete safeFetchOptions.body;
+            delete safeFetchOptions.headers;
+            delete safeFetchOptions.method;
+            delete safeFetchOptions.signal;
+            delete safeFetchOptions.duplex;
+            delete safeFetchOptions.credentials;
+          }
+          const resolvedOptions = Object.assign(/* @__PURE__ */ Object.create(null), safeFetchOptions, {
             signal: composedSignal,
             method: method.toUpperCase(),
             headers: toByteStringHeaderObject(headers.normalize()),
             body: data,
             duplex: "half",
             credentials: isCredentialsSupported ? withCredentials : void 0
-          };
+          });
+          if (isRequestSupported) {
+            utils$1.forEach(DEFAULT_REQUEST_OPTIONS, (value, key) => {
+              if (resolvedOptions[key] === void 0) {
+                resolvedOptions[key] = value;
+              }
+            });
+            if (resolvedOptions.signal === void 0) {
+              resolvedOptions.signal = null;
+            }
+            if (resolvedOptions.body === void 0) {
+              resolvedOptions.body = null;
+            }
+          }
+          if (maxRedirects === 0) {
+            resolvedOptions.redirect = "manual";
+            if (safeFetchOptions) {
+              safeFetchOptions.redirect = "manual";
+            }
+          }
           request = isRequestSupported && new Request(url2, resolvedOptions);
-          let response = await (isRequestSupported ? _fetch(request, fetchOptions) : _fetch(url2, resolvedOptions));
+          let response = await (isRequestSupported ? _fetch(request, safeFetchOptions) : _fetch(url2, resolvedOptions));
           const responseHeaders = AxiosHeaders.from(response.headers);
           if (hasMaxContentLength) {
             const declaredLength = utils$1.toFiniteNumber(responseHeaders.getContentLength());
@@ -35125,9 +35379,10 @@ var require_axios = __commonJS({
         throw new CanceledError(null, config);
       }
     }
-    function dispatchRequest(config) {
+    function dispatchRequest(_config) {
+      const config = utils$1.toSafeFlatObject(_config);
       throwIfCancellationRequested(config);
-      config.headers = AxiosHeaders.from(config.headers);
+      config.headers = AxiosHeaders.from(utils$1.getSafeProp(config, "headers"));
       config.data = transformData.call(config, config.transformRequest);
       if (["post", "put", "patch"].indexOf(config.method) !== -1) {
         config.headers.setContentType("application/x-www-form-urlencoded", false);
@@ -35235,16 +35490,15 @@ var require_axios = __commonJS({
           return await this._request(configOrUrl, config);
         } catch (err) {
           if (err instanceof Error) {
-            let dummy = {};
-            Error.captureStackTrace ? Error.captureStackTrace(dummy) : dummy = new Error();
-            const stack = (() => {
-              if (!dummy.stack) {
-                return "";
-              }
-              const firstNewlineIndex = dummy.stack.indexOf("\n");
-              return firstNewlineIndex === -1 ? "" : dummy.stack.slice(firstNewlineIndex + 1);
-            })();
             try {
+              let dummy = {};
+              Error.captureStackTrace ? Error.captureStackTrace(dummy) : dummy = new Error();
+              const dummyStack = dummy.stack;
+              let stack = "";
+              if (typeof dummyStack === "string") {
+                const firstNewlineIndex = dummyStack.indexOf("\n");
+                stack = firstNewlineIndex === -1 ? "" : dummyStack.slice(firstNewlineIndex + 1);
+              }
               if (!err.stack) {
                 err.stack = stack;
               } else if (stack) {
@@ -35306,9 +35560,9 @@ var require_axios = __commonJS({
           baseUrl: validators.spelling("baseURL"),
           withXsrfToken: validators.spelling("withXSRFToken")
         }, true);
-        config.method = (config.method || this.defaults.method || "get").toLowerCase();
+        config.method = (utils$1.getSafeProp(config, "method") || utils$1.getSafeProp(this.defaults, "method") || "get").toLowerCase();
         let contextHeaders = headers && utils$1.merge(headers.common, headers[config.method]);
-        headers && utils$1.forEach(["delete", "get", "head", "post", "put", "patch", "query", "common"], (method) => {
+        headers && utils$1.forEach(methodList.concat("common"), (method) => {
           delete headers[method];
         });
         config.headers = AxiosHeaders.concat(contextHeaders, headers);
@@ -35555,14 +35809,22 @@ var require_axios = __commonJS({
       Gone: 410,
       LengthRequired: 411,
       PreconditionFailed: 412,
+      /**
+       * @deprecated Use `ContentTooLarge` instead.
+       */
       PayloadTooLarge: 413,
+      ContentTooLarge: 413,
       UriTooLong: 414,
       UnsupportedMediaType: 415,
       RangeNotSatisfiable: 416,
       ExpectationFailed: 417,
       ImATeapot: 418,
       MisdirectedRequest: 421,
+      /**
+       * @deprecated Use `UnprocessableContent` instead.
+       */
       UnprocessableEntity: 422,
+      UnprocessableContent: 422,
       Locked: 423,
       FailedDependency: 424,
       TooEarly: 425,
@@ -35591,7 +35853,9 @@ var require_axios = __commonJS({
       InvalidSslCertificate: 526
     };
     Object.entries(HttpStatusCode).forEach(([key, value]) => {
-      HttpStatusCode[value] = key;
+      if (HttpStatusCode[value] === void 0) {
+        HttpStatusCode[value] = key;
+      }
     });
     function createInstance(defaultConfig) {
       const context = new Axios(defaultConfig);
@@ -36734,15 +36998,19 @@ var require_utils2 = __commonJS({
       if (!obj || typeof obj !== "object") {
         return false;
       }
-      return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+      return !!(obj.constructor && typeof obj.constructor.isBuffer === "function" && obj.constructor.isBuffer(obj));
     };
     var combine = function combine2(a, b, arrayLimit, plainObjects, throwOnLimitExceeded) {
       if (isOverflow(a)) {
         if (throwOnLimitExceeded) {
           throw new RangeError("Array limit exceeded. Only " + arrayLimit + " element" + (arrayLimit === 1 ? "" : "s") + " allowed in an array.");
         }
-        var newIndex = getMaxIndex(a) + 1;
-        a[newIndex] = b;
+        var bValues = isArray(b) ? b : [b];
+        var newIndex = getMaxIndex(a);
+        for (var i = 0; i < bValues.length; ++i) {
+          newIndex += 1;
+          a[newIndex] = bValues[i];
+        }
         setMaxIndex(a, newIndex);
         return a;
       }
@@ -36818,6 +37086,7 @@ var require_stringify = __commonJS({
       charsetSentinel: false,
       commaRoundTrip: false,
       delimiter: "&",
+      depth: Infinity,
       encode: true,
       encodeDotInKeys: false,
       encoder: utils.encode,
@@ -36837,8 +37106,11 @@ var require_stringify = __commonJS({
       return typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "symbol" || typeof v === "bigint";
     };
     var sentinel = {};
-    var stringify = function stringify2(object, prefix, generateArrayPrefix, commaRoundTrip, allowEmptyArrays, strictNullHandling, skipNulls, encodeDotInKeys, encoder, filter, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel) {
+    var stringify = function stringify2(object, prefix, generateArrayPrefix, commaRoundTrip, allowEmptyArrays, strictNullHandling, skipNulls, encodeDotInKeys, encoder, filter, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel, depth, currentDepth) {
       var obj = object;
+      if (currentDepth > depth) {
+        throw new RangeError("Input depth exceeded depth option of " + depth);
+      }
       var tmpSc = sideChannel;
       var step = 0;
       var findFlag = false;
@@ -36856,9 +37128,8 @@ var require_stringify = __commonJS({
           step = 0;
         }
       }
-      if (typeof filter === "function") {
-        obj = filter(prefix, obj);
-      } else if (obj instanceof Date) {
+      obj = typeof filter === "function" ? filter(prefix, obj) : obj;
+      if (obj instanceof Date) {
         obj = serializeDate(obj);
       } else if (generateArrayPrefix === "comma" && isArray(obj)) {
         obj = utils.maybeMap(obj, function(value2) {
@@ -36901,7 +37172,7 @@ var require_stringify = __commonJS({
       }
       var encodedPrefix = encodeDotInKeys ? String(prefix).replace(/\./g, "%2E") : String(prefix);
       var adjustedPrefix = commaRoundTrip && isArray(obj) && obj.length === 1 ? encodedPrefix + "[]" : encodedPrefix;
-      if (allowEmptyArrays && isArray(obj) && obj.length === 0) {
+      if (allowEmptyArrays && isArray(obj) && obj.length === 0 && Object.keys(obj).length === 0) {
         return adjustedPrefix + "[]";
       }
       for (var j = 0; j < objKeys.length; ++j) {
@@ -36933,7 +37204,9 @@ var require_stringify = __commonJS({
           formatter,
           encodeValuesOnly,
           charset,
-          valueSideChannel
+          valueSideChannel,
+          depth,
+          currentDepth + 1
         ));
       }
       return values;
@@ -36988,6 +37261,7 @@ var require_stringify = __commonJS({
         charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults.charsetSentinel,
         commaRoundTrip: !!opts.commaRoundTrip,
         delimiter: typeof opts.delimiter === "undefined" ? defaults.delimiter : opts.delimiter,
+        depth: typeof opts.depth === "number" ? opts.depth : defaults.depth,
         encode: typeof opts.encode === "boolean" ? opts.encode : defaults.encode,
         encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults.encodeDotInKeys,
         encoder: typeof opts.encoder === "function" ? opts.encoder : defaults.encoder,
@@ -37035,9 +37309,10 @@ var require_stringify = __commonJS({
         if (options.skipNulls && value === null) {
           continue;
         }
+        var encodedKey = options.encodeDotInKeys ? String(key).replace(/\./g, "%2E") : String(key);
         pushToArray(keys, stringify(
           value,
-          key,
+          encodedKey,
           generateArrayPrefix,
           commaRoundTrip,
           options.allowEmptyArrays,
@@ -37053,7 +37328,9 @@ var require_stringify = __commonJS({
           options.formatter,
           options.encodeValuesOnly,
           options.charset,
-          sideChannel
+          sideChannel,
+          options.depth,
+          0
         ));
       }
       var joined = keys.join(options.delimiter);
@@ -37106,9 +37383,9 @@ var require_parse2 = __commonJS({
         return String.fromCharCode(parseInt(numberStr, 10));
       });
     };
-    var parseArrayValue = function(val, options, currentArrayLength, isFlatArrayValue) {
+    var parseArrayValue = function(val, options, currentArrayLength) {
       if (val && typeof val === "string" && options.comma && val.indexOf(",") > -1) {
-        if (isFlatArrayValue && options.throwOnLimitExceeded) {
+        if (options.throwOnLimitExceeded) {
           var commaCount = 0;
           var commaIndex = val.indexOf(",");
           while (commaIndex > -1) {
@@ -37175,8 +37452,7 @@ var require_parse2 = __commonJS({
               parseArrayValue(
                 part.slice(pos + 1),
                 options,
-                isArray(obj[key]) ? obj[key].length : 0,
-                part.indexOf("[]=") === -1
+                isArray(obj[key]) ? obj[key].length : 0
               ),
               function(encodedVal) {
                 return options.decoder(encodedVal, defaults.decoder, charset, "value");
@@ -41814,7 +42090,7 @@ var require_package = __commonJS({
     module2.exports = {
       name: "twilio",
       description: "A Twilio helper library",
-      version: "6.0.2",
+      version: "6.1.0",
       author: "API Team <api@twilio.com>",
       contributors: [
         {
@@ -43471,27 +43747,49 @@ var require_authTokenPromotion = __commonJS({
         this._solution = {};
         this._uri = `/AuthTokens/Promote`;
       }
-      update(callback) {
+      update(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version, operationPromise = operationVersion.update({
           uri: instance._uri,
           method: "post",
+          data,
           headers
         });
         operationPromise = operationPromise.then((payload) => new AuthTokenPromotionInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
-      updateWithHttpInfo(callback) {
+      updateWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version;
         let operationPromise = operationVersion.updateWithResponseInfo({
           uri: instance._uri,
           method: "post",
+          data,
           headers
         }).then((response) => ({
           ...response,
@@ -43527,25 +43825,11 @@ var require_authTokenPromotion = __commonJS({
         this._context = this._context || new AuthTokenPromotionContextImpl(this._version);
         return this._context;
       }
-      /**
-       * Update a AuthTokenPromotionInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AuthTokenPromotionInstance
-       */
-      update(callback) {
-        return this._proxy.update(callback);
+      update(params, callback) {
+        return this._proxy.update(params, callback);
       }
-      /**
-       * Update a AuthTokenPromotionInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AuthTokenPromotionInstance with HTTP metadata
-       */
-      updateWithHttpInfo(callback) {
-        return this._proxy.updateWithHttpInfo(callback);
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -44106,7 +44390,7 @@ var require_aws = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AwsContextImpl(this._version, this._solution.sid);
@@ -44503,7 +44787,7 @@ var require_publicKey = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PublicKeyContextImpl(this._version, this._solution.sid);
@@ -45137,27 +45421,49 @@ var require_secondaryAuthToken = __commonJS({
         this._solution = {};
         this._uri = `/AuthTokens/Secondary`;
       }
-      create(callback) {
+      create(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version, operationPromise = operationVersion.create({
           uri: instance._uri,
           method: "post",
+          data,
           headers
         });
         operationPromise = operationPromise.then((payload) => new SecondaryAuthTokenInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
-      createWithHttpInfo(callback) {
+      createWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version;
         let operationPromise = operationVersion.createWithResponseInfo({
           uri: instance._uri,
           method: "post",
+          data,
           headers
         }).then((response) => ({
           ...response,
@@ -45166,22 +45472,46 @@ var require_secondaryAuthToken = __commonJS({
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
-      remove(callback) {
+      remove(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
         const instance = this;
         let operationVersion = instance._version, operationPromise = operationVersion.remove({
           uri: instance._uri,
           method: "delete",
+          params: data,
           headers
         });
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
-      removeWithHttpInfo(callback) {
+      removeWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["suppressEmailNotification"] !== void 0)
+          data["SuppressEmailNotification"] = serialize.bool(params["suppressEmailNotification"]);
         const headers = {};
         const instance = this;
         let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+        let operationPromise = operationVersion.removeWithResponseInfo({
+          uri: instance._uri,
+          method: "delete",
+          params: data,
+          headers
+        }).then((response) => ({
           ...response,
           body: response.statusCode === 204
         }));
@@ -45215,45 +45545,17 @@ var require_secondaryAuthToken = __commonJS({
         this._context = this._context || new SecondaryAuthTokenContextImpl(this._version);
         return this._context;
       }
-      /**
-       * Create a SecondaryAuthTokenInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed SecondaryAuthTokenInstance
-       */
-      create(callback) {
-        return this._proxy.create(callback);
+      create(params, callback) {
+        return this._proxy.create(params, callback);
       }
-      /**
-       * Create a SecondaryAuthTokenInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed SecondaryAuthTokenInstance with HTTP metadata
-       */
-      createWithHttpInfo(callback) {
-        return this._proxy.createWithHttpInfo(callback);
+      createWithHttpInfo(params, callback) {
+        return this._proxy.createWithHttpInfo(params, callback);
       }
-      /**
-       * Remove a SecondaryAuthTokenInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
+      remove(params, callback) {
+        return this._proxy.remove(params, callback);
       }
-      /**
-       * Remove a SecondaryAuthTokenInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
+      removeWithHttpInfo(params, callback) {
+        return this._proxy.removeWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -45828,7 +46130,7 @@ var require_address = __commonJS({
         this.validated = payload.validated;
         this.verified = payload.verified;
         this.streetSecondary = payload.street_secondary;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AddressContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -46386,7 +46688,7 @@ var require_application = __commonJS({
         this.voiceMethod = payload.voice_method;
         this.voiceUrl = payload.voice_url;
         this.publicApplicationConnectEnabled = payload.public_application_connect_enabled;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ApplicationContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -46791,10 +47093,7 @@ var require_authorizedConnectApp = __commonJS({
         this.connectAppSid = payload.connect_app_sid;
         this.permissions = payload.permissions;
         this.uri = payload.uri;
-        this._solution = {
-          accountSid,
-          connectAppSid: connectAppSid || this.connectAppSid
-        };
+        this._solution = { accountSid, connectAppSid };
       }
       get _proxy() {
         this._context = this._context || new AuthorizedConnectAppContextImpl(this._version, this._solution.accountSid, this._solution.connectAppSid);
@@ -48871,10 +49170,7 @@ var require_availablePhoneNumberCountry = __commonJS({
         this.uri = payload.uri;
         this.beta = payload.beta;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = {
-          accountSid,
-          countryCode: countryCode || this.countryCode
-        };
+        this._solution = { accountSid, countryCode };
       }
       get _proxy() {
         this._context = this._context || new AvailablePhoneNumberCountryContextImpl(this._version, this._solution.accountSid, this._solution.countryCode);
@@ -49421,7 +49717,7 @@ var require_notification = __commonJS({
         this.responseHeaders = payload.response_headers;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new NotificationContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -49735,7 +50031,7 @@ var require_payment = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PaymentContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -50079,7 +50375,7 @@ var require_recording = __commonJS({
         this.source = payload.source;
         this.errorCode = deserialize.integer(payload.error_code);
         this.track = payload.track;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -50474,7 +50770,7 @@ var require_siprec = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SiprecContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -51487,7 +51783,7 @@ var require_stream = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new StreamContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -52498,7 +52794,7 @@ var require_transcription = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -52852,7 +53148,7 @@ var require_userDefinedMessageSubscription = __commonJS({
         this.sid = payload.sid;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid: sid || this.sid };
+        this._solution = { accountSid, callSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserDefinedMessageSubscriptionContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -53225,7 +53521,7 @@ var require_call = __commonJS({
         this.trunkSid = payload.trunk_sid;
         this.uri = payload.uri;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -53447,6 +53743,8 @@ var require_call = __commonJS({
           data["AsyncAmdStatusCallback"] = params["asyncAmdStatusCallback"];
         if (params["asyncAmdStatusCallbackMethod"] !== void 0)
           data["AsyncAmdStatusCallbackMethod"] = params["asyncAmdStatusCallbackMethod"];
+        if (params["passports"] !== void 0)
+          data["Passports"] = params["passports"];
         if (params["byoc"] !== void 0)
           data["Byoc"] = params["byoc"];
         if (params["callReason"] !== void 0)
@@ -53543,6 +53841,8 @@ var require_call = __commonJS({
           data["AsyncAmdStatusCallback"] = params["asyncAmdStatusCallback"];
         if (params["asyncAmdStatusCallbackMethod"] !== void 0)
           data["AsyncAmdStatusCallbackMethod"] = params["asyncAmdStatusCallbackMethod"];
+        if (params["passports"] !== void 0)
+          data["Passports"] = params["passports"];
         if (params["byoc"] !== void 0)
           data["Byoc"] = params["byoc"];
         if (params["callReason"] !== void 0)
@@ -53938,11 +54238,7 @@ var require_participant = __commonJS({
         this.status = payload.status;
         this.queueTime = payload.queue_time;
         this.uri = payload.uri;
-        this._solution = {
-          accountSid,
-          conferenceSid,
-          callSid: callSid || this.callSid
-        };
+        this._solution = { accountSid, conferenceSid, callSid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.accountSid, this._solution.conferenceSid, this._solution.callSid);
@@ -54144,10 +54440,28 @@ var require_participant = __commonJS({
           data["Trim"] = params["trim"];
         if (params["callToken"] !== void 0)
           data["CallToken"] = params["callToken"];
+        if (params["passports"] !== void 0)
+          data["Passports"] = params["passports"];
         if (params["clientNotificationUrl"] !== void 0)
           data["ClientNotificationUrl"] = params["clientNotificationUrl"];
         if (params["callerDisplayName"] !== void 0)
           data["CallerDisplayName"] = params["callerDisplayName"];
+        if (params["emergencyCallerPosition"] !== void 0)
+          data["EmergencyCallerPosition"] = params["emergencyCallerPosition"];
+        if (params["emergencyCallerLocation"] !== void 0)
+          data["EmergencyCallerLocation"] = params["emergencyCallerLocation"];
+        if (params["emergencyName"] !== void 0)
+          data["EmergencyName"] = params["emergencyName"];
+        if (params["emergencyAddress"] !== void 0)
+          data["EmergencyAddress"] = params["emergencyAddress"];
+        if (params["emergencyZipCode"] !== void 0)
+          data["EmergencyZipCode"] = params["emergencyZipCode"];
+        if (params["emergencyCity"] !== void 0)
+          data["EmergencyCity"] = params["emergencyCity"];
+        if (params["emergencyState"] !== void 0)
+          data["EmergencyState"] = params["emergencyState"];
+        if (params["emergencyCountry"] !== void 0)
+          data["EmergencyCountry"] = params["emergencyCountry"];
         const headers = {};
         headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
@@ -54268,10 +54582,28 @@ var require_participant = __commonJS({
           data["Trim"] = params["trim"];
         if (params["callToken"] !== void 0)
           data["CallToken"] = params["callToken"];
+        if (params["passports"] !== void 0)
+          data["Passports"] = params["passports"];
         if (params["clientNotificationUrl"] !== void 0)
           data["ClientNotificationUrl"] = params["clientNotificationUrl"];
         if (params["callerDisplayName"] !== void 0)
           data["CallerDisplayName"] = params["callerDisplayName"];
+        if (params["emergencyCallerPosition"] !== void 0)
+          data["EmergencyCallerPosition"] = params["emergencyCallerPosition"];
+        if (params["emergencyCallerLocation"] !== void 0)
+          data["EmergencyCallerLocation"] = params["emergencyCallerLocation"];
+        if (params["emergencyName"] !== void 0)
+          data["EmergencyName"] = params["emergencyName"];
+        if (params["emergencyAddress"] !== void 0)
+          data["EmergencyAddress"] = params["emergencyAddress"];
+        if (params["emergencyZipCode"] !== void 0)
+          data["EmergencyZipCode"] = params["emergencyZipCode"];
+        if (params["emergencyCity"] !== void 0)
+          data["EmergencyCity"] = params["emergencyCity"];
+        if (params["emergencyState"] !== void 0)
+          data["EmergencyState"] = params["emergencyState"];
+        if (params["emergencyCountry"] !== void 0)
+          data["EmergencyCountry"] = params["emergencyCountry"];
         const headers = {};
         headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
@@ -54581,7 +54913,7 @@ var require_recording2 = __commonJS({
         this.errorCode = deserialize.integer(payload.error_code);
         this.encryptionDetails = payload.encryption_details;
         this.uri = payload.uri;
-        this._solution = { accountSid, conferenceSid, sid: sid || this.sid };
+        this._solution = { accountSid, conferenceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.conferenceSid, this._solution.sid);
@@ -54957,7 +55289,7 @@ var require_conference = __commonJS({
         this.subresourceUris = payload.subresource_uris;
         this.reasonConferenceEnded = payload.reason_conference_ended;
         this.callSidEndingConference = payload.call_sid_ending_conference;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ConferenceContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -55368,7 +55700,7 @@ var require_connectApp = __commonJS({
         this.permissions = payload.permissions;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectAppContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -55657,12 +55989,7 @@ var require_assignedAddOnExtension = __commonJS({
         this.uniqueName = payload.unique_name;
         this.uri = payload.uri;
         this.enabled = payload.enabled;
-        this._solution = {
-          accountSid,
-          resourceSid,
-          assignedAddOnSid,
-          sid: sid || this.sid
-        };
+        this._solution = { accountSid, resourceSid, assignedAddOnSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AssignedAddOnExtensionContextImpl(this._version, this._solution.accountSid, this._solution.resourceSid, this._solution.assignedAddOnSid, this._solution.sid);
@@ -55955,7 +56282,7 @@ var require_assignedAddOn = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, resourceSid, sid: sid || this.sid };
+        this._solution = { accountSid, resourceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AssignedAddOnContextImpl(this._version, this._solution.accountSid, this._solution.resourceSid, this._solution.sid);
@@ -57605,7 +57932,7 @@ var require_incomingPhoneNumber = __commonJS({
         this.bundleSid = payload.bundle_sid;
         this.status = payload.status;
         this.type = payload.type;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new IncomingPhoneNumberContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -58167,7 +58494,7 @@ var require_key = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new KeyContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -58578,7 +58905,7 @@ var require_media = __commonJS({
         this.parentSid = payload.parent_sid;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, messageSid, sid: sid || this.sid };
+        this._solution = { accountSid, messageSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MediaContextImpl(this._version, this._solution.accountSid, this._solution.messageSid, this._solution.sid);
@@ -58964,7 +59291,7 @@ var require_message = __commonJS({
         this.priceUnit = payload.price_unit;
         this.apiVersion = payload.api_version;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -59653,7 +59980,7 @@ var require_notification2 = __commonJS({
         this.responseHeaders = payload.response_headers;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new NotificationContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -60003,7 +60330,7 @@ var require_outgoingCallerId = __commonJS({
         this.accountSid = payload.account_sid;
         this.phoneNumber = payload.phone_number;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new OutgoingCallerIdContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -60343,7 +60670,7 @@ var require_member = __commonJS({
         this.uri = payload.uri;
         this.waitTime = deserialize.integer(payload.wait_time);
         this.queueSid = payload.queue_sid;
-        this._solution = { accountSid, queueSid, callSid: callSid || this.callSid };
+        this._solution = { accountSid, queueSid, callSid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.accountSid, this._solution.queueSid, this._solution.callSid);
@@ -60686,7 +61013,7 @@ var require_queue = __commonJS({
         this.sid = payload.sid;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.maxSize = deserialize.integer(payload.max_size);
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new QueueContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -60981,7 +61308,6 @@ var require_data = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new DataInstance(operationVersion, payload, instance._solution.accountSid, instance._solution.referenceSid, instance._solution.addOnResultSid, instance._solution.payloadSid));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -60990,13 +61316,9 @@ var require_data = __commonJS({
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
+        let operationPromise = operationVersion.fetchWithResponseInfo({ uri: instance._uri, method: "get", headers }).then((response) => ({
           ...response,
-          body: new DataInstance(operationVersion, response.body, instance._solution.accountSid, instance._solution.referenceSid, instance._solution.addOnResultSid, instance._solution.payloadSid)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -61029,7 +61351,7 @@ var require_data = __commonJS({
        *
        * @param callback - Callback to handle processed record
        *
-       * @returns Resolves to processed DataInstance
+       * @returns Resolves to processed void
        */
       fetch(callback) {
         return this._proxy.fetch(callback);
@@ -61039,7 +61361,7 @@ var require_data = __commonJS({
        *
        * @param callback - Callback to handle processed record
        *
-       * @returns Resolves to processed DataInstance with HTTP metadata
+       * @returns Resolves to processed void with HTTP metadata
        */
       fetchWithHttpInfo(callback) {
         return this._proxy.fetchWithHttpInfo(callback);
@@ -61206,12 +61528,7 @@ var require_payload = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.referenceSid = payload.reference_sid;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = {
-          accountSid,
-          referenceSid,
-          addOnResultSid,
-          sid: sid || this.sid
-        };
+        this._solution = { accountSid, referenceSid, addOnResultSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PayloadContextImpl(this._version, this._solution.accountSid, this._solution.referenceSid, this._solution.addOnResultSid, this._solution.sid);
@@ -61531,7 +61848,7 @@ var require_addOnResult = __commonJS({
         this.dateCompleted = deserialize.rfc2822DateTime(payload.date_completed);
         this.referenceSid = payload.reference_sid;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, referenceSid, sid: sid || this.sid };
+        this._solution = { accountSid, referenceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AddOnResultContextImpl(this._version, this._solution.accountSid, this._solution.referenceSid, this._solution.sid);
@@ -61845,7 +62162,7 @@ var require_transcription2 = __commonJS({
         this.transcriptionText = payload.transcription_text;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { accountSid, recordingSid, sid: sid || this.sid };
+        this._solution = { accountSid, recordingSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.recordingSid, this._solution.sid);
@@ -62189,7 +62506,7 @@ var require_recording3 = __commonJS({
         this.encryptionDetails = payload.encryption_details;
         this.subresourceUris = payload.subresource_uris;
         this.mediaUrl = payload.media_url;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -62570,7 +62887,7 @@ var require_shortCode = __commonJS({
         this.smsMethod = payload.sms_method;
         this.smsUrl = payload.sms_url;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ShortCodeContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -62910,7 +63227,7 @@ var require_signingKey = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SigningKeyContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -63260,7 +63577,7 @@ var require_credential2 = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, credentialListSid, sid: sid || this.sid };
+        this._solution = { accountSid, credentialListSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.accountSid, this._solution.credentialListSid, this._solution.sid);
@@ -63671,7 +63988,7 @@ var require_credentialList = __commonJS({
         this.sid = payload.sid;
         this.subresourceUris = payload.subresource_uris;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -64024,7 +64341,7 @@ var require_authCallsCredentialListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid: sid || this.sid };
+        this._solution = { accountSid, domainSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AuthCallsCredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -64366,7 +64683,7 @@ var require_authCallsIpAccessControlListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid: sid || this.sid };
+        this._solution = { accountSid, domainSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AuthCallsIpAccessControlListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -64758,7 +65075,7 @@ var require_authRegistrationsCredentialListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid: sid || this.sid };
+        this._solution = { accountSid, domainSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AuthRegistrationsCredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -65193,7 +65510,7 @@ var require_credentialListMapping = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, domainSid, sid: sid || this.sid };
+        this._solution = { accountSid, domainSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -65539,7 +65856,7 @@ var require_ipAccessControlListMapping = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, domainSid, sid: sid || this.sid };
+        this._solution = { accountSid, domainSid, sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -66010,7 +66327,7 @@ var require_domain = __commonJS({
         this.secure = payload.secure;
         this.byocTrunkSid = payload.byoc_trunk_sid;
         this.emergencyCallerSid = payload.emergency_caller_sid;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DomainContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -66500,11 +66817,7 @@ var require_ipAddress = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = {
-          accountSid,
-          ipAccessControlListSid,
-          sid: sid || this.sid
-        };
+        this._solution = { accountSid, ipAccessControlListSid, sid };
       }
       get _proxy() {
         this._context = this._context || new IpAddressContextImpl(this._version, this._solution.accountSid, this._solution.ipAccessControlListSid, this._solution.sid);
@@ -66921,7 +67234,7 @@ var require_ipAccessControlList = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.subresourceUris = payload.subresource_uris;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -67455,7 +67768,7 @@ var require_transcription3 = __commonJS({
         this.transcriptionText = payload.transcription_text;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -69703,7 +70016,7 @@ var require_trigger = __commonJS({
         this.uri = payload.uri;
         this.usageCategory = payload.usage_category;
         this.usageRecordUri = payload.usage_record_uri;
-        this._solution = { accountSid, sid: sid || this.sid };
+        this._solution = { accountSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TriggerContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -70427,7 +70740,7 @@ var require_account = __commonJS({
         this.subresourceUris = payload.subresource_uris;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AccountContextImpl(this._version, this._solution.sid);
@@ -71055,3375 +71368,6 @@ var require_Api = __commonJS({
   }
 });
 
-// node_modules/twilio/lib/rest/assistants/v1/assistant/assistantsKnowledge.js
-var require_assistantsKnowledge = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/assistant/assistantsKnowledge.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AssistantsKnowledgePage = exports2.AssistantsKnowledgeInstance = exports2.AssistantsKnowledgeContextImpl = void 0;
-    exports2.AssistantsKnowledgeListInstance = AssistantsKnowledgeListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var AssistantsKnowledgeContextImpl = class {
-      constructor(_version, assistantId, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(assistantId)) {
-          throw new Error("Parameter 'assistantId' is not valid.");
-        }
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { assistantId, id };
-        this._uri = `/Assistants/${assistantId}/Knowledge/${id}`;
-      }
-      create(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantsKnowledgeInstance(operationVersion, payload, instance._solution.assistantId, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      createWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new AssistantsKnowledgeInstance(operationVersion, response.body, instance._solution.assistantId, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      remove(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.remove({
-          uri: instance._uri,
-          method: "delete",
-          headers
-        });
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      removeWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
-          ...response,
-          body: response.statusCode === 204
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsKnowledgeContextImpl = AssistantsKnowledgeContextImpl;
-    var AssistantsKnowledgeInstance = class {
-      constructor(_version, payload, assistantId, id) {
-        this._version = _version;
-        this.description = payload.description;
-        this.id = payload.id;
-        this.accountSid = payload.account_sid;
-        this.knowledgeSourceDetails = payload.knowledge_source_details;
-        this.name = payload.name;
-        this.status = payload.status;
-        this.type = payload.type;
-        this.url = payload.url;
-        this.embeddingModel = payload.embedding_model;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { assistantId, id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new AssistantsKnowledgeContextImpl(this._version, this._solution.assistantId, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Create a AssistantsKnowledgeInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantsKnowledgeInstance
-       */
-      create(callback) {
-        return this._proxy.create(callback);
-      }
-      /**
-       * Create a AssistantsKnowledgeInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantsKnowledgeInstance with HTTP metadata
-       */
-      createWithHttpInfo(callback) {
-        return this._proxy.createWithHttpInfo(callback);
-      }
-      /**
-       * Remove a AssistantsKnowledgeInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
-      }
-      /**
-       * Remove a AssistantsKnowledgeInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          description: this.description,
-          id: this.id,
-          accountSid: this.accountSid,
-          knowledgeSourceDetails: this.knowledgeSourceDetails,
-          name: this.name,
-          status: this.status,
-          type: this.type,
-          url: this.url,
-          embeddingModel: this.embeddingModel,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsKnowledgeInstance = AssistantsKnowledgeInstance;
-    function AssistantsKnowledgeListInstance(version, assistantId) {
-      if (!(0, utility_1.isValidPathParam)(assistantId)) {
-        throw new Error("Parameter 'assistantId' is not valid.");
-      }
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new AssistantsKnowledgeContextImpl(version, assistantId, id);
-      };
-      instance._version = version;
-      instance._solution = { assistantId };
-      instance._uri = `/Assistants/${assistantId}/Knowledge`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantsKnowledgePage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new AssistantsKnowledgePage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantsKnowledgePage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantsKnowledgePage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var AssistantsKnowledgePage = class extends Page_1.default {
-      /**
-       * Initialize the AssistantsKnowledgePage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of AssistantsKnowledgeInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new AssistantsKnowledgeInstance(this._version, payload, this._solution.assistantId);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsKnowledgePage = AssistantsKnowledgePage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/assistant/assistantsTool.js
-var require_assistantsTool = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/assistant/assistantsTool.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AssistantsToolPage = exports2.AssistantsToolInstance = exports2.AssistantsToolContextImpl = void 0;
-    exports2.AssistantsToolListInstance = AssistantsToolListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var AssistantsToolContextImpl = class {
-      constructor(_version, assistantId, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(assistantId)) {
-          throw new Error("Parameter 'assistantId' is not valid.");
-        }
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { assistantId, id };
-        this._uri = `/Assistants/${assistantId}/Tools/${id}`;
-      }
-      create(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantsToolInstance(operationVersion, payload, instance._solution.assistantId, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      createWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new AssistantsToolInstance(operationVersion, response.body, instance._solution.assistantId, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      remove(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.remove({
-          uri: instance._uri,
-          method: "delete",
-          headers
-        });
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      removeWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
-          ...response,
-          body: response.statusCode === 204
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsToolContextImpl = AssistantsToolContextImpl;
-    var AssistantsToolInstance = class {
-      constructor(_version, payload, assistantId, id) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.description = payload.description;
-        this.enabled = payload.enabled;
-        this.id = payload.id;
-        this.meta = payload.meta;
-        this.name = payload.name;
-        this.requiresAuth = payload.requires_auth;
-        this.type = payload.type;
-        this.url = payload.url;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { assistantId, id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new AssistantsToolContextImpl(this._version, this._solution.assistantId, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Create a AssistantsToolInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantsToolInstance
-       */
-      create(callback) {
-        return this._proxy.create(callback);
-      }
-      /**
-       * Create a AssistantsToolInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantsToolInstance with HTTP metadata
-       */
-      createWithHttpInfo(callback) {
-        return this._proxy.createWithHttpInfo(callback);
-      }
-      /**
-       * Remove a AssistantsToolInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
-      }
-      /**
-       * Remove a AssistantsToolInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          description: this.description,
-          enabled: this.enabled,
-          id: this.id,
-          meta: this.meta,
-          name: this.name,
-          requiresAuth: this.requiresAuth,
-          type: this.type,
-          url: this.url,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsToolInstance = AssistantsToolInstance;
-    function AssistantsToolListInstance(version, assistantId) {
-      if (!(0, utility_1.isValidPathParam)(assistantId)) {
-        throw new Error("Parameter 'assistantId' is not valid.");
-      }
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new AssistantsToolContextImpl(version, assistantId, id);
-      };
-      instance._version = version;
-      instance._solution = { assistantId };
-      instance._uri = `/Assistants/${assistantId}/Tools`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantsToolPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new AssistantsToolPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantsToolPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantsToolPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var AssistantsToolPage = class extends Page_1.default {
-      /**
-       * Initialize the AssistantsToolPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of AssistantsToolInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new AssistantsToolInstance(this._version, payload, this._solution.assistantId);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantsToolPage = AssistantsToolPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/assistant/feedback.js
-var require_feedback2 = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/assistant/feedback.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.FeedbackPage = exports2.FeedbackInstance = exports2.AssistantsV1ServiceCreateFeedbackRequest = void 0;
-    exports2.FeedbackListInstance = FeedbackListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var AssistantsV1ServiceCreateFeedbackRequest = class {
-      constructor(payload) {
-        this.messageId = payload["message_id"];
-        this.score = payload["score"];
-        this.sessionId = payload["session_id"];
-        this.text = payload["text"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreateFeedbackRequest = AssistantsV1ServiceCreateFeedbackRequest;
-    function FeedbackListInstance(version, id) {
-      if (!(0, utility_1.isValidPathParam)(id)) {
-        throw new Error("Parameter 'id' is not valid.");
-      }
-      const instance = {};
-      instance._version = version;
-      instance._solution = { id };
-      instance._uri = `/Assistants/${id}/Feedbacks`;
-      instance.create = function create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new FeedbackInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new FeedbackInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new FeedbackPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new FeedbackPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new FeedbackPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new FeedbackPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var FeedbackInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.assistantId = payload.assistant_id;
-        this.id = payload.id;
-        this.accountSid = payload.account_sid;
-        this.userSid = payload.user_sid;
-        this.messageId = payload.message_id;
-        this.score = payload.score;
-        this.sessionId = payload.session_id;
-        this.text = payload.text;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          assistantId: this.assistantId,
-          id: this.id,
-          accountSid: this.accountSid,
-          userSid: this.userSid,
-          messageId: this.messageId,
-          score: this.score,
-          sessionId: this.sessionId,
-          text: this.text,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.FeedbackInstance = FeedbackInstance;
-    var FeedbackPage = class extends Page_1.default {
-      /**
-       * Initialize the FeedbackPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of FeedbackInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new FeedbackInstance(this._version, payload, this._solution.id);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.FeedbackPage = FeedbackPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/assistant/message.js
-var require_message2 = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/assistant/message.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.MessageInstance = exports2.AssistantsV1ServiceAssistantSendMessageRequest = void 0;
-    exports2.MessageListInstance = MessageListInstance;
-    var util_1 = require("util");
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var AssistantsV1ServiceAssistantSendMessageRequest = class {
-      constructor(payload) {
-        this.identity = payload["identity"];
-        this.sessionId = payload["session_id"];
-        this.body = payload["body"];
-        this.webhook = payload["webhook"];
-        this.mode = payload["mode"];
-      }
-    };
-    exports2.AssistantsV1ServiceAssistantSendMessageRequest = AssistantsV1ServiceAssistantSendMessageRequest;
-    function MessageListInstance(version, id) {
-      if (!(0, utility_1.isValidPathParam)(id)) {
-        throw new Error("Parameter 'id' is not valid.");
-      }
-      const instance = {};
-      instance._version = version;
-      instance._solution = { id };
-      instance._uri = `/Assistants/${id}/Messages`;
-      instance.create = function create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new MessageInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new MessageInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var MessageInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.status = payload.status;
-        this.flagged = payload.flagged;
-        this.aborted = payload.aborted;
-        this.sessionId = payload.session_id;
-        this.accountSid = payload.account_sid;
-        this.body = payload.body;
-        this.error = payload.error;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          status: this.status,
-          flagged: this.flagged,
-          aborted: this.aborted,
-          sessionId: this.sessionId,
-          accountSid: this.accountSid,
-          body: this.body,
-          error: this.error
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.MessageInstance = MessageInstance;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/assistant.js
-var require_assistant = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/assistant.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AssistantPage = exports2.AssistantInstance = exports2.AssistantContextImpl = exports2.AssistantsV1ServiceUpdateAssistantRequest = exports2.AssistantsV1ServiceTool = exports2.AssistantsV1ServiceSegmentCredential = exports2.AssistantsV1ServiceKnowledge = exports2.AssistantsV1ServiceCustomerAi = exports2.AssistantsV1ServiceCreateAssistantRequest = void 0;
-    exports2.AssistantListInstance = AssistantListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var assistantsKnowledge_1 = require_assistantsKnowledge();
-    var assistantsTool_1 = require_assistantsTool();
-    var feedback_1 = require_feedback2();
-    var message_1 = require_message2();
-    var AssistantsV1ServiceCreateAssistantRequest = class {
-      constructor(payload) {
-        this.customerAi = payload["customer_ai"];
-        this.name = payload["name"];
-        this.owner = payload["owner"];
-        this.personalityPrompt = payload["personality_prompt"];
-        this.segmentCredential = payload["segment_credential"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreateAssistantRequest = AssistantsV1ServiceCreateAssistantRequest;
-    var AssistantsV1ServiceCustomerAi = class {
-      constructor(payload) {
-        this.perceptionEngineEnabled = payload["perception_engine_enabled"];
-        this.personalizationEngineEnabled = payload["personalization_engine_enabled"];
-      }
-    };
-    exports2.AssistantsV1ServiceCustomerAi = AssistantsV1ServiceCustomerAi;
-    var AssistantsV1ServiceKnowledge = class {
-      constructor(payload) {
-        this.description = payload["description"];
-        this.id = payload["id"];
-        this.accountSid = payload["account_sid"];
-        this.knowledgeSourceDetails = payload["knowledge_source_details"];
-        this.name = payload["name"];
-        this.status = payload["status"];
-        this.type = payload["type"];
-        this.url = payload["url"];
-        this.embeddingModel = payload["embedding_model"];
-        this.dateCreated = payload["date_created"];
-        this.dateUpdated = payload["date_updated"];
-      }
-    };
-    exports2.AssistantsV1ServiceKnowledge = AssistantsV1ServiceKnowledge;
-    var AssistantsV1ServiceSegmentCredential = class {
-      constructor(payload) {
-        this.profileApiKey = payload["profile_api_key"];
-        this.spaceId = payload["space_id"];
-        this.writeKey = payload["write_key"];
-      }
-    };
-    exports2.AssistantsV1ServiceSegmentCredential = AssistantsV1ServiceSegmentCredential;
-    var AssistantsV1ServiceTool = class {
-      constructor(payload) {
-        this.accountSid = payload["account_sid"];
-        this.description = payload["description"];
-        this.enabled = payload["enabled"];
-        this.id = payload["id"];
-        this.meta = payload["meta"];
-        this.name = payload["name"];
-        this.requiresAuth = payload["requires_auth"];
-        this.type = payload["type"];
-        this.url = payload["url"];
-        this.dateCreated = payload["date_created"];
-        this.dateUpdated = payload["date_updated"];
-      }
-    };
-    exports2.AssistantsV1ServiceTool = AssistantsV1ServiceTool;
-    var AssistantsV1ServiceUpdateAssistantRequest = class {
-      constructor(payload) {
-        this.customerAi = payload["customer_ai"];
-        this.name = payload["name"];
-        this.owner = payload["owner"];
-        this.personalityPrompt = payload["personality_prompt"];
-        this.segmentCredential = payload["segment_credential"];
-      }
-    };
-    exports2.AssistantsV1ServiceUpdateAssistantRequest = AssistantsV1ServiceUpdateAssistantRequest;
-    var AssistantContextImpl = class {
-      constructor(_version, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { id };
-        this._uri = `/Assistants/${id}`;
-      }
-      get assistantsKnowledge() {
-        this._assistantsKnowledge = this._assistantsKnowledge || (0, assistantsKnowledge_1.AssistantsKnowledgeListInstance)(this._version, this._solution.id);
-        return this._assistantsKnowledge;
-      }
-      get assistantsTools() {
-        this._assistantsTools = this._assistantsTools || (0, assistantsTool_1.AssistantsToolListInstance)(this._version, this._solution.id);
-        return this._assistantsTools;
-      }
-      get feedbacks() {
-        this._feedbacks = this._feedbacks || (0, feedback_1.FeedbackListInstance)(this._version, this._solution.id);
-        return this._feedbacks;
-      }
-      get messages() {
-        this._messages = this._messages || (0, message_1.MessageListInstance)(this._version, this._solution.id);
-        return this._messages;
-      }
-      remove(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.remove({
-          uri: instance._uri,
-          method: "delete",
-          headers
-        });
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      removeWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
-          ...response,
-          body: response.statusCode === 204
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetch(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
-          uri: instance._uri,
-          method: "get",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new AssistantInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      update(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.update({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      updateWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.updateWithResponseInfo({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new AssistantInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantContextImpl = AssistantContextImpl;
-    var AssistantInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.customerAi = payload.customer_ai;
-        this.id = payload.id;
-        this.model = payload.model;
-        this.name = payload.name;
-        this.owner = payload.owner;
-        this.url = payload.url;
-        this.personalityPrompt = payload.personality_prompt;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this.knowledge = payload.knowledge !== null && payload.knowledge !== void 0 ? payload.knowledge.map((payload2) => new AssistantsV1ServiceKnowledge(payload2)) : null;
-        this.tools = payload.tools !== null && payload.tools !== void 0 ? payload.tools.map((payload2) => new AssistantsV1ServiceTool(payload2)) : null;
-        this._solution = { id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new AssistantContextImpl(this._version, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Remove a AssistantInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
-      }
-      /**
-       * Remove a AssistantInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
-      }
-      /**
-       * Fetch a AssistantInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a AssistantInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed AssistantInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      update(params, callback) {
-        return this._proxy.update(params, callback);
-      }
-      updateWithHttpInfo(params, callback) {
-        return this._proxy.updateWithHttpInfo(params, callback);
-      }
-      /**
-       * Access the assistantsKnowledge.
-       */
-      assistantsKnowledge() {
-        return this._proxy.assistantsKnowledge;
-      }
-      /**
-       * Access the assistantsTools.
-       */
-      assistantsTools() {
-        return this._proxy.assistantsTools;
-      }
-      /**
-       * Access the feedbacks.
-       */
-      feedbacks() {
-        return this._proxy.feedbacks;
-      }
-      /**
-       * Access the messages.
-       */
-      messages() {
-        return this._proxy.messages;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          customerAi: this.customerAi,
-          id: this.id,
-          model: this.model,
-          name: this.name,
-          owner: this.owner,
-          url: this.url,
-          personalityPrompt: this.personalityPrompt,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated,
-          knowledge: this.knowledge,
-          tools: this.tools
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantInstance = AssistantInstance;
-    function AssistantListInstance(version) {
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new AssistantContextImpl(version, id);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = `/Assistants`;
-      instance.create = function create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantInstance(operationVersion, payload));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new AssistantInstance(operationVersion, response.body)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new AssistantPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new AssistantPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AssistantPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var AssistantPage = class extends Page_1.default {
-      /**
-       * Initialize the AssistantPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of AssistantInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new AssistantInstance(this._version, payload);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.AssistantPage = AssistantPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/knowledge/chunk.js
-var require_chunk = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/knowledge/chunk.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ChunkPage = exports2.ChunkInstance = void 0;
-    exports2.ChunkListInstance = ChunkListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    function ChunkListInstance(version, id) {
-      if (!(0, utility_1.isValidPathParam)(id)) {
-        throw new Error("Parameter 'id' is not valid.");
-      }
-      const instance = {};
-      instance._version = version;
-      instance._solution = { id };
-      instance._uri = `/Knowledge/${id}/Chunks`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ChunkPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new ChunkPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new ChunkPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new ChunkPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var ChunkInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.content = payload.content;
-        this.metadata = payload.metadata;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          content: this.content,
-          metadata: this.metadata,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.ChunkInstance = ChunkInstance;
-    var ChunkPage = class extends Page_1.default {
-      /**
-       * Initialize the ChunkPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of ChunkInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new ChunkInstance(this._version, payload, this._solution.id);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.ChunkPage = ChunkPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/knowledge/knowledgeStatus.js
-var require_knowledgeStatus = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/knowledge/knowledgeStatus.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.KnowledgeStatusInstance = exports2.KnowledgeStatusContextImpl = void 0;
-    exports2.KnowledgeStatusListInstance = KnowledgeStatusListInstance;
-    var util_1 = require("util");
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var KnowledgeStatusContextImpl = class {
-      constructor(_version, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { id };
-        this._uri = `/Knowledge/${id}/Status`;
-      }
-      fetch(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
-          uri: instance._uri,
-          method: "get",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new KnowledgeStatusInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new KnowledgeStatusInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.KnowledgeStatusContextImpl = KnowledgeStatusContextImpl;
-    var KnowledgeStatusInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.status = payload.status;
-        this.lastStatus = payload.last_status;
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { id };
-      }
-      get _proxy() {
-        this._context = this._context || new KnowledgeStatusContextImpl(this._version, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Fetch a KnowledgeStatusInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed KnowledgeStatusInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a KnowledgeStatusInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed KnowledgeStatusInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          status: this.status,
-          lastStatus: this.lastStatus,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.KnowledgeStatusInstance = KnowledgeStatusInstance;
-    function KnowledgeStatusListInstance(version, id) {
-      if (!(0, utility_1.isValidPathParam)(id)) {
-        throw new Error("Parameter 'id' is not valid.");
-      }
-      const instance = (() => instance.get());
-      instance.get = function get() {
-        return new KnowledgeStatusContextImpl(version, id);
-      };
-      instance._version = version;
-      instance._solution = { id };
-      instance._uri = ``;
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/knowledge.js
-var require_knowledge = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/knowledge.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.KnowledgePage = exports2.KnowledgeInstance = exports2.KnowledgeContextImpl = exports2.AssistantsV1ServiceUpdateKnowledgeRequest = exports2.AssistantsV1ServiceCreatePolicyRequest = exports2.AssistantsV1ServiceCreateKnowledgeRequest = void 0;
-    exports2.KnowledgeListInstance = KnowledgeListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var chunk_1 = require_chunk();
-    var knowledgeStatus_1 = require_knowledgeStatus();
-    var AssistantsV1ServiceCreateKnowledgeRequest = class {
-      constructor(payload) {
-        this.assistantId = payload["assistant_id"];
-        this.description = payload["description"];
-        this.knowledgeSourceDetails = payload["knowledge_source_details"];
-        this.name = payload["name"];
-        this.policy = payload["policy"];
-        this.type = payload["type"];
-        this.embeddingModel = payload["embedding_model"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreateKnowledgeRequest = AssistantsV1ServiceCreateKnowledgeRequest;
-    var AssistantsV1ServiceCreatePolicyRequest = class {
-      constructor(payload) {
-        this.description = payload["description"];
-        this.id = payload["id"];
-        this.name = payload["name"];
-        this.policyDetails = payload["policy_details"];
-        this.type = payload["type"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreatePolicyRequest = AssistantsV1ServiceCreatePolicyRequest;
-    var AssistantsV1ServiceUpdateKnowledgeRequest = class {
-      constructor(payload) {
-        this.description = payload["description"];
-        this.knowledgeSourceDetails = payload["knowledge_source_details"];
-        this.name = payload["name"];
-        this.policy = payload["policy"];
-        this.type = payload["type"];
-        this.embeddingModel = payload["embedding_model"];
-      }
-    };
-    exports2.AssistantsV1ServiceUpdateKnowledgeRequest = AssistantsV1ServiceUpdateKnowledgeRequest;
-    var KnowledgeContextImpl = class {
-      constructor(_version, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { id };
-        this._uri = `/Knowledge/${id}`;
-      }
-      get chunks() {
-        this._chunks = this._chunks || (0, chunk_1.ChunkListInstance)(this._version, this._solution.id);
-        return this._chunks;
-      }
-      get knowledgeStatus() {
-        this._knowledgeStatus = this._knowledgeStatus || (0, knowledgeStatus_1.KnowledgeStatusListInstance)(this._version, this._solution.id);
-        return this._knowledgeStatus;
-      }
-      remove(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.remove({
-          uri: instance._uri,
-          method: "delete",
-          headers
-        });
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      removeWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
-          ...response,
-          body: response.statusCode === 204
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetch(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
-          uri: instance._uri,
-          method: "get",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new KnowledgeInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new KnowledgeInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      update(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.update({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new KnowledgeInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      updateWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.updateWithResponseInfo({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new KnowledgeInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.KnowledgeContextImpl = KnowledgeContextImpl;
-    var KnowledgeInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.description = payload.description;
-        this.id = payload.id;
-        this.accountSid = payload.account_sid;
-        this.knowledgeSourceDetails = payload.knowledge_source_details;
-        this.name = payload.name;
-        this.status = payload.status;
-        this.type = payload.type;
-        this.url = payload.url;
-        this.embeddingModel = payload.embedding_model;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new KnowledgeContextImpl(this._version, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Remove a KnowledgeInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
-      }
-      /**
-       * Remove a KnowledgeInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
-      }
-      /**
-       * Fetch a KnowledgeInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed KnowledgeInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a KnowledgeInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed KnowledgeInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      update(params, callback) {
-        return this._proxy.update(params, callback);
-      }
-      updateWithHttpInfo(params, callback) {
-        return this._proxy.updateWithHttpInfo(params, callback);
-      }
-      /**
-       * Access the chunks.
-       */
-      chunks() {
-        return this._proxy.chunks;
-      }
-      /**
-       * Access the knowledgeStatus.
-       */
-      knowledgeStatus() {
-        return this._proxy.knowledgeStatus;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          description: this.description,
-          id: this.id,
-          accountSid: this.accountSid,
-          knowledgeSourceDetails: this.knowledgeSourceDetails,
-          name: this.name,
-          status: this.status,
-          type: this.type,
-          url: this.url,
-          embeddingModel: this.embeddingModel,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.KnowledgeInstance = KnowledgeInstance;
-    function KnowledgeListInstance(version) {
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new KnowledgeContextImpl(version, id);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = `/Knowledge`;
-      instance.create = function create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new KnowledgeInstance(operationVersion, payload));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new KnowledgeInstance(operationVersion, response.body)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["assistantId"] !== void 0)
-          data["AssistantId"] = params["assistantId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new KnowledgePage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new KnowledgePage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["assistantId"] !== void 0)
-          data["AssistantId"] = params["assistantId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new KnowledgePage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new KnowledgePage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var KnowledgePage = class extends Page_1.default {
-      /**
-       * Initialize the KnowledgePage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of KnowledgeInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new KnowledgeInstance(this._version, payload);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.KnowledgePage = KnowledgePage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/policy.js
-var require_policy = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/policy.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.PolicyPage = exports2.PolicyInstance = void 0;
-    exports2.PolicyListInstance = PolicyListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    function PolicyListInstance(version) {
-      const instance = {};
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = `/Policies`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["toolId"] !== void 0)
-          data["ToolId"] = params["toolId"];
-        if (params["knowledgeId"] !== void 0)
-          data["KnowledgeId"] = params["knowledgeId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new PolicyPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new PolicyPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["toolId"] !== void 0)
-          data["ToolId"] = params["toolId"];
-        if (params["knowledgeId"] !== void 0)
-          data["KnowledgeId"] = params["knowledgeId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new PolicyPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new PolicyPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var PolicyInstance = class {
-      constructor(_version, payload) {
-        this._version = _version;
-        this.id = payload.id;
-        this.name = payload.name;
-        this.description = payload.description;
-        this.accountSid = payload.account_sid;
-        this.userSid = payload.user_sid;
-        this.type = payload.type;
-        this.policyDetails = payload.policy_details;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          id: this.id,
-          name: this.name,
-          description: this.description,
-          accountSid: this.accountSid,
-          userSid: this.userSid,
-          type: this.type,
-          policyDetails: this.policyDetails,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.PolicyInstance = PolicyInstance;
-    var PolicyPage = class extends Page_1.default {
-      /**
-       * Initialize the PolicyPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of PolicyInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new PolicyInstance(this._version, payload);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.PolicyPage = PolicyPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/session/message.js
-var require_message3 = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/session/message.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.MessagePage = exports2.MessageInstance = void 0;
-    exports2.MessageListInstance = MessageListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    function MessageListInstance(version, sessionId) {
-      if (!(0, utility_1.isValidPathParam)(sessionId)) {
-        throw new Error("Parameter 'sessionId' is not valid.");
-      }
-      const instance = {};
-      instance._version = version;
-      instance._solution = { sessionId };
-      instance._uri = `/Sessions/${sessionId}/Messages`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new MessagePage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new MessagePage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new MessagePage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new MessagePage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var MessageInstance = class {
-      constructor(_version, payload, sessionId) {
-        this._version = _version;
-        this.id = payload.id;
-        this.accountSid = payload.account_sid;
-        this.assistantId = payload.assistant_id;
-        this.sessionId = payload.session_id;
-        this.identity = payload.identity;
-        this.role = payload.role;
-        this.content = payload.content;
-        this.meta = payload.meta;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          id: this.id,
-          accountSid: this.accountSid,
-          assistantId: this.assistantId,
-          sessionId: this.sessionId,
-          identity: this.identity,
-          role: this.role,
-          content: this.content,
-          meta: this.meta,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.MessageInstance = MessageInstance;
-    var MessagePage = class extends Page_1.default {
-      /**
-       * Initialize the MessagePage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of MessageInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new MessageInstance(this._version, payload, this._solution.sessionId);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.MessagePage = MessagePage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/session.js
-var require_session = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/session.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SessionPage = exports2.SessionInstance = exports2.SessionContextImpl = void 0;
-    exports2.SessionListInstance = SessionListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var message_1 = require_message3();
-    var SessionContextImpl = class {
-      constructor(_version, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { id };
-        this._uri = `/Sessions/${id}`;
-      }
-      get messages() {
-        this._messages = this._messages || (0, message_1.MessageListInstance)(this._version, this._solution.id);
-        return this._messages;
-      }
-      fetch(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
-          uri: instance._uri,
-          method: "get",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new SessionInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new SessionInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.SessionContextImpl = SessionContextImpl;
-    var SessionInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.id = payload.id;
-        this.accountSid = payload.account_sid;
-        this.assistantId = payload.assistant_id;
-        this.verified = payload.verified;
-        this.identity = payload.identity;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new SessionContextImpl(this._version, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Fetch a SessionInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed SessionInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a SessionInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed SessionInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      /**
-       * Access the messages.
-       */
-      messages() {
-        return this._proxy.messages;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          id: this.id,
-          accountSid: this.accountSid,
-          assistantId: this.assistantId,
-          verified: this.verified,
-          identity: this.identity,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.SessionInstance = SessionInstance;
-    function SessionListInstance(version) {
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new SessionContextImpl(version, id);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = `/Sessions`;
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new SessionPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new SessionPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new SessionPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new SessionPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var SessionPage = class extends Page_1.default {
-      /**
-       * Initialize the SessionPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of SessionInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new SessionInstance(this._version, payload);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.SessionPage = SessionPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/v1/tool.js
-var require_tool = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/v1/tool.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ToolPage = exports2.ToolInstance = exports2.ToolContextImpl = exports2.AssistantsV1ServiceUpdateToolRequest = exports2.AssistantsV1ServicePolicy = exports2.AssistantsV1ServiceCreateToolRequest = exports2.AssistantsV1ServiceCreatePolicyRequest = void 0;
-    exports2.ToolListInstance = ToolListInstance;
-    var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var AssistantsV1ServiceCreatePolicyRequest = class {
-      constructor(payload) {
-        this.description = payload["description"];
-        this.id = payload["id"];
-        this.name = payload["name"];
-        this.policyDetails = payload["policy_details"];
-        this.type = payload["type"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreatePolicyRequest = AssistantsV1ServiceCreatePolicyRequest;
-    var AssistantsV1ServiceCreateToolRequest = class {
-      constructor(payload) {
-        this.assistantId = payload["assistant_id"];
-        this.description = payload["description"];
-        this.enabled = payload["enabled"];
-        this.meta = payload["meta"];
-        this.name = payload["name"];
-        this.policy = payload["policy"];
-        this.type = payload["type"];
-      }
-    };
-    exports2.AssistantsV1ServiceCreateToolRequest = AssistantsV1ServiceCreateToolRequest;
-    var AssistantsV1ServicePolicy = class {
-      constructor(payload) {
-        this.id = payload["id"];
-        this.name = payload["name"];
-        this.description = payload["description"];
-        this.accountSid = payload["account_sid"];
-        this.userSid = payload["user_sid"];
-        this.type = payload["type"];
-        this.policyDetails = payload["policy_details"];
-        this.dateCreated = payload["date_created"];
-        this.dateUpdated = payload["date_updated"];
-      }
-    };
-    exports2.AssistantsV1ServicePolicy = AssistantsV1ServicePolicy;
-    var AssistantsV1ServiceUpdateToolRequest = class {
-      constructor(payload) {
-        this.assistantId = payload["assistant_id"];
-        this.description = payload["description"];
-        this.enabled = payload["enabled"];
-        this.meta = payload["meta"];
-        this.name = payload["name"];
-        this.policy = payload["policy"];
-        this.type = payload["type"];
-      }
-    };
-    exports2.AssistantsV1ServiceUpdateToolRequest = AssistantsV1ServiceUpdateToolRequest;
-    var ToolContextImpl = class {
-      constructor(_version, id) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(id)) {
-          throw new Error("Parameter 'id' is not valid.");
-        }
-        this._solution = { id };
-        this._uri = `/Tools/${id}`;
-      }
-      remove(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.remove({
-          uri: instance._uri,
-          method: "delete",
-          headers
-        });
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      removeWithHttpInfo(callback) {
-        const headers = {};
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
-          ...response,
-          body: response.statusCode === 204
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetch(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
-          uri: instance._uri,
-          method: "get",
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ToolInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
-        const headers = {};
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new ToolInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      update(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.update({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ToolInstance(operationVersion, payload, instance._solution.id));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      updateWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.updateWithResponseInfo({
-          uri: instance._uri,
-          method: "put",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new ToolInstance(operationVersion, response.body, instance._solution.id)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.ToolContextImpl = ToolContextImpl;
-    var ToolInstance = class {
-      constructor(_version, payload, id) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.description = payload.description;
-        this.enabled = payload.enabled;
-        this.id = payload.id;
-        this.meta = payload.meta;
-        this.name = payload.name;
-        this.requiresAuth = payload.requires_auth;
-        this.type = payload.type;
-        this.url = payload.url;
-        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this.policies = payload.policies !== null && payload.policies !== void 0 ? payload.policies.map((payload2) => new AssistantsV1ServicePolicy(payload2)) : null;
-        this._solution = { id: id || this.id };
-      }
-      get _proxy() {
-        this._context = this._context || new ToolContextImpl(this._version, this._solution.id);
-        return this._context;
-      }
-      /**
-       * Remove a ToolInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean
-       */
-      remove(callback) {
-        return this._proxy.remove(callback);
-      }
-      /**
-       * Remove a ToolInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed boolean with HTTP metadata
-       */
-      removeWithHttpInfo(callback) {
-        return this._proxy.removeWithHttpInfo(callback);
-      }
-      /**
-       * Fetch a ToolInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed ToolInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a ToolInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed ToolInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      update(params, callback) {
-        return this._proxy.update(params, callback);
-      }
-      updateWithHttpInfo(params, callback) {
-        return this._proxy.updateWithHttpInfo(params, callback);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          description: this.description,
-          enabled: this.enabled,
-          id: this.id,
-          meta: this.meta,
-          name: this.name,
-          requiresAuth: this.requiresAuth,
-          type: this.type,
-          url: this.url,
-          dateCreated: this.dateCreated,
-          dateUpdated: this.dateUpdated,
-          policies: this.policies
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.ToolInstance = ToolInstance;
-    function ToolListInstance(version) {
-      const instance = ((id) => instance.get(id));
-      instance.get = function get(id) {
-        return new ToolContextImpl(version, id);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = `/Tools`;
-      instance.create = function create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ToolInstance(operationVersion, payload));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new ToolInstance(operationVersion, response.body)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.page = function page(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["assistantId"] !== void 0)
-          data["AssistantId"] = params["assistantId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.page({
-          uri: instance._uri,
-          method: "get",
-          params: data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ToolPage(operationVersion, payload, instance._solution));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.list = instance._version.list;
-      instance.getPage = function getPage(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((payload) => new ToolPage(instance._version, payload, instance._solution));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        if (params["assistantId"] !== void 0)
-          data["AssistantId"] = params["assistantId"];
-        if (params["pageSize"] !== void 0)
-          data["PageSize"] = params["pageSize"];
-        if (params.pageNumber !== void 0)
-          data["Page"] = params.pageNumber;
-        if (params.pageToken !== void 0)
-          data["PageToken"] = params.pageToken;
-        const headers = {};
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new ToolPage(operationVersion, response, instance._solution)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.each = instance._version.each;
-      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
-      instance.list = instance._version.list;
-      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
-      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
-        const operationPromise = instance._version._domain.twilio.request({
-          method: "get",
-          uri: targetUrl
-        });
-        let pagePromise = operationPromise.then((response) => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new ToolPage(instance._version, response, instance._solution)
-        }));
-        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
-        return pagePromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var ToolPage = class extends Page_1.default {
-      /**
-       * Initialize the ToolPage
-       *
-       * @param version - Version of the resource
-       * @param response - Response from the API
-       * @param solution - Path solution
-       */
-      constructor(version, response, solution) {
-        super(version, response, solution);
-      }
-      /**
-       * Build an instance of ToolInstance
-       *
-       * @param payload - Payload response from the API
-       */
-      getInstance(payload) {
-        return new ToolInstance(this._version, payload);
-      }
-      [util_1.inspect.custom](depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.ToolPage = ToolPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/assistants/V1.js
-var require_V12 = __commonJS({
-  "node_modules/twilio/lib/rest/assistants/V1.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    var Version_1 = __importDefault(require_Version());
-    var assistant_1 = require_assistant();
-    var knowledge_1 = require_knowledge();
-    var policy_1 = require_policy();
-    var session_1 = require_session();
-    var tool_1 = require_tool();
-    var V1 = class extends Version_1.default {
-      /**
-       * Initialize the V1 version of Assistants
-       *
-       * @param domain - The Twilio (Twilio.Assistants) domain
-       */
-      constructor(domain) {
-        super(domain, "v1");
-      }
-      /** Getter for assistants resource */
-      get assistants() {
-        this._assistants = this._assistants || (0, assistant_1.AssistantListInstance)(this);
-        return this._assistants;
-      }
-      /** Getter for knowledge resource */
-      get knowledge() {
-        this._knowledge = this._knowledge || (0, knowledge_1.KnowledgeListInstance)(this);
-        return this._knowledge;
-      }
-      /** Getter for policies resource */
-      get policies() {
-        this._policies = this._policies || (0, policy_1.PolicyListInstance)(this);
-        return this._policies;
-      }
-      /** Getter for sessions resource */
-      get sessions() {
-        this._sessions = this._sessions || (0, session_1.SessionListInstance)(this);
-        return this._sessions;
-      }
-      /** Getter for tools resource */
-      get tools() {
-        this._tools = this._tools || (0, tool_1.ToolListInstance)(this);
-        return this._tools;
-      }
-    };
-    exports2.default = V1;
-  }
-});
-
-// node_modules/twilio/lib/rest/AssistantsBase.js
-var require_AssistantsBase = __commonJS({
-  "node_modules/twilio/lib/rest/AssistantsBase.js"(exports2, module2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V12());
-    var AssistantsBase = class extends Domain_1.default {
-      /**
-       * Initialize assistants domain
-       *
-       * @param twilio - The twilio client
-       */
-      constructor(twilio) {
-        super(twilio, "https://assistants.twilio.com");
-      }
-      get v1() {
-        this._v1 = this._v1 || new V1_1.default(this);
-        return this._v1;
-      }
-    };
-    module2.exports = AssistantsBase;
-  }
-});
-
-// node_modules/twilio/lib/rest/Assistants.js
-var require_Assistants = __commonJS({
-  "node_modules/twilio/lib/rest/Assistants.js"(exports2, module2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    var AssistantsBase_1 = __importDefault(require_AssistantsBase());
-    var Assistants = class extends AssistantsBase_1.default {
-    };
-    module2.exports = Assistants;
-  }
-});
-
 // node_modules/twilio/lib/rest/bulkexports/v1/export/day.js
 var require_day = __commonJS({
   "node_modules/twilio/lib/rest/bulkexports/v1/export/day.js"(exports2) {
@@ -74460,7 +71404,6 @@ var require_day = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new DayInstance(operationVersion, payload, instance._solution.resourceType, instance._solution.day));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -74469,13 +71412,9 @@ var require_day = __commonJS({
         headers["Accept"] = "application/json";
         const instance = this;
         let operationVersion = instance._version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
+        let operationPromise = operationVersion.fetchWithResponseInfo({ uri: instance._uri, method: "get", headers }).then((response) => ({
           ...response,
-          body: new DayInstance(operationVersion, response.body, instance._solution.resourceType, instance._solution.day)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -74502,7 +71441,7 @@ var require_day = __commonJS({
         this.createDate = payload.create_date;
         this.friendlyName = payload.friendly_name;
         this.resourceType = payload.resource_type;
-        this._solution = { resourceType, day: day || this.day };
+        this._solution = { resourceType, day };
       }
       get _proxy() {
         this._context = this._context || new DayContextImpl(this._version, this._solution.resourceType, this._solution.day);
@@ -74513,7 +71452,7 @@ var require_day = __commonJS({
        *
        * @param callback - Callback to handle processed record
        *
-       * @returns Resolves to processed DayInstance
+       * @returns Resolves to processed void
        */
       fetch(callback) {
         return this._proxy.fetch(callback);
@@ -74523,7 +71462,7 @@ var require_day = __commonJS({
        *
        * @param callback - Callback to handle processed record
        *
-       * @returns Resolves to processed DayInstance with HTTP metadata
+       * @returns Resolves to processed void with HTTP metadata
        */
       fetchWithHttpInfo(callback) {
         return this._proxy.fetchWithHttpInfo(callback);
@@ -75024,7 +71963,7 @@ var require_job = __commonJS({
         this.url = payload.url;
         this.jobQueuePosition = payload.job_queue_position;
         this.estimatedCompletionTime = payload.estimated_completion_time;
-        this._solution = { jobSid: jobSid || this.jobSid };
+        this._solution = { jobSid };
       }
       get _proxy() {
         this._context = this._context || new JobContextImpl(this._version, this._solution.jobSid);
@@ -75194,7 +72133,7 @@ var require_export = __commonJS({
         this.resourceType = payload.resource_type;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { resourceType: resourceType || this.resourceType };
+        this._solution = { resourceType };
       }
       get _proxy() {
         this._context = this._context || new ExportContextImpl(this._version, this._solution.resourceType);
@@ -75405,7 +72344,7 @@ var require_exportConfiguration = __commonJS({
         this.webhookMethod = payload.webhook_method;
         this.resourceType = payload.resource_type;
         this.url = payload.url;
-        this._solution = { resourceType: resourceType || this.resourceType };
+        this._solution = { resourceType };
       }
       get _proxy() {
         this._context = this._context || new ExportConfigurationContextImpl(this._version, this._solution.resourceType);
@@ -75476,7 +72415,7 @@ var require_exportConfiguration = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/bulkexports/V1.js
-var require_V13 = __commonJS({
+var require_V12 = __commonJS({
   "node_modules/twilio/lib/rest/bulkexports/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -75518,7 +72457,7 @@ var require_BulkexportsBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V13());
+    var V1_1 = __importDefault(require_V12());
     var BulkexportsBase = class extends Domain_1.default {
       /**
        * Initialize bulkexports domain
@@ -75735,7 +72674,7 @@ var require_credential3 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -76109,7 +73048,7 @@ var require_invite = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -76525,7 +73464,7 @@ var require_member2 = __commonJS({
         this.lastConsumedMessageIndex = deserialize.integer(payload.last_consumed_message_index);
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -76786,7 +73725,7 @@ var require_member2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/chat/v1/service/channel/message.js
-var require_message4 = __commonJS({
+var require_message2 = __commonJS({
   "node_modules/twilio/lib/rest/chat/v1/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -76950,7 +73889,7 @@ var require_message4 = __commonJS({
         this.body = payload.body;
         this.index = deserialize.integer(payload.index);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -77233,7 +74172,7 @@ var require_channel = __commonJS({
     var utility_1 = require_utility();
     var invite_1 = require_invite();
     var member_1 = require_member2();
-    var message_1 = require_message4();
+    var message_1 = require_message2();
     var ChannelContextImpl = class {
       constructor(_version, serviceSid, sid) {
         this._version = _version;
@@ -77398,7 +74337,7 @@ var require_channel = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -77838,7 +74777,7 @@ var require_role = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -78447,7 +75386,7 @@ var require_user = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -79107,7 +76046,7 @@ var require_service = __commonJS({
         this.notifications = payload.notifications;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -79382,7 +76321,7 @@ var require_service = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/chat/V1.js
-var require_V14 = __commonJS({
+var require_V13 = __commonJS({
   "node_modules/twilio/lib/rest/chat/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -79586,7 +76525,7 @@ var require_credential4 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -79959,7 +76898,7 @@ var require_binding = __commonJS({
         this.messageTypes = payload.message_types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -80271,7 +77210,7 @@ var require_invite2 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -80732,7 +77671,7 @@ var require_member3 = __commonJS({
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
         this.attributes = payload.attributes;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -81004,7 +77943,7 @@ var require_member3 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/chat/v2/service/channel/message.js
-var require_message5 = __commonJS({
+var require_message3 = __commonJS({
   "node_modules/twilio/lib/rest/chat/v2/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -81215,7 +78154,7 @@ var require_message5 = __commonJS({
         this.type = payload.type;
         this.media = payload.media;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -81669,7 +78608,7 @@ var require_webhook = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -81960,7 +78899,7 @@ var require_channel2 = __commonJS({
     var utility_1 = require_utility();
     var invite_1 = require_invite2();
     var member_1 = require_member3();
-    var message_1 = require_message5();
+    var message_1 = require_message3();
     var webhook_1 = require_webhook();
     var ChannelContextImpl = class {
       constructor(_version, serviceSid, sid) {
@@ -82170,7 +79109,7 @@ var require_channel2 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -82618,7 +79557,7 @@ var require_role2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -82990,7 +79929,7 @@ var require_userBinding = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { serviceSid, userSid, sid: sid || this.sid };
+        this._solution = { serviceSid, userSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserBindingContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.sid);
@@ -83385,11 +80324,7 @@ var require_userChannel2 = __commonJS({
         this.links = payload.links;
         this.url = payload.url;
         this.notificationLevel = payload.notification_level;
-        this._solution = {
-          serviceSid,
-          userSid,
-          channelSid: channelSid || this.channelSid
-        };
+        this._solution = { serviceSid, userSid, channelSid };
       }
       get _proxy() {
         this._context = this._context || new UserChannelContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.channelSid);
@@ -83761,7 +80696,7 @@ var require_user2 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -84346,7 +81281,7 @@ var require_service2 = __commonJS({
         this.media = payload.media;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -84775,10 +81710,7 @@ var require_channel3 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
-        this._solution = {
-          serviceSid: serviceSid || this.serviceSid,
-          sid: sid || this.sid
-        };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -84874,7 +81806,7 @@ var require_ChatBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V14());
+    var V1_1 = __importDefault(require_V13());
     var V2_1 = __importDefault(require_V2());
     var V3_1 = __importDefault(require_V3());
     var ChatBase = class extends Domain_1.default {
@@ -85595,7 +82527,7 @@ var require_content = __commonJS({
         this.types = payload.types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ContentContextImpl(this._version, this._solution.sid);
@@ -86193,7 +83125,7 @@ var require_legacyContent = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/content/V1.js
-var require_V15 = __commonJS({
+var require_V14 = __commonJS({
   "node_modules/twilio/lib/rest/content/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -86688,7 +83620,7 @@ var require_ContentBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V15());
+    var V1_1 = __importDefault(require_V14());
     var V2_1 = __importDefault(require_V22());
     var ContentBase = class extends Domain_1.default {
       /**
@@ -86917,7 +83849,7 @@ var require_addressConfiguration = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.addressCountry = payload.address_country;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AddressConfigurationContextImpl(this._version, this._solution.sid);
@@ -87719,7 +84651,7 @@ var require_deliveryReceipt = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { conversationSid, messageSid, sid: sid || this.sid };
+        this._solution = { conversationSid, messageSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DeliveryReceiptContextImpl(this._version, this._solution.conversationSid, this._solution.messageSid, this._solution.sid);
@@ -87899,7 +84831,7 @@ var require_deliveryReceipt = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/conversations/v1/conversation/message.js
-var require_message6 = __commonJS({
+var require_message4 = __commonJS({
   "node_modules/twilio/lib/rest/conversations/v1/conversation/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -88111,7 +85043,7 @@ var require_message6 = __commonJS({
         this.delivery = payload.delivery;
         this.links = payload.links;
         this.contentSid = payload.content_sid;
-        this._solution = { conversationSid, sid: sid || this.sid };
+        this._solution = { conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -88615,7 +85547,7 @@ var require_participant2 = __commonJS({
         this.url = payload.url;
         this.lastReadMessageIndex = deserialize.integer(payload.last_read_message_index);
         this.lastReadTimestamp = payload.last_read_timestamp;
-        this._solution = { conversationSid, sid: sid || this.sid };
+        this._solution = { conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -89054,7 +85986,7 @@ var require_webhook3 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { conversationSid, sid: sid || this.sid };
+        this._solution = { conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -89339,7 +86271,7 @@ var require_conversation = __commonJS({
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
-    var message_1 = require_message6();
+    var message_1 = require_message4();
     var participant_1 = require_participant2();
     var webhook_1 = require_webhook3();
     var ConversationContextImpl = class {
@@ -89563,7 +86495,7 @@ var require_conversation = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.bindings = payload.bindings;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ConversationContextImpl(this._version, this._solution.sid);
@@ -90217,7 +87149,7 @@ var require_credential5 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -90824,7 +87756,7 @@ var require_role3 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.sid);
@@ -91189,7 +88121,7 @@ var require_binding2 = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { chatServiceSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -92167,12 +89099,7 @@ var require_deliveryReceipt2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = {
-          chatServiceSid,
-          conversationSid,
-          messageSid,
-          sid: sid || this.sid
-        };
+        this._solution = { chatServiceSid, conversationSid, messageSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DeliveryReceiptContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.messageSid, this._solution.sid);
@@ -92356,7 +89283,7 @@ var require_deliveryReceipt2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js
-var require_message7 = __commonJS({
+var require_message5 = __commonJS({
   "node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -92572,7 +89499,7 @@ var require_message7 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.contentSid = payload.content_sid;
-        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -93084,7 +90011,7 @@ var require_participant3 = __commonJS({
         this.url = payload.url;
         this.lastReadMessageIndex = deserialize.integer(payload.last_read_message_index);
         this.lastReadTimestamp = payload.last_read_timestamp;
-        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -93531,7 +90458,7 @@ var require_webhook5 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, conversationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -93820,7 +90747,7 @@ var require_conversation2 = __commonJS({
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
-    var message_1 = require_message7();
+    var message_1 = require_message5();
     var participant_1 = require_participant3();
     var webhook_1 = require_webhook5();
     var ConversationContextImpl = class {
@@ -94047,7 +90974,7 @@ var require_conversation2 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.bindings = payload.bindings;
-        this._solution = { chatServiceSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ConversationContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -94881,7 +91808,7 @@ var require_role4 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { chatServiceSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -95321,7 +92248,7 @@ var require_userConversation = __commonJS({
         this._solution = {
           chatServiceSid,
           userSid,
-          conversationSid: conversationSid || this.conversationSid
+          conversationSid
         };
       }
       get _proxy() {
@@ -95733,7 +92660,7 @@ var require_user3 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { chatServiceSid, sid: sid || this.sid };
+        this._solution = { chatServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -96125,7 +93052,7 @@ var require_service3 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -96574,10 +93501,7 @@ var require_userConversation2 = __commonJS({
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = {
-          userSid,
-          conversationSid: conversationSid || this.conversationSid
-        };
+        this._solution = { userSid, conversationSid };
       }
       get _proxy() {
         this._context = this._context || new UserConversationContextImpl(this._version, this._solution.userSid, this._solution.conversationSid);
@@ -96982,7 +93906,7 @@ var require_user4 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.sid);
@@ -97239,7 +94163,7 @@ var require_user4 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/conversations/V1.js
-var require_V16 = __commonJS({
+var require_V15 = __commonJS({
   "node_modules/twilio/lib/rest/conversations/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -97729,7 +94653,7 @@ var require_communication = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CommunicationPage = exports2.CommunicationInstance = exports2.CommunicationContextImpl = exports2.ListCommunicationByConversation200ResponseCommunicationsRecipients = exports2.ListCommunicationByConversation200ResponseCommunicationsContent = exports2.CreateCommunicationInConversationRequestContent = exports2.CreateCommunicationInConversationRequestAuthor = exports2.CreateCommunicationInConversationRequest = exports2.ConversationsV2ParticipantAddress = exports2.ConversationsV2ContentTranscriptionTranscriptionWords = exports2.ConversationsV2ContentTranscriptionTranscription = exports2.ContentTranscriptionTranscription = void 0;
+    exports2.CommunicationPage = exports2.CommunicationInstance = exports2.CommunicationContextImpl = exports2.ListCommunicationByConversation200ResponseCommunicationsRecipients = exports2.ListCommunicationByConversation200ResponseCommunicationsContent = exports2.CreateCommunicationInConversationRequestRecipients = exports2.CreateCommunicationInConversationRequestContent = exports2.CreateCommunicationInConversationRequestAuthor = exports2.CreateCommunicationInConversationRequest = exports2.ConversationsV2ParticipantAddress = exports2.ConversationsV2ContentTranscriptionTranscriptionWords = exports2.ConversationsV2ContentTranscriptionTranscription = exports2.ContentTranscriptionTranscription = void 0;
     exports2.CommunicationListInstance = CommunicationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -97775,6 +94699,7 @@ var require_communication = __commonJS({
         this.content = payload["content"];
         this.channelId = payload["channelId"];
         this.recipients = payload["recipients"];
+        this.occurredAt = payload["occurredAt"];
       }
     };
     exports2.CreateCommunicationInConversationRequest = CreateCommunicationInConversationRequest;
@@ -97794,6 +94719,14 @@ var require_communication = __commonJS({
       }
     };
     exports2.CreateCommunicationInConversationRequestContent = CreateCommunicationInConversationRequestContent;
+    var CreateCommunicationInConversationRequestRecipients = class {
+      constructor(payload) {
+        this.address = payload["address"];
+        this.channel = payload["channel"];
+        this.participantId = payload["participantId"];
+      }
+    };
+    exports2.CreateCommunicationInConversationRequestRecipients = CreateCommunicationInConversationRequestRecipients;
     var ListCommunicationByConversation200ResponseCommunicationsContent = class {
       constructor(payload) {
         this.type = payload["type"];
@@ -97812,16 +94745,16 @@ var require_communication = __commonJS({
     };
     exports2.ListCommunicationByConversation200ResponseCommunicationsRecipients = ListCommunicationByConversation200ResponseCommunicationsRecipients;
     var CommunicationContextImpl = class {
-      constructor(_version, conversationSid, sid) {
+      constructor(_version, conversationId, id) {
         this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(conversationSid)) {
-          throw new Error("Parameter 'conversationSid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(conversationId)) {
+          throw new Error("Parameter 'conversationId' is not valid.");
         }
-        if (!(0, utility_1.isValidPathParam)(sid)) {
-          throw new Error("Parameter 'sid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(id)) {
+          throw new Error("Parameter 'id' is not valid.");
         }
-        this._solution = { conversationSid, sid };
-        this._uri = `/Conversations/${conversationSid}/Communications/${sid}`;
+        this._solution = { conversationId, id };
+        this._uri = `/Conversations/${conversationId}/Communications/${id}`;
       }
       fetch(callback) {
         const headers = {};
@@ -97832,7 +94765,7 @@ var require_communication = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new CommunicationInstance(operationVersion, payload, instance._solution.conversationSid, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new CommunicationInstance(operationVersion, payload, instance._solution.conversationId, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -97847,7 +94780,7 @@ var require_communication = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new CommunicationInstance(operationVersion, response.body, instance._solution.conversationSid, instance._solution.sid)
+          body: new CommunicationInstance(operationVersion, response.body, instance._solution.conversationId, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -97866,7 +94799,7 @@ var require_communication = __commonJS({
     };
     exports2.CommunicationContextImpl = CommunicationContextImpl;
     var CommunicationInstance = class {
-      constructor(_version, _payload, conversationSid, sid) {
+      constructor(_version, _payload, conversationId, id) {
         this._version = _version;
         const payload = _payload;
         this.id = payload.id;
@@ -97880,10 +94813,10 @@ var require_communication = __commonJS({
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.occurredAt = deserialize.iso8601DateTime(payload.occurredAt);
-        this._solution = { conversationSid, sid };
+        this._solution = { conversationId, id };
       }
       get _proxy() {
-        this._context = this._context || new CommunicationContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
+        this._context = this._context || new CommunicationContextImpl(this._version, this._solution.conversationId, this._solution.id);
         return this._context;
       }
       /**
@@ -97931,17 +94864,17 @@ var require_communication = __commonJS({
       }
     };
     exports2.CommunicationInstance = CommunicationInstance;
-    function CommunicationListInstance(version, conversationSid) {
-      if (!(0, utility_1.isValidPathParam)(conversationSid)) {
-        throw new Error("Parameter 'conversationSid' is not valid.");
+    function CommunicationListInstance(version, conversationId) {
+      if (!(0, utility_1.isValidPathParam)(conversationId)) {
+        throw new Error("Parameter 'conversationId' is not valid.");
       }
-      const instance = ((sid) => instance.get(sid));
-      instance.get = function get(sid) {
-        return new CommunicationContextImpl(version, conversationSid, sid);
+      const instance = ((id) => instance.get(id));
+      instance.get = function get(id) {
+        return new CommunicationContextImpl(version, conversationId, id);
       };
       instance._version = version;
-      instance._solution = { conversationSid };
-      instance._uri = `/Conversations/${conversationSid}/Communications`;
+      instance._solution = { conversationId };
+      instance._uri = `/Conversations/${conversationId}/Communications`;
       instance.create = function create(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
@@ -97962,7 +94895,7 @@ var require_communication = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new CommunicationInstance(operationVersion, payload, instance._solution.conversationSid));
+        operationPromise = operationPromise.then((payload) => new CommunicationInstance(operationVersion, payload, instance._solution.conversationId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
@@ -97988,7 +94921,7 @@ var require_communication = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new CommunicationInstance(operationVersion, response.body, instance._solution.conversationSid)
+          body: new CommunicationInstance(operationVersion, response.body, instance._solution.conversationId)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98099,7 +95032,7 @@ var require_communication = __commonJS({
        * @param payload - Payload response from the API
        */
       getInstance(payload) {
-        return new CommunicationInstance(this._version, payload, this._solution.conversationSid);
+        return new CommunicationInstance(this._version, payload, this._solution.conversationId);
       }
       [util_1.inspect.custom](depth, options) {
         return (0, util_1.inspect)(this.toJSON(), options);
@@ -98117,7 +95050,7 @@ var require_configuration3 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConfigurationPage = exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.UpdateConfigurationRequestStatusCallbacks = exports2.UpdateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.UpdateConfigurationRequestChannelSettingsValueCaptureRules = exports2.UpdateConfigurationRequestChannelSettingsValue = exports2.UpdateConfigurationRequest = exports2.CreateConfigurationRequestStatusCallbacks = exports2.CreateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.CreateConfigurationRequestChannelSettingsValueCaptureRules = exports2.CreateConfigurationRequestChannelSettingsValue = exports2.CreateConfigurationRequest = exports2.ConversationsV2StatusTimeouts = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2ChannelSetting = exports2.ConversationsV2CaptureRule = void 0;
+    exports2.ConfigurationPage = exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.UpdateConfigurationRequestStatusCallbacks = exports2.UpdateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.UpdateConfigurationRequestChannelSettingsValueCaptureRules = exports2.UpdateConfigurationRequestChannelSettingsValue = exports2.UpdateConfigurationRequest = exports2.CreateConfigurationRequestStatusCallbacks = exports2.CreateConfigurationRequestConversationsV1Bridge = exports2.CreateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.CreateConfigurationRequestChannelSettingsValueCaptureRules = exports2.CreateConfigurationRequestChannelSettingsValue = exports2.CreateConfigurationRequest = exports2.ConversationsV2StatusTimeouts = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2ChannelSetting = exports2.ConversationsV2CaptureRule = void 0;
     exports2.ConfigurationListInstance = ConfigurationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -98169,6 +95102,7 @@ var require_configuration3 = __commonJS({
         this.statusCallbacks = payload["statusCallbacks"];
         this.intelligenceConfigurationIds = payload["intelligenceConfigurationIds"];
         this.memoryExtractionEnabled = payload["memoryExtractionEnabled"];
+        this.conversationsV1Bridge = payload["conversationsV1Bridge"];
       }
     };
     exports2.CreateConfigurationRequest = CreateConfigurationRequest;
@@ -98194,6 +95128,12 @@ var require_configuration3 = __commonJS({
       }
     };
     exports2.CreateConfigurationRequestChannelSettingsValueStatusTimeouts = CreateConfigurationRequestChannelSettingsValueStatusTimeouts;
+    var CreateConfigurationRequestConversationsV1Bridge = class {
+      constructor(payload) {
+        this.serviceId = payload["serviceId"];
+      }
+    };
+    exports2.CreateConfigurationRequestConversationsV1Bridge = CreateConfigurationRequestConversationsV1Bridge;
     var CreateConfigurationRequestStatusCallbacks = class {
       constructor(payload) {
         this.url = payload["url"];
@@ -98211,6 +95151,7 @@ var require_configuration3 = __commonJS({
         this.statusCallbacks = payload["statusCallbacks"];
         this.intelligenceConfigurationIds = payload["intelligenceConfigurationIds"];
         this.memoryExtractionEnabled = payload["memoryExtractionEnabled"];
+        this.conversationsV1Bridge = payload["conversationsV1Bridge"];
       }
     };
     exports2.UpdateConfigurationRequest = UpdateConfigurationRequest;
@@ -98244,13 +95185,13 @@ var require_configuration3 = __commonJS({
     };
     exports2.UpdateConfigurationRequestStatusCallbacks = UpdateConfigurationRequestStatusCallbacks;
     var ConfigurationContextImpl = class {
-      constructor(_version, sid) {
+      constructor(_version, id) {
         this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(sid)) {
-          throw new Error("Parameter 'sid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(id)) {
+          throw new Error("Parameter 'id' is not valid.");
         }
-        this._solution = { sid };
-        this._uri = `/ControlPlane/Configurations/${sid}`;
+        this._solution = { id };
+        this._uri = `/ControlPlane/Configurations/${id}`;
       }
       remove(params, callback) {
         if (params instanceof Function) {
@@ -98271,7 +95212,7 @@ var require_configuration3 = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98296,7 +95237,7 @@ var require_configuration3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98310,7 +95251,7 @@ var require_configuration3 = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98325,7 +95266,7 @@ var require_configuration3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98351,7 +95292,7 @@ var require_configuration3 = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98378,7 +95319,7 @@ var require_configuration3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98397,11 +95338,9 @@ var require_configuration3 = __commonJS({
     };
     exports2.ConfigurationContextImpl = ConfigurationContextImpl;
     var ConfigurationInstance = class {
-      constructor(_version, _payload, sid) {
+      constructor(_version, _payload, id) {
         this._version = _version;
         const payload = _payload;
-        this.statusUrl = payload.statusUrl;
-        this.related = payload.related;
         this.id = payload.id;
         this.displayName = payload.displayName;
         this.description = payload.description;
@@ -98415,10 +95354,12 @@ var require_configuration3 = __commonJS({
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.version = payload.version;
-        this._solution = { sid };
+        this.statusUrl = payload.statusUrl;
+        this.related = payload.related;
+        this._solution = { id };
       }
       get _proxy() {
-        this._context = this._context || new ConfigurationContextImpl(this._version, this._solution.sid);
+        this._context = this._context || new ConfigurationContextImpl(this._version, this._solution.id);
         return this._context;
       }
       remove(params, callback) {
@@ -98460,8 +95401,6 @@ var require_configuration3 = __commonJS({
        */
       toJSON() {
         return {
-          statusUrl: this.statusUrl,
-          related: this.related,
           id: this.id,
           displayName: this.displayName,
           description: this.description,
@@ -98474,7 +95413,9 @@ var require_configuration3 = __commonJS({
           conversationsV1Bridge: this.conversationsV1Bridge,
           createdAt: this.createdAt,
           updatedAt: this.updatedAt,
-          version: this.version
+          version: this.version,
+          statusUrl: this.statusUrl,
+          related: this.related
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -98483,9 +95424,9 @@ var require_configuration3 = __commonJS({
     };
     exports2.ConfigurationInstance = ConfigurationInstance;
     function ConfigurationListInstance(version) {
-      const instance = ((sid) => instance.get(sid));
-      instance.get = function get(sid) {
-        return new ConfigurationContextImpl(version, sid);
+      const instance = ((id) => instance.get(id));
+      instance.get = function get(id) {
+        return new ConfigurationContextImpl(version, id);
       };
       instance._version = version;
       instance._solution = {};
@@ -98775,13 +95716,13 @@ var require_conversation3 = __commonJS({
     };
     exports2.UpdateConversationByIdRequest = UpdateConversationByIdRequest;
     var ConversationContextImpl = class {
-      constructor(_version, sid) {
+      constructor(_version, id) {
         this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(sid)) {
-          throw new Error("Parameter 'sid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(id)) {
+          throw new Error("Parameter 'id' is not valid.");
         }
-        this._solution = { sid };
-        this._uri = `/Conversations/${sid}`;
+        this._solution = { id };
+        this._uri = `/Conversations/${id}`;
       }
       remove(params, callback) {
         if (params instanceof Function) {
@@ -98802,7 +95743,7 @@ var require_conversation3 = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98827,7 +95768,7 @@ var require_conversation3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConversationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConversationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98841,7 +95782,7 @@ var require_conversation3 = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98856,7 +95797,7 @@ var require_conversation3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConversationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConversationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98882,7 +95823,7 @@ var require_conversation3 = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98909,7 +95850,7 @@ var require_conversation3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConversationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConversationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98935,7 +95876,7 @@ var require_conversation3 = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ConversationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -98962,7 +95903,7 @@ var require_conversation3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ConversationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new ConversationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -98981,7 +95922,7 @@ var require_conversation3 = __commonJS({
     };
     exports2.ConversationContextImpl = ConversationContextImpl;
     var ConversationInstance = class {
-      constructor(_version, _payload, sid) {
+      constructor(_version, _payload, id) {
         this._version = _version;
         const payload = _payload;
         this.statusUrl = payload.statusUrl;
@@ -98995,10 +95936,10 @@ var require_conversation3 = __commonJS({
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new ListConversationByAccount200ResponseConversationsConfiguration(payload.configuration) : null;
         this.participants = payload.participants !== null && payload.participants !== void 0 ? payload.participants.map((payload2) => new ConversationsV2Participant(payload2)) : null;
-        this._solution = { sid };
+        this._solution = { id };
       }
       get _proxy() {
-        this._context = this._context || new ConversationContextImpl(this._version, this._solution.sid);
+        this._context = this._context || new ConversationContextImpl(this._version, this._solution.id);
         return this._context;
       }
       remove(params, callback) {
@@ -99065,9 +96006,9 @@ var require_conversation3 = __commonJS({
     };
     exports2.ConversationInstance = ConversationInstance;
     function ConversationListInstance(version) {
-      const instance = ((sid) => instance.get(sid));
-      instance.get = function get(sid) {
-        return new ConversationContextImpl(version, sid);
+      const instance = ((id) => instance.get(id));
+      instance.get = function get(id) {
+        return new ConversationContextImpl(version, id);
       };
       instance._version = version;
       instance._solution = {};
@@ -99265,13 +96206,13 @@ var require_operation = __commonJS({
     };
     exports2.FetchOperationStatus200ResponseError = FetchOperationStatus200ResponseError;
     var OperationContextImpl = class {
-      constructor(_version, sid) {
+      constructor(_version, id) {
         this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(sid)) {
-          throw new Error("Parameter 'sid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(id)) {
+          throw new Error("Parameter 'id' is not valid.");
         }
-        this._solution = { sid };
-        this._uri = `/ControlPlane/Operations/${sid}`;
+        this._solution = { id };
+        this._uri = `/ControlPlane/Operations/${id}`;
       }
       fetch(callback) {
         const headers = {};
@@ -99282,7 +96223,7 @@ var require_operation = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new OperationInstance(operationVersion, payload, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new OperationInstance(operationVersion, payload, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -99297,7 +96238,7 @@ var require_operation = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new OperationInstance(operationVersion, response.body, instance._solution.sid)
+          body: new OperationInstance(operationVersion, response.body, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -99316,7 +96257,7 @@ var require_operation = __commonJS({
     };
     exports2.OperationContextImpl = OperationContextImpl;
     var OperationInstance = class {
-      constructor(_version, _payload, sid) {
+      constructor(_version, _payload, id) {
         this._version = _version;
         const payload = _payload;
         this.operationId = payload.operationId;
@@ -99326,10 +96267,10 @@ var require_operation = __commonJS({
         this.statusUrl = payload.statusUrl;
         this.error = payload.error !== null && payload.error !== void 0 ? new FetchOperationStatus200ResponseError(payload.error) : null;
         this.related = payload.related;
-        this._solution = { sid };
+        this._solution = { id };
       }
       get _proxy() {
-        this._context = this._context || new OperationContextImpl(this._version, this._solution.sid);
+        this._context = this._context || new OperationContextImpl(this._version, this._solution.id);
         return this._context;
       }
       /**
@@ -99374,9 +96315,9 @@ var require_operation = __commonJS({
     };
     exports2.OperationInstance = OperationInstance;
     function OperationListInstance(version) {
-      const instance = ((sid) => instance.get(sid));
-      instance.get = function get(sid) {
-        return new OperationContextImpl(version, sid);
+      const instance = ((id) => instance.get(id));
+      instance.get = function get(id) {
+        return new OperationContextImpl(version, id);
       };
       instance._version = version;
       instance._solution = {};
@@ -99400,7 +96341,7 @@ var require_participant4 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ParticipantPage = exports2.ParticipantInstance = exports2.ParticipantContextImpl = exports2.UpdateParticipantInConversationRequest = exports2.CreateParticipantInConversationRequestAddresses = exports2.CreateParticipantInConversationRequest = exports2.ConversationsV2Address = void 0;
+    exports2.ParticipantPage = exports2.ParticipantInstance = exports2.ParticipantContextImpl = exports2.UpdateParticipantInConversationRequest = exports2.CreateParticipantInConversationRequest = exports2.CreateConversationWithConfigRequestParticipantsAddresses = exports2.ConversationsV2Address = void 0;
     exports2.ParticipantListInstance = ParticipantListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -99415,6 +96356,14 @@ var require_participant4 = __commonJS({
       }
     };
     exports2.ConversationsV2Address = ConversationsV2Address;
+    var CreateConversationWithConfigRequestParticipantsAddresses = class {
+      constructor(payload) {
+        this.channel = payload["channel"];
+        this.address = payload["address"];
+        this.channelId = payload["channelId"];
+      }
+    };
+    exports2.CreateConversationWithConfigRequestParticipantsAddresses = CreateConversationWithConfigRequestParticipantsAddresses;
     var CreateParticipantInConversationRequest = class {
       constructor(payload) {
         this.name = payload["name"];
@@ -99424,14 +96373,6 @@ var require_participant4 = __commonJS({
       }
     };
     exports2.CreateParticipantInConversationRequest = CreateParticipantInConversationRequest;
-    var CreateParticipantInConversationRequestAddresses = class {
-      constructor(payload) {
-        this.channel = payload["channel"];
-        this.address = payload["address"];
-        this.channelId = payload["channelId"];
-      }
-    };
-    exports2.CreateParticipantInConversationRequestAddresses = CreateParticipantInConversationRequestAddresses;
     var UpdateParticipantInConversationRequest = class {
       constructor(payload) {
         this.name = payload["name"];
@@ -99442,16 +96383,16 @@ var require_participant4 = __commonJS({
     };
     exports2.UpdateParticipantInConversationRequest = UpdateParticipantInConversationRequest;
     var ParticipantContextImpl = class {
-      constructor(_version, conversationSid, sid) {
+      constructor(_version, conversationId, id) {
         this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(conversationSid)) {
-          throw new Error("Parameter 'conversationSid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(conversationId)) {
+          throw new Error("Parameter 'conversationId' is not valid.");
         }
-        if (!(0, utility_1.isValidPathParam)(sid)) {
-          throw new Error("Parameter 'sid' is not valid.");
+        if (!(0, utility_1.isValidPathParam)(id)) {
+          throw new Error("Parameter 'id' is not valid.");
         }
-        this._solution = { conversationSid, sid };
-        this._uri = `/Conversations/${conversationSid}/Participants/${sid}`;
+        this._solution = { conversationId, id };
+        this._uri = `/Conversations/${conversationId}/Participants/${id}`;
       }
       fetch(callback) {
         const headers = {};
@@ -99462,7 +96403,7 @@ var require_participant4 = __commonJS({
           method: "get",
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationSid, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationId, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -99477,7 +96418,7 @@ var require_participant4 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationSid, instance._solution.sid)
+          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationId, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -99503,7 +96444,7 @@ var require_participant4 = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationSid, instance._solution.sid));
+        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationId, instance._solution.id));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -99530,7 +96471,7 @@ var require_participant4 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationSid, instance._solution.sid)
+          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationId, instance._solution.id)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -99549,7 +96490,7 @@ var require_participant4 = __commonJS({
     };
     exports2.ParticipantContextImpl = ParticipantContextImpl;
     var ParticipantInstance = class {
-      constructor(_version, _payload, conversationSid, sid) {
+      constructor(_version, _payload, conversationId, id) {
         this._version = _version;
         const payload = _payload;
         this.id = payload.id;
@@ -99561,10 +96502,10 @@ var require_participant4 = __commonJS({
         this.addresses = payload.addresses !== null && payload.addresses !== void 0 ? payload.addresses.map((payload2) => new ConversationsV2Address(payload2)) : null;
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
-        this._solution = { conversationSid, sid };
+        this._solution = { conversationId, id };
       }
       get _proxy() {
-        this._context = this._context || new ParticipantContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
+        this._context = this._context || new ParticipantContextImpl(this._version, this._solution.conversationId, this._solution.id);
         return this._context;
       }
       /**
@@ -99616,17 +96557,17 @@ var require_participant4 = __commonJS({
       }
     };
     exports2.ParticipantInstance = ParticipantInstance;
-    function ParticipantListInstance(version, conversationSid) {
-      if (!(0, utility_1.isValidPathParam)(conversationSid)) {
-        throw new Error("Parameter 'conversationSid' is not valid.");
+    function ParticipantListInstance(version, conversationId) {
+      if (!(0, utility_1.isValidPathParam)(conversationId)) {
+        throw new Error("Parameter 'conversationId' is not valid.");
       }
-      const instance = ((sid) => instance.get(sid));
-      instance.get = function get(sid) {
-        return new ParticipantContextImpl(version, conversationSid, sid);
+      const instance = ((id) => instance.get(id));
+      instance.get = function get(id) {
+        return new ParticipantContextImpl(version, conversationId, id);
       };
       instance._version = version;
-      instance._solution = { conversationSid };
-      instance._uri = `/Conversations/${conversationSid}/Participants`;
+      instance._solution = { conversationId };
+      instance._uri = `/Conversations/${conversationId}/Participants`;
       instance.create = function create(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
@@ -99647,7 +96588,7 @@ var require_participant4 = __commonJS({
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationSid));
+        operationPromise = operationPromise.then((payload) => new ParticipantInstance(operationVersion, payload, instance._solution.conversationId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
@@ -99673,7 +96614,7 @@ var require_participant4 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationSid)
+          body: new ParticipantInstance(operationVersion, response.body, instance._solution.conversationId)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -99780,7 +96721,7 @@ var require_participant4 = __commonJS({
        * @param payload - Payload response from the API
        */
       getInstance(payload) {
-        return new ParticipantInstance(this._version, payload, this._solution.conversationSid);
+        return new ParticipantInstance(this._version, payload, this._solution.conversationId);
       }
       [util_1.inspect.custom](depth, options) {
         return (0, util_1.inspect)(this.toJSON(), options);
@@ -99819,10 +96760,10 @@ var require_V23 = __commonJS({
         return (0, action_1.ActionListInstance)(this, ConversationId);
       }
       /** Implementation */
-      communications(ConversationSid, sid) {
-        const listInstance = (0, communication_1.CommunicationListInstance)(this, ConversationSid);
-        if (sid !== void 0) {
-          return listInstance.get(sid);
+      communications(ConversationId, id) {
+        const listInstance = (0, communication_1.CommunicationListInstance)(this, ConversationId);
+        if (id !== void 0) {
+          return listInstance.get(id);
         }
         return listInstance;
       }
@@ -99842,10 +96783,10 @@ var require_V23 = __commonJS({
         return this._operations;
       }
       /** Implementation */
-      participants(ConversationSid, sid) {
-        const listInstance = (0, participant_1.ParticipantListInstance)(this, ConversationSid);
-        if (sid !== void 0) {
-          return listInstance.get(sid);
+      participants(ConversationId, id) {
+        const listInstance = (0, participant_1.ParticipantListInstance)(this, ConversationId);
+        if (id !== void 0) {
+          return listInstance.get(id);
         }
         return listInstance;
       }
@@ -99862,7 +96803,7 @@ var require_ConversationsBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V16());
+    var V1_1 = __importDefault(require_V15());
     var V2_1 = __importDefault(require_V23());
     var ConversationsBase = class extends Domain_1.default {
       /**
@@ -100034,7 +96975,7 @@ var require_eventType = __commonJS({
         this.documentationUrl = payload.documentation_url;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { type: type || this.type };
+        this._solution = { type };
       }
       get _proxy() {
         this._context = this._context || new EventTypeContextImpl(this._version, this._solution.type);
@@ -100286,7 +97227,7 @@ var require_schemaVersion = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.raw = payload.raw;
-        this._solution = { id, schemaVersion: schemaVersion || this.schemaVersion };
+        this._solution = { id, schemaVersion };
       }
       get _proxy() {
         this._context = this._context || new SchemaVersionContextImpl(this._version, this._solution.id, this._solution.schemaVersion);
@@ -100531,7 +97472,7 @@ var require_schema = __commonJS({
         this.links = payload.links;
         this.latestVersionDateCreated = deserialize.iso8601DateTime(payload.latest_version_date_created);
         this.latestVersion = deserialize.integer(payload.latest_version);
-        this._solution = { id: id || this.id };
+        this._solution = { id };
       }
       get _proxy() {
         this._context = this._context || new SchemaContextImpl(this._version, this._solution.id);
@@ -100934,7 +97875,7 @@ var require_sink = __commonJS({
         this.status = payload.status;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SinkContextImpl(this._version, this._solution.sid);
@@ -101364,7 +98305,7 @@ var require_subscribedEvent = __commonJS({
         this.schemaVersion = deserialize.integer(payload.schema_version);
         this.subscriptionSid = payload.subscription_sid;
         this.url = payload.url;
-        this._solution = { subscriptionSid, type: type || this.type };
+        this._solution = { subscriptionSid, type };
       }
       get _proxy() {
         this._context = this._context || new SubscribedEventContextImpl(this._version, this._solution.subscriptionSid, this._solution.type);
@@ -101766,7 +98707,7 @@ var require_subscription = __commonJS({
         this.sinkSid = payload.sink_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SubscriptionContextImpl(this._version, this._solution.sid);
@@ -102036,7 +98977,7 @@ var require_subscription = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/events/V1.js
-var require_V17 = __commonJS({
+var require_V16 = __commonJS({
   "node_modules/twilio/lib/rest/events/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -102090,7 +99031,7 @@ var require_EventsBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V17());
+    var V1_1 = __importDefault(require_V16());
     var EventsBase = class extends Domain_1.default {
       /**
        * Initialize events domain
@@ -102274,7 +99215,7 @@ var require_assessments = __commonJS({
         this.assessment = payload.assessment;
         this.timestamp = payload.timestamp;
         this.url = payload.url;
-        this._solution = { assessmentSid: assessmentSid || this.assessmentSid };
+        this._solution = { assessmentSid };
       }
       get _proxy() {
         this._context = this._context || new AssessmentsContextImpl(this._version, this._solution.assessmentSid);
@@ -102666,7 +99607,7 @@ var require_channel4 = __commonJS({
         this.url = payload.url;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.sid);
@@ -103454,7 +100395,7 @@ var require_flexFlow = __commonJS({
         this.longLived = payload.long_lived;
         this.janitorEnabled = payload.janitor_enabled;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new FlexFlowContextImpl(this._version, this._solution.sid);
@@ -104431,9 +101372,7 @@ var require_insightsQuestionnaires = __commonJS({
         this.active = payload.active;
         this.questions = payload.questions;
         this.url = payload.url;
-        this._solution = {
-          questionnaireSid: questionnaireSid || this.questionnaireSid
-        };
+        this._solution = { questionnaireSid };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesContextImpl(this._version, this._solution.questionnaireSid);
@@ -104814,7 +101753,7 @@ var require_insightsQuestionnairesCategory = __commonJS({
         this.categorySid = payload.category_sid;
         this.name = payload.name;
         this.url = payload.url;
-        this._solution = { categorySid: categorySid || this.categorySid };
+        this._solution = { categorySid };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesCategoryContextImpl(this._version, this._solution.categorySid);
@@ -105192,7 +102131,7 @@ var require_insightsQuestionnairesQuestion = __commonJS({
         this.usage = deserialize.integer(payload.usage);
         this.answerSet = payload.answer_set;
         this.url = payload.url;
-        this._solution = { questionSid: questionSid || this.questionSid };
+        this._solution = { questionSid };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesQuestionContextImpl(this._version, this._solution.questionSid);
@@ -106430,7 +103369,7 @@ var require_interactionChannelParticipant = __commonJS({
         this.channelSid = payload.channel_sid;
         this.url = payload.url;
         this.routingProperties = payload.routing_properties;
-        this._solution = { interactionSid, channelSid, sid: sid || this.sid };
+        this._solution = { interactionSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionChannelParticipantContextImpl(this._version, this._solution.interactionSid, this._solution.channelSid, this._solution.sid);
@@ -106788,7 +103727,7 @@ var require_interactionTransfer = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { interactionSid, channelSid, sid: sid || this.sid };
+        this._solution = { interactionSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionTransferContextImpl(this._version, this._solution.interactionSid, this._solution.channelSid, this._solution.sid);
@@ -107073,7 +104012,7 @@ var require_interactionChannel = __commonJS({
         this.errorMessage = payload.error_message;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { interactionSid, sid: sid || this.sid };
+        this._solution = { interactionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionChannelContextImpl(this._version, this._solution.interactionSid, this._solution.sid);
@@ -107398,7 +104337,7 @@ var require_interaction = __commonJS({
         this.links = payload.links;
         this.interactionContextSid = payload.interaction_context_sid;
         this.webhookTtid = payload.webhook_ttid;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionContextImpl(this._version, this._solution.sid);
@@ -107638,7 +104577,7 @@ var require_pluginVersions = __commonJS({
         this.validated = payload.validated;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { pluginSid, sid: sid || this.sid };
+        this._solution = { pluginSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PluginVersionsContextImpl(this._version, this._solution.pluginSid, this._solution.sid);
@@ -108042,7 +104981,7 @@ var require_plugin = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PluginContextImpl(this._version, this._solution.sid);
@@ -108369,7 +105308,7 @@ var require_pluginArchive = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PluginArchiveContextImpl(this._version, this._solution.sid);
@@ -108531,10 +105470,7 @@ var require_configuredPlugin = __commonJS({
         this._private = payload.private;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = {
-          configurationSid,
-          pluginSid: pluginSid || this.pluginSid
-        };
+        this._solution = { configurationSid, pluginSid };
       }
       get _proxy() {
         this._context = this._context || new ConfiguredPluginContextImpl(this._version, this._solution.configurationSid, this._solution.pluginSid);
@@ -108807,7 +105743,7 @@ var require_pluginConfiguration = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PluginConfigurationContextImpl(this._version, this._solution.sid);
@@ -109124,7 +106060,7 @@ var require_pluginConfigurationArchive = __commonJS({
         this.archived = payload.archived;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PluginConfigurationArchiveContextImpl(this._version, this._solution.sid);
@@ -109270,7 +106206,7 @@ var require_pluginRelease = __commonJS({
         this.configurationSid = payload.configuration_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PluginReleaseContextImpl(this._version, this._solution.sid);
@@ -109576,10 +106512,7 @@ var require_pluginVersionArchive = __commonJS({
         this.archived = payload.archived;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = {
-          pluginSid: pluginSid || this.pluginSid,
-          sid: sid || this.sid
-        };
+        this._solution = { pluginSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PluginVersionArchiveContextImpl(this._version, this._solution.pluginSid, this._solution.sid);
@@ -109910,7 +106843,7 @@ var require_webChannel = __commonJS({
         this.url = payload.url;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new WebChannelContextImpl(this._version, this._solution.sid);
@@ -110184,7 +107117,7 @@ var require_webChannel = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/flexApi/V1.js
-var require_V18 = __commonJS({
+var require_V17 = __commonJS({
   "node_modules/twilio/lib/rest/flexApi/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -110486,10 +107419,7 @@ var require_flexUser = __commonJS({
         this.updatedDate = deserialize.iso8601DateTime(payload.updated_date);
         this.version = deserialize.integer(payload.version);
         this.url = payload.url;
-        this._solution = {
-          instanceSid: instanceSid || this.instanceSid,
-          flexUserSid: flexUserSid || this.flexUserSid
-        };
+        this._solution = { instanceSid, flexUserSid };
       }
       get _proxy() {
         this._context = this._context || new FlexUserContextImpl(this._version, this._solution.instanceSid, this._solution.flexUserSid);
@@ -110727,7 +107657,7 @@ var require_FlexApiBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V18());
+    var V1_1 = __importDefault(require_V17());
     var V2_1 = __importDefault(require_V24());
     var FlexApiBase = class extends Domain_1.default {
       /**
@@ -110949,7 +107879,7 @@ var require_user5 = __commonJS({
         this.state = payload.state;
         this.isAvailable = payload.is_available;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.sid);
@@ -111022,7 +107952,7 @@ var require_user5 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/frontlineApi/V1.js
-var require_V19 = __commonJS({
+var require_V18 = __commonJS({
   "node_modules/twilio/lib/rest/frontlineApi/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -111058,7 +107988,7 @@ var require_FrontlineApiBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V19());
+    var V1_1 = __importDefault(require_V18());
     var FrontlineApiBase = class extends Domain_1.default {
       /**
        * Initialize frontlineApi domain
@@ -111139,7 +108069,6 @@ var require_authorize = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new AuthorizeInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
@@ -111171,7 +108100,7 @@ var require_authorize = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new AuthorizeInstance(operationVersion, response.body)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -111341,7 +108270,7 @@ var require_token2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/previewIam/V1.js
-var require_V110 = __commonJS({
+var require_V19 = __commonJS({
   "node_modules/twilio/lib/rest/previewIam/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -111383,7 +108312,7 @@ var require_PreviewIamBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V110());
+    var V1_1 = __importDefault(require_V19());
     var PreviewIamBase = class extends Domain_1.default {
       /**
        * Initialize previewIam domain
@@ -111479,10 +108408,7 @@ var require_account2 = __commonJS({
         this.status = payload.status;
         this.ownerSid = payload.owner_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this._solution = {
-          organizationSid,
-          accountSid: accountSid || this.accountSid
-        };
+        this._solution = { organizationSid, accountSid };
       }
       get _proxy() {
         this._context = this._context || new AccountContextImpl(this._version, this._solution.organizationSid, this._solution.accountSid);
@@ -111737,7 +108663,7 @@ var require_roleAssignment = __commonJS({
         this.message = payload.message;
         this.moreInfo = payload.moreInfo;
         this.status = payload.status;
-        this._solution = { organizationSid, sid: sid || this.sid };
+        this._solution = { organizationSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleAssignmentContextImpl(this._version, this._solution.organizationSid, this._solution.sid);
@@ -112237,7 +109163,7 @@ var require_user6 = __commonJS({
         this.status = payload.status;
         this.code = payload.code;
         this.moreInfo = payload.moreInfo;
-        this._solution = { organizationSid, id: id || this.id };
+        this._solution = { organizationSid, id };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.organizationSid, this._solution.id);
@@ -112772,7 +109698,7 @@ var require_apiKey = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.policy = payload.policy;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ApiKeyContextImpl(this._version, this._solution.sid);
@@ -113158,6 +110084,7 @@ var require_oAuthApp = __commonJS({
         this.ownerSid = payload["owner_sid"];
         this.description = payload["description"];
         this.clientSid = payload["client_sid"];
+        this.tokenEndpointAuthMethod = payload["token_endpoint_auth_method"];
         this.policy = payload["policy"];
         this.accessTokenTtl = payload["access_token_ttl"];
       }
@@ -113287,6 +110214,7 @@ var require_oAuthApp = __commonJS({
         this.description = payload.description;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.createdBy = payload.created_by;
+        this.creatorSid = payload.creator_sid;
         this.secret = payload.secret;
         this.status = payload.status;
         this.policy = payload.policy !== null && payload.policy !== void 0 ? new IamV1OrganizationVendoroauthappPolicy(payload.policy) : null;
@@ -113294,7 +110222,7 @@ var require_oAuthApp = __commonJS({
         this.code = payload.code;
         this.message = payload.message;
         this.moreInfo = payload.more_info;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new OAuthAppContextImpl(this._version, this._solution.sid);
@@ -113339,6 +110267,7 @@ var require_oAuthApp = __commonJS({
           description: this.description,
           dateCreated: this.dateCreated,
           createdBy: this.createdBy,
+          creatorSid: this.creatorSid,
           secret: this.secret,
           status: this.status,
           policy: this.policy,
@@ -113718,7 +110647,7 @@ var require_token3 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/iam/V1.js
-var require_V111 = __commonJS({
+var require_V110 = __commonJS({
   "node_modules/twilio/lib/rest/iam/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -113783,7 +110712,7 @@ var require_IamBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V111());
+    var V1_1 = __importDefault(require_V110());
     var IamBase = class extends Domain_1.default {
       /**
        * Initialize iam domain
@@ -114049,12 +110978,57 @@ var require_callSummary = __commonJS({
   "node_modules/twilio/lib/rest/insights/v1/call/callSummary.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CallSummaryInstance = exports2.CallSummaryContextImpl = void 0;
+    exports2.CallSummaryInstance = exports2.CallSummaryContextImpl = exports2.CallSummaryCrelayWordStats = exports2.CallSummaryCrelayTokenStats = exports2.CallSummaryCrelayRateStats = exports2.CallSummaryCrelayInterruptions = exports2.CallSummaryAgentSessionSummary = void 0;
     exports2.CallSummaryListInstance = CallSummaryListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
+    var CallSummaryAgentSessionSummary = class {
+      constructor(payload) {
+        this.sessionId = payload["session_id"];
+        this.ttsLatencyMs = payload["tts_latency_ms"];
+        this.sttLatencyMs = payload["stt_latency_ms"];
+        this.networkLatencyMs = payload["network_latency_ms"];
+        this.timeToFirstAudioMs = payload["time_to_first_audio_ms"];
+        this.applicationLatencyMs = payload["application_latency_ms"];
+        this.tokens = payload["tokens"];
+        this.words = payload["words"];
+        this.turns = payload["turns"];
+        this.interruptions = payload["interruptions"];
+        this.sessionState = payload["session_state"];
+      }
+    };
+    exports2.CallSummaryAgentSessionSummary = CallSummaryAgentSessionSummary;
+    var CallSummaryCrelayInterruptions = class {
+      constructor(payload) {
+        this.customerToAgent = payload["customer_to_agent"];
+        this.agentToCustomer = payload["agent_to_customer"];
+      }
+    };
+    exports2.CallSummaryCrelayInterruptions = CallSummaryCrelayInterruptions;
+    var CallSummaryCrelayRateStats = class {
+      constructor(payload) {
+        this.min = payload["min"];
+        this.max = payload["max"];
+        this.avg = payload["avg"];
+      }
+    };
+    exports2.CallSummaryCrelayRateStats = CallSummaryCrelayRateStats;
+    var CallSummaryCrelayTokenStats = class {
+      constructor(payload) {
+        this.total = payload["total"];
+        this.tokensPerSecond = payload["tokens_per_second"];
+      }
+    };
+    exports2.CallSummaryCrelayTokenStats = CallSummaryCrelayTokenStats;
+    var CallSummaryCrelayWordStats = class {
+      constructor(payload) {
+        this.total = payload["total"];
+        this.wordsPerMinute = payload["words_per_minute"];
+      }
+    };
+    exports2.CallSummaryCrelayWordStats = CallSummaryCrelayWordStats;
     var CallSummaryContextImpl = class {
       constructor(_version, callSid) {
         this._version = _version;
@@ -114152,6 +111126,7 @@ var require_callSummary = __commonJS({
         this.properties = payload.properties;
         this.trust = payload.trust;
         this.annotation = payload.annotation;
+        this.agentSessionSummaries = payload.agent_session_summaries !== null && payload.agent_session_summaries !== void 0 ? payload.agent_session_summaries.map((payload2) => new CallSummaryAgentSessionSummary(payload2)) : null;
         this._solution = { callSid };
       }
       get _proxy() {
@@ -114193,7 +111168,8 @@ var require_callSummary = __commonJS({
           attributes: this.attributes,
           properties: this.properties,
           trust: this.trust,
-          annotation: this.annotation
+          annotation: this.annotation,
+          agentSessionSummaries: this.agentSessionSummaries
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -114231,13 +111207,84 @@ var require_event2 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EventPage = exports2.EventInstance = void 0;
+    exports2.EventPage = exports2.EventInstance = exports2.LatencyEvent = exports2.LastTokenReceivedEvent = exports2.LanguageChangedEvent = exports2.InterruptEvent = exports2.InsightsV1CallEventConversationRelayData = exports2.ErrorEvent = exports2.ConfigurationEventLanguagesValue = exports2.ConfigurationEvent = exports2.CallWrapUpEvent = void 0;
     exports2.EventListInstance = EventListInstance;
     var util_1 = require("util");
     var Page_1 = __importDefault(require_Page());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
+    var CallWrapUpEvent = class {
+      constructor(payload) {
+        this.durationInSeconds = payload["duration_in_seconds"];
+        this.endStatus = payload["end_status"];
+      }
+    };
+    exports2.CallWrapUpEvent = CallWrapUpEvent;
+    var ConfigurationEvent = class {
+      constructor(payload) {
+        this.configurations = payload["configurations"];
+        this.languages = payload["languages"];
+      }
+    };
+    exports2.ConfigurationEvent = ConfigurationEvent;
+    var ConfigurationEventLanguagesValue = class {
+      constructor(payload) {
+        this.ttsProvider = payload["tts_provider"];
+        this.voice = payload["voice"];
+        this.transcriptionProvider = payload["transcription_provider"];
+        this.speechModel = payload["speech_model"];
+      }
+    };
+    exports2.ConfigurationEventLanguagesValue = ConfigurationEventLanguagesValue;
+    var ErrorEvent = class {
+      constructor(payload) {
+        this.errorCode = payload["error_code"];
+        this.message = payload["message"];
+      }
+    };
+    exports2.ErrorEvent = ErrorEvent;
+    var InsightsV1CallEventConversationRelayData = class {
+      constructor(payload) {
+        this.sessionId = payload["session_id"];
+        this.sequenceNumber = payload["sequence_number"];
+        this.ttsLatency = payload["tts_latency"];
+        this.sttLatency = payload["stt_latency"];
+        this.interrupt = payload["interrupt"];
+        this.lastTokenReceived = payload["last_token_received"];
+        this.configurations = payload["configurations"];
+        this.languageChanged = payload["language_changed"];
+        this.callWrapUp = payload["call_wrap_up"];
+        this.error = payload["error"];
+      }
+    };
+    exports2.InsightsV1CallEventConversationRelayData = InsightsV1CallEventConversationRelayData;
+    var InterruptEvent = class {
+      constructor(payload) {
+        this.type = payload["type"];
+      }
+    };
+    exports2.InterruptEvent = InterruptEvent;
+    var LanguageChangedEvent = class {
+      constructor(payload) {
+        this.ttsLanguageCode = payload["tts_language_code"];
+        this.transcriptionLanguageCode = payload["transcription_language_code"];
+      }
+    };
+    exports2.LanguageChangedEvent = LanguageChangedEvent;
+    var LastTokenReceivedEvent = class {
+      constructor(payload) {
+        this.totalTokens = payload["total_tokens"];
+        this.totalWords = payload["total_words"];
+      }
+    };
+    exports2.LastTokenReceivedEvent = LastTokenReceivedEvent;
+    var LatencyEvent = class {
+      constructor(payload) {
+        this.latencyMs = payload["latency_ms"];
+      }
+    };
+    exports2.LatencyEvent = LatencyEvent;
     function EventListInstance(version, callSid) {
       if (!(0, utility_1.isValidPathParam)(callSid)) {
         throw new Error("Parameter 'callSid' is not valid.");
@@ -114351,6 +111398,7 @@ var require_event2 = __commonJS({
         this.sipEdge = payload.sip_edge;
         this.sdkEdge = payload.sdk_edge;
         this.clientEdge = payload.client_edge;
+        this.conversationRelayData = payload.conversation_relay_data !== null && payload.conversation_relay_data !== void 0 ? new InsightsV1CallEventConversationRelayData(payload.conversation_relay_data) : null;
       }
       /**
        * Provide a user-friendly representation
@@ -114369,7 +111417,8 @@ var require_event2 = __commonJS({
           carrierEdge: this.carrierEdge,
           sipEdge: this.sipEdge,
           sdkEdge: this.sdkEdge,
-          clientEdge: this.clientEdge
+          clientEdge: this.clientEdge,
+          conversationRelayData: this.conversationRelayData
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -114673,7 +111722,7 @@ var require_call2 = __commonJS({
         this.sid = payload.sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CallContextImpl(this._version, this._solution.sid);
@@ -114767,12 +111816,57 @@ var require_callSummaries = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CallSummariesPage = exports2.CallSummariesInstance = void 0;
+    exports2.CallSummariesPage = exports2.CallSummariesInstance = exports2.CallSummaryCrelayWordStats = exports2.CallSummaryCrelayTokenStats = exports2.CallSummaryCrelayRateStats = exports2.CallSummaryCrelayInterruptions = exports2.CallSummaryAgentSessionSummary = void 0;
     exports2.CallSummariesListInstance = CallSummariesListInstance;
     var util_1 = require("util");
     var Page_1 = __importDefault(require_Page());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
+    var CallSummaryAgentSessionSummary = class {
+      constructor(payload) {
+        this.sessionId = payload["session_id"];
+        this.ttsLatencyMs = payload["tts_latency_ms"];
+        this.sttLatencyMs = payload["stt_latency_ms"];
+        this.networkLatencyMs = payload["network_latency_ms"];
+        this.timeToFirstAudioMs = payload["time_to_first_audio_ms"];
+        this.applicationLatencyMs = payload["application_latency_ms"];
+        this.tokens = payload["tokens"];
+        this.words = payload["words"];
+        this.turns = payload["turns"];
+        this.interruptions = payload["interruptions"];
+        this.sessionState = payload["session_state"];
+      }
+    };
+    exports2.CallSummaryAgentSessionSummary = CallSummaryAgentSessionSummary;
+    var CallSummaryCrelayInterruptions = class {
+      constructor(payload) {
+        this.customerToAgent = payload["customer_to_agent"];
+        this.agentToCustomer = payload["agent_to_customer"];
+      }
+    };
+    exports2.CallSummaryCrelayInterruptions = CallSummaryCrelayInterruptions;
+    var CallSummaryCrelayRateStats = class {
+      constructor(payload) {
+        this.min = payload["min"];
+        this.max = payload["max"];
+        this.avg = payload["avg"];
+      }
+    };
+    exports2.CallSummaryCrelayRateStats = CallSummaryCrelayRateStats;
+    var CallSummaryCrelayTokenStats = class {
+      constructor(payload) {
+        this.total = payload["total"];
+        this.tokensPerSecond = payload["tokens_per_second"];
+      }
+    };
+    exports2.CallSummaryCrelayTokenStats = CallSummaryCrelayTokenStats;
+    var CallSummaryCrelayWordStats = class {
+      constructor(payload) {
+        this.total = payload["total"];
+        this.wordsPerMinute = payload["words_per_minute"];
+      }
+    };
+    exports2.CallSummaryCrelayWordStats = CallSummaryCrelayWordStats;
     function CallSummariesListInstance(version) {
       const instance = {};
       instance._version = version;
@@ -115035,6 +112129,7 @@ var require_callSummaries = __commonJS({
         this.properties = payload.properties;
         this.trust = payload.trust;
         this.annotation = payload.annotation;
+        this.agentSessionSummaries = payload.agent_session_summaries !== null && payload.agent_session_summaries !== void 0 ? payload.agent_session_summaries.map((payload2) => new CallSummaryAgentSessionSummary(payload2)) : null;
       }
       /**
        * Provide a user-friendly representation
@@ -115065,7 +112160,8 @@ var require_callSummaries = __commonJS({
           attributes: this.attributes,
           properties: this.properties,
           trust: this.trust,
-          annotation: this.annotation
+          annotation: this.annotation,
+          agentSessionSummaries: this.agentSessionSummaries
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -115223,10 +112319,7 @@ var require_conferenceParticipant = __commonJS({
         this.events = payload.events;
         this.metrics = payload.metrics;
         this.url = payload.url;
-        this._solution = {
-          conferenceSid,
-          participantSid: participantSid || this.participantSid
-        };
+        this._solution = { conferenceSid, participantSid };
       }
       get _proxy() {
         this._context = this._context || new ConferenceParticipantContextImpl(this._version, this._solution.conferenceSid, this._solution.participantSid);
@@ -115513,7 +112606,7 @@ var require_conference2 = __commonJS({
         this.processingState = payload.processing_state;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { conferenceSid: conferenceSid || this.conferenceSid };
+        this._solution = { conferenceSid };
       }
       get _proxy() {
         this._context = this._context || new ConferenceContextImpl(this._version, this._solution.conferenceSid);
@@ -115833,10 +112926,7 @@ var require_participant5 = __commonJS({
         this.edgeLocation = payload.edge_location;
         this.publisherInfo = payload.publisher_info;
         this.url = payload.url;
-        this._solution = {
-          roomSid,
-          participantSid: participantSid || this.participantSid
-        };
+        this._solution = { roomSid, participantSid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.roomSid, this._solution.participantSid);
@@ -116118,7 +113208,7 @@ var require_room = __commonJS({
         this.edgeLocation = payload.edge_location;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { roomSid: roomSid || this.roomSid };
+        this._solution = { roomSid };
       }
       get _proxy() {
         this._context = this._context || new RoomContextImpl(this._version, this._solution.roomSid);
@@ -116532,7 +113622,7 @@ var require_setting = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/insights/V1.js
-var require_V112 = __commonJS({
+var require_V111 = __commonJS({
   "node_modules/twilio/lib/rest/insights/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -116734,7 +113824,7 @@ var require_inbound = __commonJS({
         this.callAnswerScore = payload.call_answer_score;
         this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2InboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
         this.silentCallsPercentage = payload.silent_calls_percentage;
-        this._solution = { reportId: reportId || this.reportId };
+        this._solution = { reportId };
       }
       get _proxy() {
         this._context = this._context || new InboundContextImpl(this._version, this._solution.reportId);
@@ -117076,7 +114166,7 @@ var require_outbound = __commonJS({
         this.longDurationCallsPercentage = payload.long_duration_calls_percentage;
         this.potentialRobocallsPercentage = payload.potential_robocalls_percentage;
         this.answeringMachineDetection = payload.answering_machine_detection !== null && payload.answering_machine_detection !== void 0 ? new InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection(payload.answering_machine_detection) : null;
-        this._solution = { reportId: reportId || this.reportId };
+        this._solution = { reportId };
       }
       get _proxy() {
         this._context = this._context || new OutboundContextImpl(this._version, this._solution.reportId);
@@ -117614,7 +114704,7 @@ var require_report = __commonJS({
         this.potentialRobocallsPercentage = payload.potential_robocalls_percentage;
         this.answeringMachineDetection = payload.answering_machine_detection !== null && payload.answering_machine_detection !== void 0 ? new InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection(payload.answering_machine_detection) : null;
         this.report = payload.report !== null && payload.report !== void 0 ? new AccountReport(payload.report) : null;
-        this._solution = { reportId: reportId || this.reportId };
+        this._solution = { reportId };
       }
       get _proxy() {
         this._context = this._context || new ReportContextImpl(this._version, this._solution.reportId);
@@ -118030,6 +115120,348 @@ var require_query = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/insights/v3/queryJob.js
+var require_queryJob = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v3/queryJob.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.QueryJobPage = exports2.QueryJobInstance = exports2.QueryJobContextImpl = exports2.QueryDefinitionOrderBy = exports2.QueryDefinitionFiltersExpressions = exports2.QueryDefinitionFilters = exports2.QueryDefinition = exports2.OperationError = exports2.InsightsQueryRequest = void 0;
+    exports2.QueryJobListInstance = QueryJobListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var InsightsQueryRequest = class {
+      constructor(payload) {
+        this.domain = payload["domain"];
+        this.query = payload["query"];
+      }
+    };
+    exports2.InsightsQueryRequest = InsightsQueryRequest;
+    var OperationError = class {
+      constructor(payload) {
+        this.code = payload["code"];
+        this.message = payload["message"];
+        this.httpStatusCode = payload["httpStatusCode"];
+        this.detail = payload["detail"];
+      }
+    };
+    exports2.OperationError = OperationError;
+    var QueryDefinition = class {
+      constructor(payload) {
+        this.measures = payload["measures"];
+        this.dimensions = payload["dimensions"];
+        this.filters = payload["filters"];
+        this.orderBy = payload["orderBy"];
+      }
+    };
+    exports2.QueryDefinition = QueryDefinition;
+    var QueryDefinitionFilters = class {
+      constructor(payload) {
+        this.op = payload["op"];
+        this.expressions = payload["expressions"];
+      }
+    };
+    exports2.QueryDefinitionFilters = QueryDefinitionFilters;
+    var QueryDefinitionFiltersExpressions = class {
+      constructor(payload) {
+        this.op = payload["op"];
+        this.field = payload["field"];
+        this.values = payload["values"];
+      }
+    };
+    exports2.QueryDefinitionFiltersExpressions = QueryDefinitionFiltersExpressions;
+    var QueryDefinitionOrderBy = class {
+      constructor(payload) {
+        this.field = payload["field"];
+        this.direction = payload["direction"];
+      }
+    };
+    exports2.QueryDefinitionOrderBy = QueryDefinitionOrderBy;
+    var QueryJobContextImpl = class {
+      constructor(_version, operationId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(operationId)) {
+          throw new Error("Parameter 'operationId' is not valid.");
+        }
+        this._solution = { operationId };
+        this._uri = `/InsightsDomains/Conversations/QueryJobs/${operationId}`;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new QueryJobInstance(operationVersion, payload, instance._solution.operationId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new QueryJobInstance(operationVersion, response.body, instance._solution.operationId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.QueryJobContextImpl = QueryJobContextImpl;
+    var QueryJobInstance = class {
+      constructor(_version, _payload, operationId) {
+        this._version = _version;
+        const payload = _payload;
+        this.operationId = payload.operationId;
+        this.status = payload.status;
+        this.statusUrl = payload.statusUrl;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.completedAt = deserialize.iso8601DateTime(payload.completedAt);
+        this.error = payload.error !== null && payload.error !== void 0 ? new OperationError(payload.error) : null;
+        this.resultUrl = payload.resultUrl;
+        this.resultRetentionPeriod = payload.resultRetentionPeriod;
+        this._solution = { operationId };
+      }
+      get _proxy() {
+        this._context = this._context || new QueryJobContextImpl(this._version, this._solution.operationId);
+        return this._context;
+      }
+      /**
+       * Fetch a QueryJobInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed QueryJobInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a QueryJobInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed QueryJobInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          operationId: this.operationId,
+          status: this.status,
+          statusUrl: this.statusUrl,
+          createdAt: this.createdAt,
+          completedAt: this.completedAt,
+          error: this.error,
+          resultUrl: this.resultUrl,
+          resultRetentionPeriod: this.resultRetentionPeriod
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.QueryJobInstance = QueryJobInstance;
+    function QueryJobListInstance(version) {
+      const instance = ((operationId) => instance.get(operationId));
+      instance.get = function get(operationId) {
+        return new QueryJobContextImpl(version, operationId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/InsightsDomains/Conversations/QueryJobs`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new QueryJobInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new QueryJobInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new QueryJobPage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new QueryJobPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new QueryJobPage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new QueryJobPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var QueryJobPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the QueryJobPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of QueryJobInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new QueryJobInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.QueryJobPage = QueryJobPage;
+  }
+});
+
 // node_modules/twilio/lib/rest/insights/V3.js
 var require_V32 = __commonJS({
   "node_modules/twilio/lib/rest/insights/V3.js"(exports2) {
@@ -118041,6 +115473,7 @@ var require_V32 = __commonJS({
     var Version_1 = __importDefault(require_Version());
     var metadata_1 = require_metadata();
     var query_1 = require_query();
+    var queryJob_1 = require_queryJob();
     var V3 = class extends Version_1.default {
       /**
        * Initialize the V3 version of Insights
@@ -118060,6 +115493,11 @@ var require_V32 = __commonJS({
         this._query = this._query || (0, query_1.QueryListInstance)(this);
         return this._query;
       }
+      /** Getter for queryJobs resource */
+      get queryJobs() {
+        this._queryJobs = this._queryJobs || (0, queryJob_1.QueryJobListInstance)(this);
+        return this._queryJobs;
+      }
     };
     exports2.default = V3;
   }
@@ -118073,7 +115511,7 @@ var require_InsightsBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V112());
+    var V1_1 = __importDefault(require_V111());
     var V2_1 = __importDefault(require_V25());
     var V3_1 = __importDefault(require_V32());
     var InsightsBase = class extends Domain_1.default {
@@ -118315,7 +115753,7 @@ var require_customOperator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CustomOperatorContextImpl(this._version, this._solution.sid);
@@ -118667,7 +116105,7 @@ var require_operator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new OperatorContextImpl(this._version, this._solution.sid);
@@ -118942,10 +116380,7 @@ var require_operatorAttachment = __commonJS({
         this.serviceSid = payload.service_sid;
         this.operatorSid = payload.operator_sid;
         this.url = payload.url;
-        this._solution = {
-          serviceSid: serviceSid || this.serviceSid,
-          operatorSid: operatorSid || this.operatorSid
-        };
+        this._solution = { serviceSid, operatorSid };
       }
       get _proxy() {
         this._context = this._context || new OperatorAttachmentContextImpl(this._version, this._solution.serviceSid, this._solution.operatorSid);
@@ -119095,7 +116530,7 @@ var require_operatorAttachments = __commonJS({
         this.serviceSid = payload.service_sid;
         this.operatorSids = payload.operator_sids;
         this.url = payload.url;
-        this._solution = { serviceSid: serviceSid || this.serviceSid };
+        this._solution = { serviceSid };
       }
       get _proxy() {
         this._context = this._context || new OperatorAttachmentsContextImpl(this._version, this._solution.serviceSid);
@@ -119240,7 +116675,7 @@ var require_operatorType = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new OperatorTypeContextImpl(this._version, this._solution.sid);
@@ -119501,7 +116936,7 @@ var require_prebuiltOperator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PrebuiltOperatorContextImpl(this._version, this._solution.sid);
@@ -119878,7 +117313,7 @@ var require_service4 = __commonJS({
         this.readOnlyAttachedOperatorSids = payload.read_only_attached_operator_sids;
         this.version = deserialize.integer(payload.version);
         this.encryptionCredentialSid = payload.encryption_credential_sid;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -120695,10 +118130,7 @@ var require_operatorResult = __commonJS({
         this.jsonResults = payload.json_results;
         this.transcriptSid = payload.transcript_sid;
         this.url = payload.url;
-        this._solution = {
-          transcriptSid,
-          operatorSid: operatorSid || this.operatorSid
-        };
+        this._solution = { transcriptSid, operatorSid };
       }
       get _proxy() {
         this._context = this._context || new OperatorResultContextImpl(this._version, this._solution.transcriptSid, this._solution.operatorSid);
@@ -121180,7 +118612,7 @@ var require_transcript = __commonJS({
         this.redaction = payload.redaction;
         this.encryptionCredentialSid = payload.encryption_credential_sid;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptContextImpl(this._version, this._solution.sid);
@@ -123218,6 +120650,84 @@ var require_operatorResult2 = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js
+var require_ruleExecution = __commonJS({
+  "node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CreateRuleExecutionRequest = void 0;
+    exports2.RuleExecutionListInstance = RuleExecutionListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var CreateRuleExecutionRequest = class {
+      constructor(payload) {
+        this.intelligenceConfigurationId = payload["intelligenceConfigurationId"];
+        this.ruleId = payload["ruleId"];
+        this.conversationId = payload["conversationId"];
+      }
+    };
+    exports2.CreateRuleExecutionRequest = CreateRuleExecutionRequest;
+    function RuleExecutionListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/RuleExecutions`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: void 0
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
 // node_modules/twilio/lib/rest/intelligence/v3/version.js
 var require_version = __commonJS({
   "node_modules/twilio/lib/rest/intelligence/v3/version.js"(exports2) {
@@ -123534,6 +121044,7 @@ var require_V33 = __commonJS({
     var conversation_1 = require_conversation4();
     var operator_1 = require_operator2();
     var operatorResult_1 = require_operatorResult2();
+    var ruleExecution_1 = require_ruleExecution();
     var version_1 = require_version();
     var V3 = class extends Version_1.default {
       /**
@@ -123563,6 +121074,11 @@ var require_V33 = __commonJS({
       get operatorResults() {
         this._operatorResults = this._operatorResults || (0, operatorResult_1.OperatorResultListInstance)(this);
         return this._operatorResults;
+      }
+      /** Getter for ruleExecutions resource */
+      get ruleExecutions() {
+        this._ruleExecutions = this._ruleExecutions || (0, ruleExecution_1.RuleExecutionListInstance)(this);
+        return this._ruleExecutions;
       }
       /** Implementation */
       versions(id, version) {
@@ -123793,7 +121309,7 @@ var require_credential6 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -124167,7 +121683,7 @@ var require_invite3 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -124583,7 +122099,7 @@ var require_member4 = __commonJS({
         this.lastConsumedMessageIndex = deserialize.integer(payload.last_consumed_message_index);
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -124844,7 +122360,7 @@ var require_member4 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js
-var require_message8 = __commonJS({
+var require_message6 = __commonJS({
   "node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -125008,7 +122524,7 @@ var require_message8 = __commonJS({
         this.body = payload.body;
         this.index = deserialize.integer(payload.index);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -125291,7 +122807,7 @@ var require_channel5 = __commonJS({
     var utility_1 = require_utility();
     var invite_1 = require_invite3();
     var member_1 = require_member4();
-    var message_1 = require_message8();
+    var message_1 = require_message6();
     var ChannelContextImpl = class {
       constructor(_version, serviceSid, sid) {
         this._version = _version;
@@ -125456,7 +122972,7 @@ var require_channel5 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -125896,7 +123412,7 @@ var require_role5 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -126505,7 +124021,7 @@ var require_user7 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -127165,7 +124681,7 @@ var require_service5 = __commonJS({
         this.notifications = payload.notifications;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -127440,7 +124956,7 @@ var require_service5 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/ipMessaging/V1.js
-var require_V113 = __commonJS({
+var require_V112 = __commonJS({
   "node_modules/twilio/lib/rest/ipMessaging/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -127644,7 +125160,7 @@ var require_credential7 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -128017,7 +125533,7 @@ var require_binding3 = __commonJS({
         this.messageTypes = payload.message_types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -128329,7 +125845,7 @@ var require_invite4 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -128790,7 +126306,7 @@ var require_member5 = __commonJS({
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
         this.attributes = payload.attributes;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -129062,7 +126578,7 @@ var require_member5 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js
-var require_message9 = __commonJS({
+var require_message7 = __commonJS({
   "node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -129273,7 +126789,7 @@ var require_message9 = __commonJS({
         this.type = payload.type;
         this.media = payload.media;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -129727,7 +127243,7 @@ var require_webhook6 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
+        this._solution = { serviceSid, channelSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -130018,7 +127534,7 @@ var require_channel6 = __commonJS({
     var utility_1 = require_utility();
     var invite_1 = require_invite4();
     var member_1 = require_member5();
-    var message_1 = require_message9();
+    var message_1 = require_message7();
     var webhook_1 = require_webhook6();
     var ChannelContextImpl = class {
       constructor(_version, serviceSid, sid) {
@@ -130228,7 +127744,7 @@ var require_channel6 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -130676,7 +128192,7 @@ var require_role6 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -131048,7 +128564,7 @@ var require_userBinding2 = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { serviceSid, userSid, sid: sid || this.sid };
+        this._solution = { serviceSid, userSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserBindingContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.sid);
@@ -131419,11 +128935,7 @@ var require_userChannel4 = __commonJS({
         this.links = payload.links;
         this.url = payload.url;
         this.notificationLevel = payload.notification_level;
-        this._solution = {
-          serviceSid,
-          userSid,
-          channelSid: channelSid || this.channelSid
-        };
+        this._solution = { serviceSid, userSid, channelSid };
       }
       get _proxy() {
         this._context = this._context || new UserChannelContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.channelSid);
@@ -131809,7 +129321,7 @@ var require_user8 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -132394,7 +129906,7 @@ var require_service6 = __commonJS({
         this.media = payload.media;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -132719,7 +130231,7 @@ var require_IpMessagingBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V113());
+    var V1_1 = __importDefault(require_V112());
     var V2_1 = __importDefault(require_V27());
     var IpMessagingBase = class extends Domain_1.default {
       /**
@@ -132772,7 +130284,7 @@ var require_IpMessaging = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js
-var require_chunk2 = __commonJS({
+var require_chunk = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -132937,7 +130449,7 @@ var require_chunk2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js
-var require_knowledgeStatus2 = __commonJS({
+var require_knowledgeStatus = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -133072,7 +130584,7 @@ var require_knowledgeStatus2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/v1/knowledge.js
-var require_knowledge2 = __commonJS({
+var require_knowledge = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v1/knowledge.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -133086,8 +130598,8 @@ var require_knowledge2 = __commonJS({
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
-    var chunk_1 = require_chunk2();
-    var knowledgeStatus_1 = require_knowledgeStatus2();
+    var chunk_1 = require_chunk();
+    var knowledgeStatus_1 = require_knowledgeStatus();
     var KnowledgeV1ServiceCreateKnowledgeRequest = class {
       constructor(payload) {
         this.description = payload["description"];
@@ -133268,7 +130780,7 @@ var require_knowledge2 = __commonJS({
         this.embeddingModel = payload.embedding_model;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { id: id || this.id };
+        this._solution = { id };
       }
       get _proxy() {
         this._context = this._context || new KnowledgeContextImpl(this._version, this._solution.id);
@@ -133529,7 +131041,7 @@ var require_knowledge2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/V1.js
-var require_V114 = __commonJS({
+var require_V113 = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -133537,7 +131049,7 @@ var require_V114 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
-    var knowledge_1 = require_knowledge2();
+    var knowledge_1 = require_knowledge();
     var V1 = class extends Version_1.default {
       /**
        * Initialize the V1 version of Knowledge
@@ -133558,7 +131070,7 @@ var require_V114 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/v2/chunk.js
-var require_chunk3 = __commonJS({
+var require_chunk2 = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v2/chunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -133672,6 +131184,10 @@ var require_chunk3 = __commonJS({
         const payload = _payload;
         this.content = payload.content;
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.chunkIndex = deserialize.integer(payload.chunkIndex);
+        this.documentTitle = payload.documentTitle;
+        this.documentUrl = payload.documentUrl;
+        this.documentNumber = deserialize.integer(payload.documentNumber);
       }
       /**
        * Provide a user-friendly representation
@@ -133681,7 +131197,11 @@ var require_chunk3 = __commonJS({
       toJSON() {
         return {
           content: this.content,
-          createdAt: this.createdAt
+          createdAt: this.createdAt,
+          chunkIndex: this.chunkIndex,
+          documentTitle: this.documentTitle,
+          documentUrl: this.documentUrl,
+          documentNumber: this.documentNumber
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -133719,7 +131239,7 @@ var require_chunk3 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/knowledge/v2/knowledge.js
-var require_knowledge3 = __commonJS({
+var require_knowledge2 = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v2/knowledge.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -134306,6 +131826,7 @@ var require_knowledgeBasis = __commonJS({
         this._version = _version;
         const payload = _payload;
         this.message = payload.message;
+        this.statusUrl = payload.statusUrl;
         this.displayName = payload.displayName;
         this.description = payload.description;
         this.id = payload.id;
@@ -134313,7 +131834,6 @@ var require_knowledgeBasis = __commonJS({
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.version = deserialize.integer(payload.version);
-        this.statusUrl = payload.statusUrl;
         this._solution = { kbId };
       }
       get _proxy() {
@@ -134374,14 +131894,14 @@ var require_knowledgeBasis = __commonJS({
       toJSON() {
         return {
           message: this.message,
+          statusUrl: this.statusUrl,
           displayName: this.displayName,
           description: this.description,
           id: this.id,
           status: this.status,
           createdAt: this.createdAt,
           updatedAt: this.updatedAt,
-          version: this.version,
-          statusUrl: this.statusUrl
+          version: this.version
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -134720,7 +132240,7 @@ var require_search = __commonJS({
   "node_modules/twilio/lib/rest/knowledge/v2/search.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SearchInstance = exports2.SearchContextImpl = exports2.KnowledgeSearch = exports2.KnowledgeChunkResult = void 0;
+    exports2.SearchInstance = exports2.KnowledgeSearch = exports2.KnowledgeChunkResult = void 0;
     exports2.SearchListInstance = SearchListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -134730,6 +132250,10 @@ var require_search = __commonJS({
       constructor(payload) {
         this.content = payload["content"];
         this.createdAt = payload["createdAt"];
+        this.chunkIndex = payload["chunkIndex"];
+        this.documentTitle = payload["documentTitle"];
+        this.documentUrl = payload["documentUrl"];
+        this.documentNumber = payload["documentNumber"];
         this.score = payload["score"];
         this.knowledgeId = payload["knowledgeId"];
       }
@@ -134743,16 +132267,15 @@ var require_search = __commonJS({
       }
     };
     exports2.KnowledgeSearch = KnowledgeSearch;
-    var SearchContextImpl = class {
-      constructor(_version, kbId) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(kbId)) {
-          throw new Error("Parameter 'kbId' is not valid.");
-        }
-        this._solution = { kbId };
-        this._uri = `/KnowledgeBases/${kbId}/Search`;
+    function SearchListInstance(version, kbId) {
+      if (!(0, utility_1.isValidPathParam)(kbId)) {
+        throw new Error("Parameter 'kbId' is not valid.");
       }
-      create(params, headers, callback) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = { kbId };
+      instance._uri = `/KnowledgeBases/${kbId}/Search`;
+      instance.create = function create(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
           params = {};
@@ -134766,8 +132289,7 @@ var require_search = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
+        let operationVersion = version, operationPromise = operationVersion.create({
           uri: instance._uri,
           method: "post",
           data,
@@ -134776,8 +132298,8 @@ var require_search = __commonJS({
         operationPromise = operationPromise.then((payload) => new SearchInstance(operationVersion, payload, instance._solution.kbId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      createWithHttpInfo(params, headers, callback) {
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
           params = {};
@@ -134791,8 +132313,7 @@ var require_search = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
+        let operationVersion = version;
         let operationPromise = operationVersion.createWithResponseInfo({
           uri: instance._uri,
           method: "post",
@@ -134804,36 +132325,20 @@ var require_search = __commonJS({
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.SearchContextImpl = SearchContextImpl;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
     var SearchInstance = class {
       constructor(_version, _payload, kbId) {
         this._version = _version;
         const payload = _payload;
         this.chunks = payload.chunks !== null && payload.chunks !== void 0 ? payload.chunks.map((payload2) => new KnowledgeChunkResult(payload2)) : null;
-        this._solution = { kbId };
-      }
-      get _proxy() {
-        this._context = this._context || new SearchContextImpl(this._version, this._solution.kbId);
-        return this._context;
-      }
-      create(params, callback) {
-        return this._proxy.create(params, callback);
-      }
-      createWithHttpInfo(params, callback) {
-        return this._proxy.createWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -134850,22 +132355,6 @@ var require_search = __commonJS({
       }
     };
     exports2.SearchInstance = SearchInstance;
-    function SearchListInstance(version) {
-      const instance = ((kbId) => instance.get(kbId));
-      instance.get = function get(kbId) {
-        return new SearchContextImpl(version, kbId);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = ``;
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
   }
 });
 
@@ -134878,8 +132367,8 @@ var require_V28 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
-    var chunk_1 = require_chunk3();
-    var knowledge_1 = require_knowledge3();
+    var chunk_1 = require_chunk2();
+    var knowledge_1 = require_knowledge2();
     var knowledgeBasis_1 = require_knowledgeBasis();
     var operation_1 = require_operation2();
     var search_1 = require_search();
@@ -134916,7 +132405,7 @@ var require_V28 = __commonJS({
       }
       /** Accessor for search resource */
       search(kbId) {
-        return (0, search_1.SearchListInstance)(this)(kbId);
+        return (0, search_1.SearchListInstance)(this, kbId);
       }
     };
     exports2.default = V2;
@@ -134931,7 +132420,7 @@ var require_KnowledgeBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V114());
+    var V1_1 = __importDefault(require_V113());
     var V2_1 = __importDefault(require_V28());
     var KnowledgeBase = class extends Domain_1.default {
       /**
@@ -135079,7 +132568,7 @@ var require_phoneNumber = __commonJS({
         this.carrier = payload.carrier;
         this.addOns = payload.add_ons;
         this.url = payload.url;
-        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
+        this._solution = { phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -135132,7 +132621,7 @@ var require_phoneNumber = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/lookups/V1.js
-var require_V115 = __commonJS({
+var require_V114 = __commonJS({
   "node_modules/twilio/lib/rest/lookups/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -135319,10 +132808,7 @@ var require_bucket = __commonJS({
         this.bucket = payload.bucket;
         this.owner = payload.owner;
         this.ttl = payload.ttl;
-        this._solution = {
-          field: field || this.field,
-          bucket: bucket || this.bucket
-        };
+        this._solution = { field, bucket };
       }
       get _proxy() {
         this._context = this._context || new BucketContextImpl(this._version, this._solution.field, this._solution.bucket);
@@ -135634,10 +133120,7 @@ var require_lookupOverride = __commonJS({
         this.bucket = payload.bucket;
         this.owner = payload.owner;
         this.ttl = payload.ttl;
-        this._solution = {
-          field: field || this.field,
-          phoneNumber: phoneNumber || this.phoneNumber
-        };
+        this._solution = { field, phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new LookupOverrideContextImpl(this._version, this._solution.field, this._solution.phoneNumber);
@@ -135987,7 +133470,7 @@ var require_phoneNumber2 = __commonJS({
         this.phoneNumberQualityScore = payload.phone_number_quality_score;
         this.preFill = payload.pre_fill;
         this.url = payload.url;
-        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
+        this._solution = { phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -136464,7 +133947,7 @@ var require_LookupsBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V115());
+    var V1_1 = __importDefault(require_V114());
     var V2_1 = __importDefault(require_V29());
     var LookupsBase = class extends Domain_1.default {
       /**
@@ -136587,7 +134070,7 @@ var require_availableAddOnExtension = __commonJS({
         this.productName = payload.product_name;
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
-        this._solution = { availableAddOnSid, sid: sid || this.sid };
+        this._solution = { availableAddOnSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnExtensionContextImpl(this._version, this._solution.availableAddOnSid, this._solution.sid);
@@ -136839,7 +134322,7 @@ var require_availableAddOn = __commonJS({
         this.configurationSchema = payload.configuration_schema;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnContextImpl(this._version, this._solution.sid);
@@ -137142,7 +134625,7 @@ var require_installedAddOnExtension = __commonJS({
         this.uniqueName = payload.unique_name;
         this.enabled = payload.enabled;
         this.url = payload.url;
-        this._solution = { installedAddOnSid, sid: sid || this.sid };
+        this._solution = { installedAddOnSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnExtensionContextImpl(this._version, this._solution.installedAddOnSid, this._solution.sid);
@@ -137598,7 +135081,7 @@ var require_installedAddOn = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnContextImpl(this._version, this._solution.sid);
@@ -138165,7 +135648,7 @@ var require_moduleDataManagement = __commonJS({
         this.configuration = payload.configuration;
         this.pricing = payload.pricing;
         this.listings = payload.listings;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ModuleDataManagementContextImpl(this._version, this._solution.sid);
@@ -138338,7 +135821,7 @@ var require_referralConversion = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/marketplace/V1.js
-var require_V116 = __commonJS({
+var require_V115 = __commonJS({
   "node_modules/twilio/lib/rest/marketplace/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -138398,7 +135881,7 @@ var require_MarketplaceBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V116());
+    var V1_1 = __importDefault(require_V115());
     var MarketplaceBase = class extends Domain_1.default {
       /**
        * Initialize marketplace domain
@@ -138436,7 +135919,7 @@ var require_bulk = __commonJS({
   "node_modules/twilio/lib/rest/memory/v1/bulk.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.BulkInstance = exports2.BulkContextImpl = exports2.UpdateProfilesBulkRequest = exports2.ProfileData = void 0;
+    exports2.BulkInstance = exports2.UpdateProfilesBulkRequest = exports2.ProfileData = void 0;
     exports2.BulkListInstance = BulkListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -138454,16 +135937,15 @@ var require_bulk = __commonJS({
       }
     };
     exports2.UpdateProfilesBulkRequest = UpdateProfilesBulkRequest;
-    var BulkContextImpl = class {
-      constructor(_version, storeId) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(storeId)) {
-          throw new Error("Parameter 'storeId' is not valid.");
-        }
-        this._solution = { storeId };
-        this._uri = `/Stores/${storeId}/Profiles/Bulk`;
+    function BulkListInstance(version, storeId) {
+      if (!(0, utility_1.isValidPathParam)(storeId)) {
+        throw new Error("Parameter 'storeId' is not valid.");
       }
-      update(params, headers, callback) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = { storeId };
+      instance._uri = `/Stores/${storeId}/Profiles/Bulk`;
+      instance.update = function update(params, headers, callback) {
         if (params === null || params === void 0) {
           throw new Error('Required parameter "params" missing.');
         }
@@ -138474,8 +135956,7 @@ var require_bulk = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.update({
+        let operationVersion = version, operationPromise = operationVersion.update({
           uri: instance._uri,
           method: "put",
           data,
@@ -138484,8 +135965,8 @@ var require_bulk = __commonJS({
         operationPromise = operationPromise.then((payload) => new BulkInstance(operationVersion, payload, instance._solution.storeId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      updateWithHttpInfo(params, headers, callback) {
+      };
+      instance.updateWithHttpInfo = function updateWithHttpInfo(params, headers, callback) {
         if (params === null || params === void 0) {
           throw new Error('Required parameter "params" missing.');
         }
@@ -138496,8 +135977,7 @@ var require_bulk = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
+        let operationVersion = version;
         let operationPromise = operationVersion.updateWithResponseInfo({
           uri: instance._uri,
           method: "put",
@@ -138509,36 +135989,20 @@ var require_bulk = __commonJS({
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.BulkContextImpl = BulkContextImpl;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
     var BulkInstance = class {
       constructor(_version, _payload, storeId) {
         this._version = _version;
         const payload = _payload;
         this.message = payload.message;
-        this._solution = { storeId };
-      }
-      get _proxy() {
-        this._context = this._context || new BulkContextImpl(this._version, this._solution.storeId);
-        return this._context;
-      }
-      update(params, callback) {
-        return this._proxy.update(params, callback);
-      }
-      updateWithHttpInfo(params, callback) {
-        return this._proxy.updateWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -138555,22 +136019,6 @@ var require_bulk = __commonJS({
       }
     };
     exports2.BulkInstance = BulkInstance;
-    function BulkListInstance(version) {
-      const instance = ((storeId) => instance.get(storeId));
-      instance.get = function get(storeId) {
-        return new BulkContextImpl(version, storeId);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = ``;
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
   }
 });
 
@@ -138903,6 +136351,8 @@ var require_conversationSummary = __commonJS({
           data["pageSize"] = params["pageSize"];
         if (params["pageToken"] !== void 0)
           data["pageToken"] = params["pageToken"];
+        if (params["conversationId"] !== void 0)
+          data["conversationId"] = params["conversationId"];
         const headers = {};
         headers["Accept"] = "application/json";
         if (params["acceptEncoding"] !== void 0)
@@ -138940,6 +136390,8 @@ var require_conversationSummary = __commonJS({
           data["pageSize"] = params["pageSize"];
         if (params["pageToken"] !== void 0)
           data["pageToken"] = params["pageToken"];
+        if (params["conversationId"] !== void 0)
+          data["conversationId"] = params["conversationId"];
         const headers = {};
         headers["Accept"] = "application/json";
         if (params["acceptEncoding"] !== void 0)
@@ -139015,7 +136467,7 @@ var require_dataMapping = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DataMappingPage = exports2.DataMappingInstance = exports2.DataMappingContextImpl = exports2.MappingTraitItem = exports2.DataMappingToTraits = exports2.DataMappingFromDataSet = exports2.DataMappingCore = exports2.CreateDataMappingInput = void 0;
+    exports2.DataMappingPage = exports2.DataMappingInstance = exports2.DataMappingContextImpl = exports2.MappingTraitItem = exports2.DataMappingToTraits = exports2.DataMappingFromTypes = exports2.DataMappingCore = exports2.CreateDataMappingInput = void 0;
     exports2.DataMappingListInstance = DataMappingListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -139041,13 +136493,14 @@ var require_dataMapping = __commonJS({
       }
     };
     exports2.DataMappingCore = DataMappingCore;
-    var DataMappingFromDataSet = class {
+    var DataMappingFromTypes = class {
       constructor(payload) {
         this.type = payload["type"];
+        this.columns = payload["columns"];
         this.datasetId = payload["datasetId"];
       }
     };
-    exports2.DataMappingFromDataSet = DataMappingFromDataSet;
+    exports2.DataMappingFromTypes = DataMappingFromTypes;
     var DataMappingToTraits = class {
       constructor(payload) {
         this.type = payload["type"];
@@ -139057,7 +136510,6 @@ var require_dataMapping = __commonJS({
     exports2.DataMappingToTraits = DataMappingToTraits;
     var MappingTraitItem = class {
       constructor(payload) {
-        this.fieldName = payload["fieldName"];
         this.expression = payload["expression"];
         this.traitGroup = payload["traitGroup"];
         this.traitName = payload["traitName"];
@@ -139210,7 +136662,7 @@ var require_dataMapping = __commonJS({
         this.description = payload.description;
         this.isEnabled = payload.isEnabled;
         this.mappingTo = payload.mappingTo !== null && payload.mappingTo !== void 0 ? new DataMappingToTraits(payload.mappingTo) : null;
-        this.mappingFrom = payload.mappingFrom !== null && payload.mappingFrom !== void 0 ? new DataMappingFromDataSet(payload.mappingFrom) : null;
+        this.mappingFrom = payload.mappingFrom !== null && payload.mappingFrom !== void 0 ? new DataMappingFromTypes(payload.mappingFrom) : null;
         this.id = payload.id;
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
@@ -139465,148 +136917,6 @@ var require_dataMapping = __commonJS({
       }
     };
     exports2.DataMappingPage = DataMappingPage;
-  }
-});
-
-// node_modules/twilio/lib/rest/memory/v1/event.js
-var require_event3 = __commonJS({
-  "node_modules/twilio/lib/rest/memory/v1/event.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EventInstance = exports2.ProfileEventRequestEvents = exports2.ProfileEventRequest = exports2.CommunicationLifecycleEventSender = exports2.CommunicationLifecycleEventRecipient = void 0;
-    exports2.EventListInstance = EventListInstance;
-    var util_1 = require("util");
-    var deserialize = require_deserialize();
-    var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var CommunicationLifecycleEventRecipient = class {
-      constructor(payload) {
-        this.address = payload["address"];
-        this.participantId = payload["participantId"];
-      }
-    };
-    exports2.CommunicationLifecycleEventRecipient = CommunicationLifecycleEventRecipient;
-    var CommunicationLifecycleEventSender = class {
-      constructor(payload) {
-        this.address = payload["address"];
-        this.participantId = payload["participantId"];
-      }
-    };
-    exports2.CommunicationLifecycleEventSender = CommunicationLifecycleEventSender;
-    var ProfileEventRequest = class {
-      constructor(payload) {
-        this.type = payload["type"];
-        this.events = payload["events"];
-      }
-    };
-    exports2.ProfileEventRequest = ProfileEventRequest;
-    var ProfileEventRequestEvents = class {
-      constructor(payload) {
-        this.timestamp = payload["timestamp"];
-        this.lifecycle = payload["lifecycle"];
-        this.conversationId = payload["conversationId"];
-        this.communicationId = payload["communicationId"];
-        this.communicationType = payload["communicationType"];
-        this.communicationStatus = payload["communicationStatus"];
-        this.direction = payload["direction"];
-        this.sender = payload["sender"];
-        this.recipient = payload["recipient"];
-        this.errorCode = payload["errorCode"];
-        this.errorMessage = payload["errorMessage"];
-      }
-    };
-    exports2.ProfileEventRequestEvents = ProfileEventRequestEvents;
-    function EventListInstance(version, storeId, profileId) {
-      if (!(0, utility_1.isValidPathParam)(storeId)) {
-        throw new Error("Parameter 'storeId' is not valid.");
-      }
-      if (!(0, utility_1.isValidPathParam)(profileId)) {
-        throw new Error("Parameter 'profileId' is not valid.");
-      }
-      const instance = {};
-      instance._version = version;
-      instance._solution = { storeId, profileId };
-      instance._uri = `/Stores/${storeId}/Profiles/${profileId}/Events`;
-      instance.create = function create(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new EventInstance(operationVersion, payload, instance._solution.storeId, instance._solution.profileId));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        let operationVersion = version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new EventInstance(operationVersion, response.body, instance._solution.storeId, instance._solution.profileId)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      };
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
-    var EventInstance = class {
-      constructor(_version, _payload, storeId, profileId) {
-        this._version = _version;
-        const payload = _payload;
-        this.message = payload.message;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          message: this.message
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.EventInstance = EventInstance;
   }
 });
 
@@ -139956,7 +137266,7 @@ var require_identityResolutionSetting = __commonJS({
   "node_modules/twilio/lib/rest/memory/v1/identityResolutionSetting.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.IdentityResolutionSettingInstance = exports2.IdentityResolutionSettingContextImpl = exports2.IdentityResolutionSettingsCore = exports2.IdentifierConfig = void 0;
+    exports2.IdentityResolutionSettingInstance = exports2.IdentityResolutionSettingsCore = exports2.IdentifierConfig = void 0;
     exports2.IdentityResolutionSettingListInstance = IdentityResolutionSettingListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -139981,20 +137291,18 @@ var require_identityResolutionSetting = __commonJS({
       }
     };
     exports2.IdentityResolutionSettingsCore = IdentityResolutionSettingsCore;
-    var IdentityResolutionSettingContextImpl = class {
-      constructor(_version, storeId) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(storeId)) {
-          throw new Error("Parameter 'storeId' is not valid.");
-        }
-        this._solution = { storeId };
-        this._uri = `/ControlPlane/Stores/${storeId}/IdentityResolutionSettings`;
+    function IdentityResolutionSettingListInstance(version, storeId) {
+      if (!(0, utility_1.isValidPathParam)(storeId)) {
+        throw new Error("Parameter 'storeId' is not valid.");
       }
-      fetch(callback) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = { storeId };
+      instance._uri = `/ControlPlane/Stores/${storeId}/IdentityResolutionSettings`;
+      instance.fetch = function fetch2(callback) {
         const headers = {};
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+        let operationVersion = version, operationPromise = operationVersion.fetch({
           uri: instance._uri,
           method: "get",
           headers
@@ -140002,12 +137310,11 @@ var require_identityResolutionSetting = __commonJS({
         operationPromise = operationPromise.then((payload) => new IdentityResolutionSettingInstance(operationVersion, payload, instance._solution.storeId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      fetchWithHttpInfo(callback) {
+      };
+      instance.fetchWithHttpInfo = function fetchWithHttpInfo(callback) {
         const headers = {};
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
+        let operationVersion = version;
         let operationPromise = operationVersion.fetchWithResponseInfo({
           uri: instance._uri,
           method: "get",
@@ -140018,8 +137325,8 @@ var require_identityResolutionSetting = __commonJS({
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      update(params, headers, callback) {
+      };
+      instance.update = function update(params, headers, callback) {
         if (params === null || params === void 0) {
           throw new Error('Required parameter "params" missing.');
         }
@@ -140030,8 +137337,7 @@ var require_identityResolutionSetting = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.update({
+        let operationVersion = version, operationPromise = operationVersion.update({
           uri: instance._uri,
           method: "put",
           data,
@@ -140040,8 +137346,8 @@ var require_identityResolutionSetting = __commonJS({
         operationPromise = operationPromise.then((payload) => new IdentityResolutionSettingInstance(operationVersion, payload, instance._solution.storeId));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      updateWithHttpInfo(params, headers, callback) {
+      };
+      instance.updateWithHttpInfo = function updateWithHttpInfo(params, headers, callback) {
         if (params === null || params === void 0) {
           throw new Error('Required parameter "params" missing.');
         }
@@ -140052,8 +137358,7 @@ var require_identityResolutionSetting = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
+        let operationVersion = version;
         let operationPromise = operationVersion.updateWithResponseInfo({
           uri: instance._uri,
           method: "put",
@@ -140065,20 +137370,15 @@ var require_identityResolutionSetting = __commonJS({
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.IdentityResolutionSettingContextImpl = IdentityResolutionSettingContextImpl;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
     var IdentityResolutionSettingInstance = class {
       constructor(_version, _payload, storeId) {
         this._version = _version;
@@ -140088,37 +137388,6 @@ var require_identityResolutionSetting = __commonJS({
         this.version = deserialize.integer(payload.version);
         this.message = payload.message;
         this.statusUrl = payload.statusUrl;
-        this._solution = { storeId };
-      }
-      get _proxy() {
-        this._context = this._context || new IdentityResolutionSettingContextImpl(this._version, this._solution.storeId);
-        return this._context;
-      }
-      /**
-       * Fetch a IdentityResolutionSettingInstance
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed IdentityResolutionSettingInstance
-       */
-      fetch(callback) {
-        return this._proxy.fetch(callback);
-      }
-      /**
-       * Fetch a IdentityResolutionSettingInstance and return HTTP info
-       *
-       * @param callback - Callback to handle processed record
-       *
-       * @returns Resolves to processed IdentityResolutionSettingInstance with HTTP metadata
-       */
-      fetchWithHttpInfo(callback) {
-        return this._proxy.fetchWithHttpInfo(callback);
-      }
-      update(params, callback) {
-        return this._proxy.update(params, callback);
-      }
-      updateWithHttpInfo(params, callback) {
-        return this._proxy.updateWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -140139,22 +137408,6 @@ var require_identityResolutionSetting = __commonJS({
       }
     };
     exports2.IdentityResolutionSettingInstance = IdentityResolutionSettingInstance;
-    function IdentityResolutionSettingListInstance(version) {
-      const instance = ((storeId) => instance.get(storeId));
-      instance.get = function get(storeId) {
-        return new IdentityResolutionSettingContextImpl(version, storeId);
-      };
-      instance._version = version;
-      instance._solution = {};
-      instance._uri = ``;
-      instance.toJSON = function toJSON() {
-        return instance._solution;
-      };
-      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
-        return (0, util_1.inspect)(instance.toJSON(), options);
-      };
-      return instance;
-    }
   }
 });
 
@@ -140162,10 +137415,14 @@ var require_identityResolutionSetting = __commonJS({
 var require_import = __commonJS({
   "node_modules/twilio/lib/rest/memory/v1/import.js"(exports2) {
     "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ImportInstance = exports2.ImportContextImpl = exports2.FetchProfileImportV2200ResponseSummary = exports2.CreateProfilesImportV2Request = exports2.ColumnMappingItem = void 0;
+    exports2.ImportPage = exports2.ImportInstance = exports2.ImportContextImpl = exports2.ListProfileImportsV2200ResponseMeta = exports2.FetchProfileImportV2200ResponseSummary = exports2.CreateProfilesImportV2Request = exports2.ColumnMappingItem = void 0;
     exports2.ImportListInstance = ImportListInstance;
     var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
@@ -140192,6 +137449,15 @@ var require_import = __commonJS({
       }
     };
     exports2.FetchProfileImportV2200ResponseSummary = FetchProfileImportV2200ResponseSummary;
+    var ListProfileImportsV2200ResponseMeta = class {
+      constructor(payload) {
+        this.key = payload["key"];
+        this.pageSize = payload["pageSize"];
+        this.nextToken = payload["nextToken"];
+        this.previousToken = payload["previousToken"];
+      }
+    };
+    exports2.ListProfileImportsV2200ResponseMeta = ListProfileImportsV2200ResponseMeta;
     var ImportContextImpl = class {
       constructor(_version, storeId, importId) {
         this._version = _version;
@@ -140257,9 +137523,10 @@ var require_import = __commonJS({
         this.fileSize = deserialize.integer(payload.fileSize);
         this.columnMappings = payload.columnMappings !== null && payload.columnMappings !== void 0 ? payload.columnMappings.map((payload2) => new ColumnMappingItem(payload2)) : null;
         this.summary = payload.summary !== null && payload.summary !== void 0 ? new FetchProfileImportV2200ResponseSummary(payload.summary) : null;
+        this.imports = payload.imports;
+        this.meta = payload.meta !== null && payload.meta !== void 0 ? new ListProfileImportsV2200ResponseMeta(payload.meta) : null;
         this.importId = payload.importId;
         this.url = payload.url;
-        this.imports = payload.imports;
         this._solution = { storeId, importId };
       }
       get _proxy() {
@@ -140300,9 +137567,10 @@ var require_import = __commonJS({
           fileSize: this.fileSize,
           columnMappings: this.columnMappings,
           summary: this.summary,
+          imports: this.imports,
+          meta: this.meta,
           importId: this.importId,
-          url: this.url,
-          imports: this.imports
+          url: this.url
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -140366,35 +137634,144 @@ var require_import = __commonJS({
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
-      instance.list = function list(callback) {
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["orderBy"] !== void 0)
+          data["orderBy"] = params["orderBy"];
         const headers = {};
-        const data = {};
         headers["Accept"] = "application/json";
-        let operationVersion = version, operationPromise = operationVersion.fetch({
+        let operationVersion = version, operationPromise = operationVersion.page({
           uri: instance._uri,
           method: "get",
+          params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => payload["imports"] || []);
+        operationPromise = operationPromise.then((payload) => new ImportPage(operationVersion, payload, instance._uri, data, instance._solution));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
-      instance.listWithHttpInfo = function listWithHttpInfo(callback) {
+      instance.each = instance._version.each;
+      instance.list = function list(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        }
+        params = params || {};
+        let allRecords = [];
+        function fetchNextPage(nextPageParams) {
+          return instance.page(nextPageParams).then((page) => {
+            const payload = page["_payload"];
+            const records = payload && payload["imports"] ? payload["imports"] : [];
+            allRecords = allRecords.concat(records);
+            if (params.limit && allRecords.length >= params.limit) {
+              allRecords = allRecords.slice(0, params.limit);
+              return allRecords;
+            }
+            const nextToken = page.nextPageUrl ? new URL(page.nextPageUrl).searchParams.get("PageToken") : null;
+            if (nextToken) {
+              return fetchNextPage({ ...nextPageParams, pageToken: nextToken });
+            }
+            return allRecords;
+          });
+        }
+        const promise = fetchNextPage(params);
+        return instance._version.setPromiseCallback(promise, callback);
+      };
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new ImportPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["orderBy"] !== void 0)
+          data["orderBy"] = params["orderBy"];
         const headers = {};
-        const data = {};
         headers["Accept"] = "application/json";
         let operationVersion = version;
-        let operationPromise = operationVersion.fetchWithResponseInfo({
-          uri: instance._uri,
-          method: "get",
-          headers
-        }).then((response) => ({
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
           statusCode: response.statusCode,
           headers: response.headers,
-          body: response.body["imports"] || []
+          body: new ImportPage(operationVersion, response, instance._uri, data, instance._solution)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.listWithHttpInfo = function listWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        }
+        params = params || {};
+        let allRecords = [];
+        let lastResponse;
+        function fetchNextPage(nextPageParams) {
+          return instance.pageWithHttpInfo(nextPageParams).then((response) => {
+            lastResponse = response;
+            const page = response.body;
+            const payload = page["_payload"];
+            const records = payload && payload["imports"] ? payload["imports"] : [];
+            allRecords = allRecords.concat(records);
+            if (params.limit && allRecords.length >= params.limit) {
+              allRecords = allRecords.slice(0, params.limit);
+              return {
+                statusCode: lastResponse.statusCode,
+                headers: lastResponse.headers,
+                body: allRecords
+              };
+            }
+            const nextToken = page.nextPageUrl ? new URL(page.nextPageUrl).searchParams.get("PageToken") : null;
+            if (nextToken) {
+              return fetchNextPage({ ...nextPageParams, pageToken: nextToken });
+            }
+            return {
+              statusCode: lastResponse.statusCode,
+              headers: lastResponse.headers,
+              body: allRecords
+            };
+          });
+        }
+        const promise = fetchNextPage(params);
+        return instance._version.setPromiseCallback(promise, callback);
+      };
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new ImportPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
       };
       instance.toJSON = function toJSON() {
         return instance._solution;
@@ -140404,6 +137781,32 @@ var require_import = __commonJS({
       };
       return instance;
     }
+    var ImportPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the ImportPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of ImportInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return payload;
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.ImportPage = ImportPage;
   }
 });
 
@@ -140520,7 +137923,7 @@ var require_observation = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ObservationPage = exports2.ObservationInstance = exports2.ObservationContextImpl = exports2.ObservationCore = exports2.CreateObservationsRequest = void 0;
+    exports2.ObservationPage = exports2.ObservationInstance = exports2.ObservationContextImpl = exports2.ObservationCreateRequest = exports2.ObservationBase = exports2.CreateObservationsRequest = void 0;
     exports2.ObservationListInstance = ObservationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -140533,7 +137936,7 @@ var require_observation = __commonJS({
       }
     };
     exports2.CreateObservationsRequest = CreateObservationsRequest;
-    var ObservationCore = class {
+    var ObservationBase = class {
       constructor(payload) {
         this.content = payload["content"];
         this.occurredAt = payload["occurredAt"];
@@ -140541,7 +137944,16 @@ var require_observation = __commonJS({
         this.conversationIds = payload["conversationIds"];
       }
     };
-    exports2.ObservationCore = ObservationCore;
+    exports2.ObservationBase = ObservationBase;
+    var ObservationCreateRequest = class {
+      constructor(payload) {
+        this.content = payload["content"];
+        this.occurredAt = payload["occurredAt"];
+        this.source = payload["source"];
+        this.conversationIds = payload["conversationIds"];
+      }
+    };
+    exports2.ObservationCreateRequest = ObservationCreateRequest;
     var ObservationContextImpl = class {
       constructor(_version, storeId, profileId, observationId) {
         this._version = _version;
@@ -140840,6 +138252,8 @@ var require_observation = __commonJS({
           data["createdAfter"] = serialize.iso8601DateTime(params["createdAfter"]);
         if (params["createdBefore"] !== void 0)
           data["createdBefore"] = serialize.iso8601DateTime(params["createdBefore"]);
+        if (params["conversationId"] !== void 0)
+          data["conversationId"] = params["conversationId"];
         const headers = {};
         headers["Accept"] = "application/json";
         if (params["acceptEncoding"] !== void 0)
@@ -140885,6 +138299,8 @@ var require_observation = __commonJS({
           data["createdAfter"] = serialize.iso8601DateTime(params["createdAfter"]);
         if (params["createdBefore"] !== void 0)
           data["createdBefore"] = serialize.iso8601DateTime(params["createdBefore"]);
+        if (params["conversationId"] !== void 0)
+          data["conversationId"] = params["conversationId"];
         const headers = {};
         headers["Accept"] = "application/json";
         if (params["acceptEncoding"] !== void 0)
@@ -141117,13 +138533,22 @@ var require_profile = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ProfilePage = exports2.ProfileInstance = exports2.ProfileContextImpl = exports2.ProfilesMeta = exports2.ProfilePatch = exports2.ProfileData = void 0;
+    exports2.ProfilePage = exports2.ProfileInstance = exports2.ProfileContextImpl = exports2.ProfilePatch = exports2.ProfileData = exports2.IdentityProfilesMeta = void 0;
     exports2.ProfileListInstance = ProfileListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
+    var IdentityProfilesMeta = class {
+      constructor(payload) {
+        this.key = payload["key"];
+        this.pageSize = payload["pageSize"];
+        this.nextToken = payload["nextToken"];
+        this.previousToken = payload["previousToken"];
+      }
+    };
+    exports2.IdentityProfilesMeta = IdentityProfilesMeta;
     var ProfileData = class {
       constructor(payload) {
         this.traits = payload["traits"];
@@ -141136,15 +138561,6 @@ var require_profile = __commonJS({
       }
     };
     exports2.ProfilePatch = ProfilePatch;
-    var ProfilesMeta = class {
-      constructor(payload) {
-        this.key = payload["key"];
-        this.pageSize = payload["pageSize"];
-        this.nextToken = payload["nextToken"];
-        this.previousToken = payload["previousToken"];
-      }
-    };
-    exports2.ProfilesMeta = ProfilesMeta;
     var ProfileContextImpl = class {
       constructor(_version, storeId, profileId) {
         this._version = _version;
@@ -141302,7 +138718,7 @@ var require_profile = __commonJS({
         this.id = payload.id;
         this.message = payload.message;
         this.profiles = payload.profiles;
-        this.meta = payload.meta !== null && payload.meta !== void 0 ? new ProfilesMeta(payload.meta) : null;
+        this.meta = payload.meta !== null && payload.meta !== void 0 ? new IdentityProfilesMeta(payload.meta) : null;
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.traits = payload.traits;
         this._solution = { storeId, profileId };
@@ -142635,7 +140051,7 @@ var require_traitGroup = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.TraitGroupPage = exports2.TraitGroupInstance = exports2.TraitGroupContextImpl = exports2.ValidationRule = exports2.TraitGroupRequest = exports2.TraitGroupCoreTraitsValue = exports2.TraitGroup = exports2.TraitDefinition = exports2.PatchTraitGroupRequest = exports2.Meta = void 0;
+    exports2.TraitGroupPage = exports2.TraitGroupInstance = exports2.TraitGroupContextImpl = exports2.ValidationRule = exports2.TraitGroupRequestTraits = exports2.TraitGroupRequest = exports2.TraitGroupCoreTraits = exports2.TraitGroup = exports2.TraitDefinition = exports2.PatchTraitGroupRequest = exports2.Meta = void 0;
     exports2.TraitGroupListInstance = TraitGroupListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -142662,6 +140078,7 @@ var require_traitGroup = __commonJS({
       constructor(payload) {
         this.dataType = payload["dataType"];
         this.description = payload["description"];
+        this.validationRule = payload["validationRule"];
         this.idTypePromotion = payload["idTypePromotion"];
       }
     };
@@ -142675,7 +140092,7 @@ var require_traitGroup = __commonJS({
       }
     };
     exports2.TraitGroup = TraitGroup;
-    var TraitGroupCoreTraitsValue = class {
+    var TraitGroupCoreTraits = class {
       constructor(payload) {
         this.dataType = payload["dataType"];
         this.description = payload["description"];
@@ -142683,7 +140100,7 @@ var require_traitGroup = __commonJS({
         this.idTypePromotion = payload["idTypePromotion"];
       }
     };
-    exports2.TraitGroupCoreTraitsValue = TraitGroupCoreTraitsValue;
+    exports2.TraitGroupCoreTraits = TraitGroupCoreTraits;
     var TraitGroupRequest = class {
       constructor(payload) {
         this.displayName = payload["displayName"];
@@ -142692,6 +140109,15 @@ var require_traitGroup = __commonJS({
       }
     };
     exports2.TraitGroupRequest = TraitGroupRequest;
+    var TraitGroupRequestTraits = class {
+      constructor(payload) {
+        this.dataType = payload["dataType"];
+        this.description = payload["description"];
+        this.validationRule = payload["validationRule"];
+        this.idTypePromotion = payload["idTypePromotion"];
+      }
+    };
+    exports2.TraitGroupRequestTraits = TraitGroupRequestTraits;
     var ValidationRule = class {
       constructor(payload) {
         this.pattern = payload["pattern"];
@@ -143128,7 +140554,7 @@ var require_traitGroup = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/memory/V1.js
-var require_V117 = __commonJS({
+var require_V116 = __commonJS({
   "node_modules/twilio/lib/rest/memory/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -143139,7 +140565,6 @@ var require_V117 = __commonJS({
     var bulk_1 = require_bulk();
     var conversationSummary_1 = require_conversationSummary();
     var dataMapping_1 = require_dataMapping();
-    var event_1 = require_event3();
     var identifier_1 = require_identifier();
     var identityResolutionSetting_1 = require_identityResolutionSetting();
     var import_1 = require_import();
@@ -143163,7 +140588,7 @@ var require_V117 = __commonJS({
       }
       /** Accessor for bulk resource */
       bulk(storeId) {
-        return (0, bulk_1.BulkListInstance)(this)(storeId);
+        return (0, bulk_1.BulkListInstance)(this, storeId);
       }
       /** Implementation */
       conversationSummaries(storeId, profileId, summaryId) {
@@ -143181,10 +140606,6 @@ var require_V117 = __commonJS({
         }
         return listInstance;
       }
-      /** Accessor for events resource */
-      events(storeId, profileId) {
-        return (0, event_1.EventListInstance)(this, storeId, profileId);
-      }
       /** Implementation */
       identifiers(storeId, profileId, idType) {
         const listInstance = (0, identifier_1.IdentifierListInstance)(this, storeId, profileId);
@@ -143195,7 +140616,7 @@ var require_V117 = __commonJS({
       }
       /** Accessor for identityResolutionSettings resource */
       identityResolutionSettings(storeId) {
-        return (0, identityResolutionSetting_1.IdentityResolutionSettingListInstance)(this)(storeId);
+        return (0, identityResolutionSetting_1.IdentityResolutionSettingListInstance)(this, storeId);
       }
       /** Implementation */
       imports(storeId, importId) {
@@ -143268,7 +140689,7 @@ var require_MemoryBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V117());
+    var V1_1 = __importDefault(require_V116());
     var MemoryBase = class extends Domain_1.default {
       /**
        * Initialize memory domain
@@ -143462,10 +140883,7 @@ var require_brandVetting = __commonJS({
         this.vettingStatus = payload.vetting_status;
         this.vettingProvider = payload.vetting_provider;
         this.url = payload.url;
-        this._solution = {
-          brandSid,
-          brandVettingSid: brandVettingSid || this.brandVettingSid
-        };
+        this._solution = { brandSid, brandVettingSid };
       }
       get _proxy() {
         this._context = this._context || new BrandVettingContextImpl(this._version, this._solution.brandSid, this._solution.brandVettingSid);
@@ -143820,7 +141238,7 @@ var require_brandRegistration = __commonJS({
         this.skipAutomaticSecVet = payload.skip_automatic_sec_vet;
         this.mock = payload.mock;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new BrandRegistrationContextImpl(this._version, this._solution.sid);
@@ -144137,7 +141555,6 @@ var require_deactivations = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new DeactivationsInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
@@ -144162,7 +141579,7 @@ var require_deactivations = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new DeactivationsInstance(operationVersion, response.body)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -144374,7 +141791,7 @@ var require_domainCerts = __commonJS({
         this.certificateSid = payload.certificate_sid;
         this.url = payload.url;
         this.certInValidation = payload.cert_in_validation;
-        this._solution = { domainSid: domainSid || this.domainSid };
+        this._solution = { domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainCertsContextImpl(this._version, this._solution.domainSid);
@@ -144604,7 +142021,7 @@ var require_domainConfig = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.disableHttps = payload.disable_https;
-        this._solution = { domainSid: domainSid || this.domainSid };
+        this._solution = { domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainConfigContextImpl(this._version, this._solution.domainSid);
@@ -144752,9 +142169,7 @@ var require_domainConfigMessagingService = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = {
-          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
-        };
+        this._solution = { messagingServiceSid };
       }
       get _proxy() {
         this._context = this._context || new DomainConfigMessagingServiceContextImpl(this._version, this._solution.messagingServiceSid);
@@ -144891,7 +142306,7 @@ var require_domainValidateDn = __commonJS({
         this.isValid = payload.is_valid;
         this.reason = payload.reason;
         this.url = payload.url;
-        this._solution = { domainSid: domainSid || this.domainSid };
+        this._solution = { domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainValidateDnContextImpl(this._version, this._solution.domainSid);
@@ -145161,8 +142576,8 @@ var require_linkshorteningMessagingService = __commonJS({
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
         this._solution = {
-          domainSid: domainSid || this.domainSid,
-          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
+          domainSid,
+          messagingServiceSid
         };
       }
       get _proxy() {
@@ -145309,9 +142724,7 @@ var require_linkshorteningMessagingServiceDomainAssociation = __commonJS({
         this.domainSid = payload.domain_sid;
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
-        this._solution = {
-          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
-        };
+        this._solution = { messagingServiceSid };
       }
       get _proxy() {
         this._context = this._context || new LinkshorteningMessagingServiceDomainAssociationContextImpl(this._version, this._solution.messagingServiceSid);
@@ -145447,7 +142860,7 @@ var require_requestManagedCert = __commonJS({
         this.url = payload.url;
         this.managed = payload.managed;
         this.requesting = payload.requesting;
-        this._solution = { domainSid: domainSid || this.domainSid };
+        this._solution = { domainSid };
       }
       get _proxy() {
         this._context = this._context || new RequestManagedCertContextImpl(this._version, this._solution.domainSid);
@@ -145617,7 +143030,7 @@ var require_alphaSender = __commonJS({
         this.alphaSender = payload.alpha_sender;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AlphaSenderContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -145960,7 +143373,7 @@ var require_channelSender = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { messagingServiceSid, sid: sid || this.sid };
+        this._solution = { messagingServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelSenderContextImpl(this._version, this._solution.messagingServiceSid, this._solution.sid);
@@ -146304,7 +143717,7 @@ var require_destinationAlphaSender = __commonJS({
         this.capabilities = payload.capabilities;
         this.url = payload.url;
         this.isoCountryCode = payload.iso_country_code;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DestinationAlphaSenderContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -146656,7 +144069,7 @@ var require_phoneNumber3 = __commonJS({
         this.countryCode = payload.country_code;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -147000,7 +144413,7 @@ var require_shortCode2 = __commonJS({
         this.countryCode = payload.country_code;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ShortCodeContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -147494,7 +144907,7 @@ var require_usAppToPerson = __commonJS({
         this.errors = payload.errors;
         this.privacyPolicyUrl = payload.privacy_policy_url;
         this.termsAndConditionsUrl = payload.terms_and_conditions_url;
-        this._solution = { messagingServiceSid, sid: sid || this.sid };
+        this._solution = { messagingServiceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new UsAppToPersonContextImpl(this._version, this._solution.messagingServiceSid, this._solution.sid);
@@ -148205,7 +145618,7 @@ var require_service7 = __commonJS({
         this.usecase = payload.usecase;
         this.usAppToPersonRegistered = payload.us_app_to_person_registered;
         this.useInboundWebhookOnNumber = payload.use_inbound_webhook_on_number;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -148896,7 +146309,7 @@ var require_tollfreeVerification = __commonJS({
         this.vettingId = payload.vetting_id;
         this.vettingProvider = payload.vetting_provider;
         this.vettingIdExpiration = deserialize.iso8601DateTime(payload.vetting_id_expiration);
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new TollfreeVerificationContextImpl(this._version, this._solution.sid);
@@ -149458,7 +146871,7 @@ var require_usecase = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/messaging/V1.js
-var require_V118 = __commonJS({
+var require_V117 = __commonJS({
   "node_modules/twilio/lib/rest/messaging/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -149660,6 +147073,7 @@ var require_channelsSender = __commonJS({
     var MessagingV2ChannelsSenderRequestsCreate = class {
       constructor(payload) {
         this.senderId = payload["sender_id"];
+        this.friendlyName = payload["friendly_name"];
         this.configuration = payload["configuration"];
         this.webhook = payload["webhook"];
         this.profile = payload["profile"];
@@ -149668,6 +147082,7 @@ var require_channelsSender = __commonJS({
     exports2.MessagingV2ChannelsSenderRequestsCreate = MessagingV2ChannelsSenderRequestsCreate;
     var MessagingV2ChannelsSenderRequestsUpdate = class {
       constructor(payload) {
+        this.friendlyName = payload["friendly_name"];
         this.configuration = payload["configuration"];
         this.webhook = payload["webhook"];
         this.profile = payload["profile"];
@@ -149840,6 +147255,7 @@ var require_channelsSender = __commonJS({
         this.sid = payload.sid;
         this.status = payload.status;
         this.senderId = payload.sender_id;
+        this.friendlyName = payload.friendly_name;
         this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new MessagingV2ChannelsSenderConfiguration(payload.configuration) : null;
         this.webhook = payload.webhook !== null && payload.webhook !== void 0 ? new MessagingV2ChannelsSenderWebhook(payload.webhook) : null;
         this.profile = payload.profile !== null && payload.profile !== void 0 ? new MessagingV2ChannelsSenderProfileGenericResponse(payload.profile) : null;
@@ -149847,7 +147263,7 @@ var require_channelsSender = __commonJS({
         this.offlineReasons = payload.offline_reasons !== null && payload.offline_reasons !== void 0 ? payload.offline_reasons.map((payload2) => new MessagingV2ChannelsSenderOfflineReasonsItems(payload2)) : null;
         this.compliance = payload.compliance !== null && payload.compliance !== void 0 ? new MessagingV2RcsComplianceResponse(payload.compliance) : null;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelsSenderContextImpl(this._version, this._solution.sid);
@@ -149909,6 +147325,7 @@ var require_channelsSender = __commonJS({
           sid: this.sid,
           status: this.status,
           senderId: this.senderId,
+          friendlyName: this.friendlyName,
           configuration: this.configuration,
           webhook: this.webhook,
           profile: this.profile,
@@ -150167,7 +147584,7 @@ var require_domainCerts2 = __commonJS({
         this.requesting = payload.requesting;
         this.url = payload.url;
         this.certInValidation = payload.cert_in_validation;
-        this._solution = { domainSid: domainSid || this.domainSid };
+        this._solution = { domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainCertsContextImpl(this._version, this._solution.domainSid);
@@ -150516,7 +147933,7 @@ var require_MessagingBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V118());
+    var V1_1 = __importDefault(require_V117());
     var V2_1 = __importDefault(require_V210());
     var V3_1 = __importDefault(require_V34());
     var MessagingBase = class extends Domain_1.default {
@@ -150696,7 +148113,7 @@ var require_alert = __commonJS({
         this.url = payload.url;
         this.requestHeaders = payload.request_headers;
         this.serviceSid = payload.service_sid;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AlertContextImpl(this._version, this._solution.sid);
@@ -150890,7 +148307,7 @@ var require_alert = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/monitor/v1/event.js
-var require_event4 = __commonJS({
+var require_event3 = __commonJS({
   "node_modules/twilio/lib/rest/monitor/v1/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -150972,7 +148389,7 @@ var require_event4 = __commonJS({
         this.sourceIpAddress = payload.source_ip_address;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EventContextImpl(this._version, this._solution.sid);
@@ -151173,7 +148590,7 @@ var require_event4 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/monitor/V1.js
-var require_V119 = __commonJS({
+var require_V118 = __commonJS({
   "node_modules/twilio/lib/rest/monitor/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -151182,7 +148599,7 @@ var require_V119 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
     var alert_1 = require_alert();
-    var event_1 = require_event4();
+    var event_1 = require_event3();
     var V1 = class extends Version_1.default {
       /**
        * Initialize the V1 version of Monitor
@@ -151215,7 +148632,7 @@ var require_MonitorBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V119());
+    var V1_1 = __importDefault(require_V118());
     var MonitorBase = class extends Domain_1.default {
       /**
        * Initialize monitor domain
@@ -151432,7 +148849,7 @@ var require_credential8 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -151807,7 +149224,7 @@ var require_binding4 = __commonJS({
         this.tags = payload.tags;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -152530,7 +149947,7 @@ var require_service8 = __commonJS({
         this.defaultAlexaNotificationProtocolVersion = payload.default_alexa_notification_protocol_version;
         this.deliveryCallbackUrl = payload.delivery_callback_url;
         this.deliveryCallbackEnabled = payload.delivery_callback_enabled;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -152856,7 +150273,7 @@ var require_service8 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/notify/V1.js
-var require_V120 = __commonJS({
+var require_V119 = __commonJS({
   "node_modules/twilio/lib/rest/notify/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -152898,7 +150315,7 @@ var require_NotifyBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V120());
+    var V1_1 = __importDefault(require_V119());
     var NotifyBase = class extends Domain_1.default {
       /**
        * Initialize notify domain
@@ -153017,7 +150434,7 @@ var require_bulkEligibility = __commonJS({
         this.status = payload.status;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateCompleted = deserialize.iso8601DateTime(payload.date_completed);
-        this._solution = { requestId: requestId || this.requestId };
+        this._solution = { requestId };
       }
       get _proxy() {
         this._context = this._context || new BulkEligibilityContextImpl(this._version, this._solution.requestId);
@@ -153692,9 +151109,7 @@ var require_portingPortIn = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.supportTicketId = deserialize.integer(payload.support_ticket_id);
         this.signatureRequestUrl = payload.signature_request_url;
-        this._solution = {
-          portInRequestSid: portInRequestSid || this.portInRequestSid
-        };
+        this._solution = { portInRequestSid };
       }
       get _proxy() {
         this._context = this._context || new PortingPortInContextImpl(this._version, this._solution.portInRequestSid);
@@ -153945,8 +151360,8 @@ var require_portingPortInPhoneNumber = __commonJS({
         this.rejectionReasonCode = deserialize.integer(payload.rejection_reason_code);
         this.portDate = deserialize.iso8601DateTime(payload.port_date);
         this._solution = {
-          portInRequestSid: portInRequestSid || this.portInRequestSid,
-          phoneNumberSid: phoneNumberSid || this.phoneNumberSid
+          portInRequestSid,
+          phoneNumberSid
         };
       }
       get _proxy() {
@@ -154142,7 +151557,7 @@ var require_portingPortability = __commonJS({
         this.numberType = payload.number_type;
         this.country = payload.country;
         this.url = payload.url;
-        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
+        this._solution = { phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PortingPortabilityContextImpl(this._version, this._solution.phoneNumber);
@@ -154816,7 +152231,7 @@ var require_webhook7 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/numbers/V1.js
-var require_V121 = __commonJS({
+var require_V120 = __commonJS({
   "node_modules/twilio/lib/rest/numbers/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -155099,7 +152514,7 @@ var require_application2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
         this.updatedBy = payload.updated_by;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ApplicationContextImpl(this._version, this._solution.sid);
@@ -155659,7 +153074,7 @@ var require_authorizationDocument = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AuthorizationDocumentContextImpl(this._version, this._solution.sid);
@@ -156037,7 +153452,7 @@ var require_bulkHostedNumberOrder = __commonJS({
         this.url = payload.url;
         this.totalCount = deserialize.integer(payload.total_count);
         this.results = payload.results;
-        this._solution = { bulkHostingSid: bulkHostingSid || this.bulkHostingSid };
+        this._solution = { bulkHostingSid };
       }
       get _proxy() {
         this._context = this._context || new BulkHostedNumberOrderContextImpl(this._version, this._solution.bulkHostingSid);
@@ -156246,7 +153661,7 @@ var require_bundleClone = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { bundleSid: bundleSid || this.bundleSid };
+        this._solution = { bundleSid };
       }
       get _proxy() {
         this._context = this._context || new BundleCloneContextImpl(this._version, this._solution.bundleSid);
@@ -156475,7 +153890,7 @@ var require_hostedNumberOrder = __commonJS({
         this.verificationCallExtension = payload.verification_call_extension;
         this.verificationCode = payload.verification_code;
         this.verificationType = payload.verification_type;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new HostedNumberOrderContextImpl(this._version, this._solution.sid);
@@ -157131,7 +154546,7 @@ var require_evaluation = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { bundleSid, sid: sid || this.sid };
+        this._solution = { bundleSid, sid };
       }
       get _proxy() {
         this._context = this._context || new EvaluationContextImpl(this._version, this._solution.bundleSid, this._solution.sid);
@@ -157431,7 +154846,7 @@ var require_itemAssignment = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { bundleSid, sid: sid || this.sid };
+        this._solution = { bundleSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ItemAssignmentContextImpl(this._version, this._solution.bundleSid, this._solution.sid);
@@ -157970,7 +155385,7 @@ var require_bundle = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new BundleContextImpl(this._version, this._solution.sid);
@@ -158479,7 +155894,7 @@ var require_endUser = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserContextImpl(this._version, this._solution.sid);
@@ -158808,7 +156223,7 @@ var require_endUserType = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserTypeContextImpl(this._version, this._solution.sid);
@@ -159071,7 +156486,7 @@ var require_regulation = __commonJS({
         this.endUserType = payload.end_user_type;
         this.requirements = payload.requirements;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RegulationContextImpl(this._version, this._solution.sid);
@@ -159400,7 +156815,7 @@ var require_supportingDocument = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentContextImpl(this._version, this._solution.sid);
@@ -159733,7 +157148,7 @@ var require_supportingDocumentType = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentTypeContextImpl(this._version, this._solution.sid);
@@ -160281,7 +157696,7 @@ var require_NumbersBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V121());
+    var V1_1 = __importDefault(require_V120());
     var V2_1 = __importDefault(require_V211());
     var V3_1 = __importDefault(require_V35());
     var NumbersBase = class extends Domain_1.default {
@@ -160372,7 +157787,6 @@ var require_authorize2 = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new AuthorizeInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
@@ -160404,7 +157818,7 @@ var require_authorize2 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new AuthorizeInstance(operationVersion, response.body)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -160574,7 +157988,7 @@ var require_token4 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/oauth/V1.js
-var require_V122 = __commonJS({
+var require_V121 = __commonJS({
   "node_modules/twilio/lib/rest/oauth/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -160641,6 +158055,10 @@ var require_authorize3 = __commonJS({
           data["scope"] = params["scope"];
         if (params["state"] !== void 0)
           data["state"] = params["state"];
+        if (params["codeChallenge"] !== void 0)
+          data["code_challenge"] = params["codeChallenge"];
+        if (params["codeChallengeMethod"] !== void 0)
+          data["code_challenge_method"] = params["codeChallengeMethod"];
         const headers = {};
         headers["Accept"] = "application/json";
         let operationVersion = version, operationPromise = operationVersion.fetch({
@@ -160649,7 +158067,6 @@ var require_authorize3 = __commonJS({
           params: data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new AuthorizeInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
@@ -160671,6 +158088,10 @@ var require_authorize3 = __commonJS({
           data["scope"] = params["scope"];
         if (params["state"] !== void 0)
           data["state"] = params["state"];
+        if (params["codeChallenge"] !== void 0)
+          data["code_challenge"] = params["codeChallenge"];
+        if (params["codeChallengeMethod"] !== void 0)
+          data["code_challenge_method"] = params["codeChallengeMethod"];
         const headers = {};
         headers["Accept"] = "application/json";
         let operationVersion = version;
@@ -160681,7 +158102,7 @@ var require_authorize3 = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new AuthorizeInstance(operationVersion, response.body)
+          body: void 0
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
@@ -160758,6 +158179,8 @@ var require_token5 = __commonJS({
           data["refresh_token"] = params["refreshToken"];
         if (params["scope"] !== void 0)
           data["scope"] = params["scope"];
+        if (params["codeVerifier"] !== void 0)
+          data["code_verifier"] = params["codeVerifier"];
         const headers = {};
         headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
@@ -160797,6 +158220,8 @@ var require_token5 = __commonJS({
           data["refresh_token"] = params["refreshToken"];
         if (params["scope"] !== void 0)
           data["scope"] = params["scope"];
+        if (params["codeVerifier"] !== void 0)
+          data["code_verifier"] = params["codeVerifier"];
         const headers = {};
         headers["Content-Type"] = "application/x-www-form-urlencoded";
         headers["Accept"] = "application/json";
@@ -160895,7 +158320,7 @@ var require_OauthBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V122());
+    var V1_1 = __importDefault(require_V121());
     var V2_1 = __importDefault(require_V212());
     var OauthBase = class extends Domain_1.default {
       /**
@@ -161310,7 +158735,7 @@ var require_authorizationDocument2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AuthorizationDocumentContextImpl(this._version, this._solution.sid);
@@ -161785,7 +159210,7 @@ var require_hostedNumberOrder3 = __commonJS({
         this.callDelay = deserialize.integer(payload.call_delay);
         this.verificationCode = payload.verification_code;
         this.verificationCallSids = payload.verification_call_sids;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new HostedNumberOrderContextImpl(this._version, this._solution.sid);
@@ -162244,7 +159669,7 @@ var require_availableAddOnExtension2 = __commonJS({
         this.productName = payload.product_name;
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
-        this._solution = { availableAddOnSid, sid: sid || this.sid };
+        this._solution = { availableAddOnSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnExtensionContextImpl(this._version, this._solution.availableAddOnSid, this._solution.sid);
@@ -162496,7 +159921,7 @@ var require_availableAddOn2 = __commonJS({
         this.configurationSchema = payload.configuration_schema;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnContextImpl(this._version, this._solution.sid);
@@ -162799,7 +160224,7 @@ var require_installedAddOnExtension2 = __commonJS({
         this.uniqueName = payload.unique_name;
         this.enabled = payload.enabled;
         this.url = payload.url;
-        this._solution = { installedAddOnSid, sid: sid || this.sid };
+        this._solution = { installedAddOnSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnExtensionContextImpl(this._version, this._solution.installedAddOnSid, this._solution.sid);
@@ -163138,7 +160563,7 @@ var require_installedAddOn2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnContextImpl(this._version, this._solution.sid);
@@ -163520,7 +160945,7 @@ var require_command = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CommandContextImpl(this._version, this._solution.sid);
@@ -163940,7 +161365,7 @@ var require_ratePlan = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RatePlanContextImpl(this._version, this._solution.sid);
@@ -164589,7 +162014,7 @@ var require_sim = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -165046,7 +162471,7 @@ var require_country = __commonJS({
         this.inboundSmsPrices = payload.inbound_sms_prices !== null && payload.inbound_sms_prices !== void 0 ? payload.inbound_sms_prices.map((payload2) => new PricingV1MessagingMessagingCountryInstanceInboundSmsPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry: isoCountry || this.isoCountry };
+        this._solution = { isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -165330,7 +162755,7 @@ var require_country2 = __commonJS({
         this.phoneNumberPrices = payload.phone_number_prices !== null && payload.phone_number_prices !== void 0 ? payload.phone_number_prices.map((payload2) => new PricingV1PhoneNumberPhoneNumberCountryInstancePhoneNumberPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry: isoCountry || this.isoCountry };
+        this._solution = { isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -165623,7 +163048,7 @@ var require_country3 = __commonJS({
         this.inboundCallPrices = payload.inbound_call_prices !== null && payload.inbound_call_prices !== void 0 ? payload.inbound_call_prices.map((payload2) => new PricingV1VoiceVoiceCountryInstanceInboundCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry: isoCountry || this.isoCountry };
+        this._solution = { isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -165878,7 +163303,7 @@ var require_number = __commonJS({
         this.inboundCallPrice = payload.inbound_call_price !== null && payload.inbound_call_price !== void 0 ? new PricingV1VoiceVoiceNumberInboundCallPrice(payload.inbound_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { number: number || this.number };
+        this._solution = { number };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.number);
@@ -165988,7 +163413,7 @@ var require_voice = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/pricing/V1.js
-var require_V123 = __commonJS({
+var require_V122 = __commonJS({
   "node_modules/twilio/lib/rest/pricing/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -166121,7 +163546,7 @@ var require_country4 = __commonJS({
         this.originatingCallPrices = payload.originating_call_prices !== null && payload.originating_call_prices !== void 0 ? payload.originating_call_prices.map((payload2) => new PricingV2TrunkingCountryInstanceOriginatingCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry: isoCountry || this.isoCountry };
+        this._solution = { isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -166400,9 +163825,7 @@ var require_number2 = __commonJS({
         this.originatingCallPrice = payload.originating_call_price !== null && payload.originating_call_price !== void 0 ? new PricingV2TrunkingNumberOriginatingCallPrice(payload.originating_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = {
-          destinationNumber: destinationNumber || this.destinationNumber
-        };
+        this._solution = { destinationNumber };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.destinationNumber);
@@ -166548,7 +163971,7 @@ var require_country5 = __commonJS({
         this.inboundCallPrices = payload.inbound_call_prices !== null && payload.inbound_call_prices !== void 0 ? payload.inbound_call_prices.map((payload2) => new PricingV2TrunkingCountryInstanceOriginatingCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry: isoCountry || this.isoCountry };
+        this._solution = { isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -166825,9 +164248,7 @@ var require_number3 = __commonJS({
         this.inboundCallPrice = payload.inbound_call_price !== null && payload.inbound_call_price !== void 0 ? new PricingV2VoiceVoiceNumberInboundCallPrice(payload.inbound_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = {
-          destinationNumber: destinationNumber || this.destinationNumber
-        };
+        this._solution = { destinationNumber };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.destinationNumber);
@@ -166972,7 +164393,7 @@ var require_PricingBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V123());
+    var V1_1 = __importDefault(require_V122());
     var V2_1 = __importDefault(require_V213());
     var PricingBase = class extends Domain_1.default {
       /**
@@ -167202,7 +164623,7 @@ var require_phoneNumber5 = __commonJS({
         this.url = payload.url;
         this.isReserved = payload.is_reserved;
         this.inUse = deserialize.integer(payload.in_use);
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -167578,7 +164999,7 @@ var require_interaction2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sessionSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sessionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.sid);
@@ -167883,12 +165304,7 @@ var require_messageInteraction = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = {
-          serviceSid,
-          sessionSid,
-          participantSid,
-          sid: sid || this.sid
-        };
+        this._solution = { serviceSid, sessionSid, participantSid, sid };
       }
       get _proxy() {
         this._context = this._context || new MessageInteractionContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.participantSid, this._solution.sid);
@@ -168247,7 +165663,7 @@ var require_participant6 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sessionSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sessionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.sid);
@@ -168514,7 +165930,7 @@ var require_participant6 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/proxy/v1/service/session.js
-var require_session2 = __commonJS({
+var require_session = __commonJS({
   "node_modules/twilio/lib/rest/proxy/v1/service/session.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -168692,7 +166108,7 @@ var require_session2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SessionContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -168996,7 +166412,7 @@ var require_service9 = __commonJS({
     var serialize = require_serialize();
     var utility_1 = require_utility();
     var phoneNumber_1 = require_phoneNumber5();
-    var session_1 = require_session2();
+    var session_1 = require_session();
     var ServiceContextImpl = class {
       constructor(_version, sid) {
         this._version = _version;
@@ -169174,7 +166590,7 @@ var require_service9 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -169464,7 +166880,7 @@ var require_service9 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/proxy/V1.js
-var require_V124 = __commonJS({
+var require_V123 = __commonJS({
   "node_modules/twilio/lib/rest/proxy/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -169500,7 +166916,7 @@ var require_ProxyBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V124());
+    var V1_1 = __importDefault(require_V123());
     var ProxyBase = class extends Domain_1.default {
       /**
        * Initialize proxy domain
@@ -169668,7 +167084,7 @@ var require_phoneNumber6 = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
+        this._solution = { phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -169869,7 +167285,7 @@ var require_sipDomain = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sipDomain: sipDomain || this.sipDomain };
+        this._solution = { sipDomain };
       }
       get _proxy() {
         this._context = this._context || new SipDomainContextImpl(this._version, this._solution.sipDomain);
@@ -170070,7 +167486,7 @@ var require_trunk = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sipTrunkDomain: sipTrunkDomain || this.sipTrunkDomain };
+        this._solution = { sipTrunkDomain };
       }
       get _proxy() {
         this._context = this._context || new TrunkContextImpl(this._version, this._solution.sipTrunkDomain);
@@ -170184,6 +167600,241 @@ var require_V214 = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/routes/v3/phoneNumber.js
+var require_phoneNumber7 = __commonJS({
+  "node_modules/twilio/lib/rest/routes/v3/phoneNumber.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.PhoneNumberInstance = exports2.PhoneNumberContextImpl = void 0;
+    exports2.PhoneNumberListInstance = PhoneNumberListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var PhoneNumberContextImpl = class {
+      constructor(_version, phoneNumber) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(phoneNumber)) {
+          throw new Error("Parameter 'phoneNumber' is not valid.");
+        }
+        this._solution = { phoneNumber };
+        this._uri = `/PhoneNumbers/${phoneNumber}`;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new PhoneNumberInstance(operationVersion, payload, instance._solution.phoneNumber));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new PhoneNumberInstance(operationVersion, response.body, instance._solution.phoneNumber)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["voiceRegion"] !== void 0)
+          data["voiceRegion"] = params["voiceRegion"];
+        if (params["messagingRegion"] !== void 0)
+          data["messagingRegion"] = params["messagingRegion"];
+        if (params["friendlyName"] !== void 0)
+          data["friendlyName"] = params["friendlyName"];
+        const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new PhoneNumberInstance(operationVersion, payload, instance._solution.phoneNumber));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["voiceRegion"] !== void 0)
+          data["voiceRegion"] = params["voiceRegion"];
+        if (params["messagingRegion"] !== void 0)
+          data["messagingRegion"] = params["messagingRegion"];
+        if (params["friendlyName"] !== void 0)
+          data["friendlyName"] = params["friendlyName"];
+        const headers = {};
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new PhoneNumberInstance(operationVersion, response.body, instance._solution.phoneNumber)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.PhoneNumberContextImpl = PhoneNumberContextImpl;
+    var PhoneNumberInstance = class {
+      constructor(_version, _payload, phoneNumber) {
+        this._version = _version;
+        const payload = _payload;
+        this.phoneNumber = payload.phoneNumber;
+        this.url = payload.url;
+        this.accountSid = payload.accountSid;
+        this.friendlyName = payload.friendlyName;
+        this.voiceRegion = payload.voiceRegion;
+        this.messagingRegion = payload.messagingRegion;
+        this.dateCreated = deserialize.iso8601DateTime(payload.dateCreated);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.dateUpdated);
+        this._solution = { phoneNumber };
+      }
+      get _proxy() {
+        this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
+        return this._context;
+      }
+      /**
+       * Fetch a PhoneNumberInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed PhoneNumberInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a PhoneNumberInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed PhoneNumberInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          phoneNumber: this.phoneNumber,
+          url: this.url,
+          accountSid: this.accountSid,
+          friendlyName: this.friendlyName,
+          voiceRegion: this.voiceRegion,
+          messagingRegion: this.messagingRegion,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.PhoneNumberInstance = PhoneNumberInstance;
+    function PhoneNumberListInstance(version) {
+      const instance = ((phoneNumber) => instance.get(phoneNumber));
+      instance.get = function get(phoneNumber) {
+        return new PhoneNumberContextImpl(version, phoneNumber);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/routes/V3.js
+var require_V36 = __commonJS({
+  "node_modules/twilio/lib/rest/routes/V3.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    var Version_1 = __importDefault(require_Version());
+    var phoneNumber_1 = require_phoneNumber7();
+    var V3 = class extends Version_1.default {
+      /**
+       * Initialize the V3 version of Routes
+       *
+       * @param domain - The Twilio (Twilio.Routes) domain
+       */
+      constructor(domain) {
+        super(domain, "v3");
+      }
+      /** Getter for phoneNumbers resource */
+      get phoneNumbers() {
+        this._phoneNumbers = this._phoneNumbers || (0, phoneNumber_1.PhoneNumberListInstance)(this);
+        return this._phoneNumbers;
+      }
+    };
+    exports2.default = V3;
+  }
+});
+
 // node_modules/twilio/lib/rest/RoutesBase.js
 var require_RoutesBase = __commonJS({
   "node_modules/twilio/lib/rest/RoutesBase.js"(exports2, module2) {
@@ -170193,6 +167844,7 @@ var require_RoutesBase = __commonJS({
     };
     var Domain_1 = __importDefault(require_Domain());
     var V2_1 = __importDefault(require_V214());
+    var V3_1 = __importDefault(require_V36());
     var RoutesBase = class extends Domain_1.default {
       /**
        * Initialize routes domain
@@ -170205,6 +167857,10 @@ var require_RoutesBase = __commonJS({
       get v2() {
         this._v2 = this._v2 || new V2_1.default(this);
         return this._v2;
+      }
+      get v3() {
+        this._v3 = this._v3 || new V3_1.default(this);
+        return this._v3;
       }
     };
     module2.exports = RoutesBase;
@@ -170329,7 +167985,7 @@ var require_assetVersion = __commonJS({
         this.visibility = payload.visibility;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { serviceSid, assetSid, sid: sid || this.sid };
+        this._solution = { serviceSid, assetSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AssetVersionContextImpl(this._version, this._solution.serviceSid, this._solution.assetSid, this._solution.sid);
@@ -170661,7 +168317,7 @@ var require_asset = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AssetContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -171167,7 +168823,7 @@ var require_build = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BuildContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -171514,7 +169170,7 @@ var require_deployment = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
+        this._solution = { serviceSid, environmentSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DeploymentContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -171830,7 +169486,7 @@ var require_log = __commonJS({
         this.message = payload.message;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
+        this._solution = { serviceSid, environmentSid, sid };
       }
       get _proxy() {
         this._context = this._context || new LogContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -172183,7 +169839,7 @@ var require_variable = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
+        this._solution = { serviceSid, environmentSid, sid };
       }
       get _proxy() {
         this._context = this._context || new VariableContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -172561,7 +170217,7 @@ var require_environment = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new EnvironmentContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -173066,7 +170722,7 @@ var require_functionVersion = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, functionSid, sid: sid || this.sid };
+        this._solution = { serviceSid, functionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new FunctionVersionContextImpl(this._version, this._solution.serviceSid, this._solution.functionSid, this._solution.sid);
@@ -173405,7 +171061,7 @@ var require_function = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new FunctionContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -173838,7 +171494,7 @@ var require_service10 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -174125,7 +171781,7 @@ var require_service10 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/serverless/V1.js
-var require_V125 = __commonJS({
+var require_V124 = __commonJS({
   "node_modules/twilio/lib/rest/serverless/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -174161,7 +171817,7 @@ var require_ServerlessBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V125());
+    var V1_1 = __importDefault(require_V124());
     var ServerlessBase = class extends Domain_1.default {
       /**
        * Initialize serverless domain
@@ -174589,7 +172245,7 @@ var require_step = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, engagementSid, sid: sid || this.sid };
+        this._solution = { flowSid, engagementSid, sid };
       }
       get _proxy() {
         this._context = this._context || new StepContextImpl(this._version, this._solution.flowSid, this._solution.engagementSid, this._solution.sid);
@@ -174892,7 +172548,7 @@ var require_engagement = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid: sid || this.sid };
+        this._solution = { flowSid, sid };
       }
       get _proxy() {
         this._context = this._context || new EngagementContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -175547,7 +173203,7 @@ var require_executionStep = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, executionSid, sid: sid || this.sid };
+        this._solution = { flowSid, executionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionStepContextImpl(this._version, this._solution.flowSid, this._solution.executionSid, this._solution.sid);
@@ -175899,7 +173555,7 @@ var require_execution = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid: sid || this.sid };
+        this._solution = { flowSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -176290,7 +173946,7 @@ var require_flow = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new FlowContextImpl(this._version, this._solution.sid);
@@ -176494,7 +174150,7 @@ var require_flow = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/studio/V1.js
-var require_V126 = __commonJS({
+var require_V125 = __commonJS({
   "node_modules/twilio/lib/rest/studio/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -176910,7 +174566,7 @@ var require_executionStep2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, executionSid, sid: sid || this.sid };
+        this._solution = { flowSid, executionSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionStepContextImpl(this._version, this._solution.flowSid, this._solution.executionSid, this._solution.sid);
@@ -177264,7 +174920,7 @@ var require_execution2 = __commonJS({
         this.initiatedBy = payload.initiated_by;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid: sid || this.sid };
+        this._solution = { flowSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -177636,7 +175292,7 @@ var require_flowRevision = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid, revision: revision || this.revision.toString() };
+        this._solution = { sid, revision: revision.toString() };
       }
       get _proxy() {
         this._context = this._context || new FlowRevisionContextImpl(this._version, this._solution.sid, this._solution.revision);
@@ -178189,7 +175845,7 @@ var require_flow2 = __commonJS({
         this.webhookUrl = payload.webhook_url;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new FlowContextImpl(this._version, this._solution.sid);
@@ -178638,7 +176294,7 @@ var require_StudioBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V126());
+    var V1_1 = __importDefault(require_V125());
     var V2_1 = __importDefault(require_V215());
     var StudioBase = class extends Domain_1.default {
       /**
@@ -178773,7 +176429,7 @@ var require_esimProfile = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EsimProfileContextImpl(this._version, this._solution.sid);
@@ -179181,7 +176837,7 @@ var require_fleet = __commonJS({
         this.networkAccessProfileSid = payload.network_access_profile_sid;
         this.ipCommandsUrl = payload.ip_commands_url;
         this.ipCommandsMethod = payload.ip_commands_method;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new FleetContextImpl(this._version, this._solution.sid);
@@ -179529,7 +177185,7 @@ var require_ipCommand = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new IpCommandContextImpl(this._version, this._solution.sid);
@@ -179869,7 +177525,7 @@ var require_network = __commonJS({
         this.url = payload.url;
         this.isoCountry = payload.iso_country;
         this.identifiers = payload.identifiers;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkContextImpl(this._version, this._solution.sid);
@@ -180148,7 +177804,7 @@ var require_networkAccessProfileNetwork = __commonJS({
         this.isoCountry = payload.iso_country;
         this.identifiers = payload.identifiers;
         this.url = payload.url;
-        this._solution = { networkAccessProfileSid, sid: sid || this.sid };
+        this._solution = { networkAccessProfileSid, sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkAccessProfileNetworkContextImpl(this._version, this._solution.networkAccessProfileSid, this._solution.sid);
@@ -180518,7 +178174,7 @@ var require_networkAccessProfile = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkAccessProfileContextImpl(this._version, this._solution.sid);
@@ -181417,7 +179073,7 @@ var require_sim2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -181752,7 +179408,7 @@ var require_smsCommand = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SmsCommandContextImpl(this._version, this._solution.sid);
@@ -182204,7 +179860,7 @@ var require_usageRecord = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/supersim/V1.js
-var require_V127 = __commonJS({
+var require_V126 = __commonJS({
   "node_modules/twilio/lib/rest/supersim/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -182288,7 +179944,7 @@ var require_SupersimBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V127());
+    var V1_1 = __importDefault(require_V126());
     var SupersimBase = class extends Domain_1.default {
       /**
        * Initialize supersim domain
@@ -182554,11 +180210,7 @@ var require_documentPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = {
-          serviceSid,
-          documentSid,
-          identity: identity || this.identity
-        };
+        this._solution = { serviceSid, documentSid, identity };
       }
       get _proxy() {
         this._context = this._context || new DocumentPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.documentSid, this._solution.identity);
@@ -182930,7 +180582,7 @@ var require_document = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new DocumentContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -183395,7 +181047,7 @@ var require_syncListItem = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, listSid, index: index || this.index };
+        this._solution = { serviceSid, listSid, index };
       }
       get _proxy() {
         this._context = this._context || new SyncListItemContextImpl(this._version, this._solution.serviceSid, this._solution.listSid, this._solution.index);
@@ -183827,11 +181479,7 @@ var require_syncListPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = {
-          serviceSid,
-          listSid,
-          identity: identity || this.identity
-        };
+        this._solution = { serviceSid, listSid, identity };
       }
       get _proxy() {
         this._context = this._context || new SyncListPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.listSid, this._solution.identity);
@@ -184203,7 +181851,7 @@ var require_syncList = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SyncListContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -184673,7 +182321,7 @@ var require_syncMapItem = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, mapSid, key: key || this.key };
+        this._solution = { serviceSid, mapSid, key };
       }
       get _proxy() {
         this._context = this._context || new SyncMapItemContextImpl(this._version, this._solution.serviceSid, this._solution.mapSid, this._solution.key);
@@ -185113,11 +182761,7 @@ var require_syncMapPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = {
-          serviceSid,
-          mapSid,
-          identity: identity || this.identity
-        };
+        this._solution = { serviceSid, mapSid, identity };
       }
       get _proxy() {
         this._context = this._context || new SyncMapPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.mapSid, this._solution.identity);
@@ -185489,7 +183133,7 @@ var require_syncMap = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SyncMapContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -186022,7 +183666,7 @@ var require_syncStream = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SyncStreamContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -186482,7 +184126,7 @@ var require_service11 = __commonJS({
         this.reachabilityDebouncingEnabled = payload.reachability_debouncing_enabled;
         this.reachabilityDebouncingWindow = deserialize.integer(payload.reachability_debouncing_window);
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -186782,7 +184426,7 @@ var require_service11 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/sync/V1.js
-var require_V128 = __commonJS({
+var require_V127 = __commonJS({
   "node_modules/twilio/lib/rest/sync/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -186818,7 +184462,7 @@ var require_SyncBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V128());
+    var V1_1 = __importDefault(require_V127());
     var SyncBase = class extends Domain_1.default {
       /**
        * Initialize sync domain
@@ -187012,7 +184656,7 @@ var require_activity = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ActivityContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -187272,7 +184916,7 @@ var require_activity = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js
-var require_event5 = __commonJS({
+var require_event4 = __commonJS({
   "node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -187360,7 +185004,7 @@ var require_event5 = __commonJS({
         this.sourceIpAddress = payload.source_ip_address;
         this.url = payload.url;
         this.workspaceSid = payload.workspace_sid;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new EventContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -187939,7 +185583,7 @@ var require_reservation = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, taskSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, taskSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ReservationContextImpl(this._version, this._solution.workspaceSid, this._solution.taskSid, this._solution.sid);
@@ -188354,7 +185998,7 @@ var require_task = __commonJS({
         this.virtualStartTime = deserialize.iso8601DateTime(payload.virtual_start_time);
         this.ignoreCapacity = payload.ignore_capacity;
         this.routingTarget = payload.routing_target;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TaskContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -188841,7 +186485,7 @@ var require_taskChannel = __commonJS({
         this.channelOptimizedRouting = payload.channel_optimized_routing;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TaskChannelContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -190129,7 +187773,7 @@ var require_taskQueue = __commonJS({
         this.url = payload.url;
         this.workspaceSid = payload.workspace_sid;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TaskQueueContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -190797,7 +188441,7 @@ var require_reservation2 = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, workerSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, workerSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ReservationContextImpl(this._version, this._solution.workspaceSid, this._solution.workerSid, this._solution.sid);
@@ -191129,7 +188773,7 @@ var require_workerChannel = __commonJS({
         this.workerSid = payload.worker_sid;
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
-        this._solution = { workspaceSid, workerSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, workerSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WorkerChannelContextImpl(this._version, this._solution.workspaceSid, this._solution.workerSid, this._solution.sid);
@@ -192172,7 +189816,7 @@ var require_worker = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WorkerContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -193207,7 +190851,7 @@ var require_workflow = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid: sid || this.sid };
+        this._solution = { workspaceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WorkflowContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -194019,7 +191663,7 @@ var require_workspace = __commonJS({
     var serialize = require_serialize();
     var utility_1 = require_utility();
     var activity_1 = require_activity();
-    var event_1 = require_event5();
+    var event_1 = require_event4();
     var task_1 = require_task();
     var taskChannel_1 = require_taskChannel();
     var taskQueue_1 = require_taskQueue();
@@ -194234,7 +191878,7 @@ var require_workspace = __commonJS({
         this.prioritizeQueueOrder = payload.prioritize_queue_order;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new WorkspaceContextImpl(this._version, this._solution.sid);
@@ -194569,7 +192213,7 @@ var require_workspace = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/taskrouter/V1.js
-var require_V129 = __commonJS({
+var require_V128 = __commonJS({
   "node_modules/twilio/lib/rest/taskrouter/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -194605,7 +192249,7 @@ var require_TaskrouterBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V129());
+    var V1_1 = __importDefault(require_V128());
     var TaskrouterBase = class extends Domain_1.default {
       /**
        * Initialize taskrouter domain
@@ -194746,7 +192390,7 @@ var require_credentialList2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid: sid || this.sid };
+        this._solution = { trunkSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -195086,7 +192730,7 @@ var require_ipAccessControlList2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid: sid || this.sid };
+        this._solution = { trunkSid, sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -195497,7 +193141,7 @@ var require_originationUrl = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid: sid || this.sid };
+        this._solution = { trunkSid, sid };
       }
       get _proxy() {
         this._context = this._context || new OriginationUrlContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -195779,7 +193423,7 @@ var require_originationUrl = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js
-var require_phoneNumber7 = __commonJS({
+var require_phoneNumber8 = __commonJS({
   "node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -195898,7 +193542,7 @@ var require_phoneNumber7 = __commonJS({
         this.voiceFallbackUrl = payload.voice_fallback_url;
         this.voiceMethod = payload.voice_method;
         this.voiceUrl = payload.voice_url;
-        this._solution = { trunkSid, sid: sid || this.sid };
+        this._solution = { trunkSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -196366,7 +194010,7 @@ var require_trunk2 = __commonJS({
     var credentialList_1 = require_credentialList2();
     var ipAccessControlList_1 = require_ipAccessControlList2();
     var originationUrl_1 = require_originationUrl();
-    var phoneNumber_1 = require_phoneNumber7();
+    var phoneNumber_1 = require_phoneNumber8();
     var recording_1 = require_recording4();
     var TrunkContextImpl = class {
       constructor(_version, sid) {
@@ -196561,7 +194205,7 @@ var require_trunk2 = __commonJS({
         this.sid = payload.sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new TrunkContextImpl(this._version, this._solution.sid);
@@ -196875,7 +194519,7 @@ var require_trunk2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/trunking/V1.js
-var require_V130 = __commonJS({
+var require_V129 = __commonJS({
   "node_modules/twilio/lib/rest/trunking/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -196911,7 +194555,7 @@ var require_TrunkingBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V130());
+    var V1_1 = __importDefault(require_V129());
     var TrunkingBase = class extends Domain_1.default {
       /**
        * Initialize trunking domain
@@ -196948,6 +194592,421 @@ var require_Trunking = __commonJS({
       }
     };
     module2.exports = Trunking;
+  }
+});
+
+// node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js
+var require_a2PBrandRegistration = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.A2PBrandRegistrationInstance = exports2.TrusthubV1A2pBrandRegistrationRequest = void 0;
+    exports2.A2PBrandRegistrationListInstance = A2PBrandRegistrationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var TrusthubV1A2pBrandRegistrationRequest = class {
+      constructor(payload) {
+        this.brandType = payload["brandType"];
+        this.themeSetId = payload["themeSetId"];
+        this.friendlyName = payload["friendlyName"];
+        this.notificationEmail = payload["notificationEmail"];
+        this.businessName = payload["businessName"];
+        this.businessRegistrationAuthority = payload["businessRegistrationAuthority"];
+        this.businessRegistrationNumber = payload["businessRegistrationNumber"];
+        this.businessIndustry = payload["businessIndustry"];
+        this.businessWebsite = payload["businessWebsite"];
+        this.businessType = payload["businessType"];
+        this.businessStockSymbol = payload["businessStockSymbol"];
+        this.businessStockExchange = payload["businessStockExchange"];
+        this.businessTaxExemptStatus = payload["businessTaxExemptStatus"];
+        this.brandExternalVettingToken = payload["brandExternalVettingToken"];
+        this.businessStreetAddress = payload["businessStreetAddress"];
+        this.businessStreetAddress2 = payload["businessStreetAddress2"];
+        this.businessCity = payload["businessCity"];
+        this.businessStateProvinceRegion = payload["businessStateProvinceRegion"];
+        this.businessPostalCode = payload["businessPostalCode"];
+        this.businessCountry = payload["businessCountry"];
+        this.businessContactFirstName = payload["businessContactFirstName"];
+        this.businessContactLastName = payload["businessContactLastName"];
+        this.businessContactEmail = payload["businessContactEmail"];
+        this.businessContactPhone = payload["businessContactPhone"];
+        this.authorizedContactVerificationEmail = payload["authorizedContactVerificationEmail"];
+        this.authorizedContactMobilePhoneNumberE164 = payload["authorizedContactMobilePhoneNumberE164"];
+        this.isTest = payload["isTest"];
+        this.skipAutomaticSecVet = payload["skipAutomaticSecVet"];
+      }
+    };
+    exports2.TrusthubV1A2pBrandRegistrationRequest = TrusthubV1A2pBrandRegistrationRequest;
+    function A2PBrandRegistrationListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/A2PBrandRegistrations`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new A2PBrandRegistrationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new A2PBrandRegistrationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var A2PBrandRegistrationInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.id = payload.id;
+        this.sessionId = payload.sessionId;
+        this.sessionToken = payload.sessionToken;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          sessionId: this.sessionId,
+          sessionToken: this.sessionToken
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.A2PBrandRegistrationInstance = A2PBrandRegistrationInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js
+var require_a2PBrandRegistrationEmbeddedSession = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.A2PBrandRegistrationEmbeddedSessionInstance = void 0;
+    exports2.A2PBrandRegistrationEmbeddedSessionListInstance = A2PBrandRegistrationEmbeddedSessionListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    function A2PBrandRegistrationEmbeddedSessionListInstance(version, id) {
+      if (!(0, utility_1.isValidPathParam)(id)) {
+        throw new Error("Parameter 'id' is not valid.");
+      }
+      const instance = {};
+      instance._version = version;
+      instance._solution = { id };
+      instance._uri = `/A2PBrandRegistrations/${id}/EmbeddedSessions`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new A2PBrandRegistrationEmbeddedSessionInstance(operationVersion, payload, instance._solution.id));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new A2PBrandRegistrationEmbeddedSessionInstance(operationVersion, response.body, instance._solution.id)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var A2PBrandRegistrationEmbeddedSessionInstance = class {
+      constructor(_version, payload, id) {
+        this._version = _version;
+        this.id = payload.id;
+        this.sessionId = payload.sessionId;
+        this.sessionToken = payload.sessionToken;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          sessionId: this.sessionId,
+          sessionToken: this.sessionToken
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.A2PBrandRegistrationEmbeddedSessionInstance = A2PBrandRegistrationEmbeddedSessionInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js
+var require_a2PCampaignRegistration = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.A2PCampaignRegistrationInstance = exports2.TrusthubV1A2pCampaignRegistrationRequest = void 0;
+    exports2.A2PCampaignRegistrationListInstance = A2PCampaignRegistrationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var TrusthubV1A2pCampaignRegistrationRequest = class {
+      constructor(payload) {
+        this.a2pBrandRegistrationSid = payload["a2pBrandRegistrationSid"];
+        this.messagingServiceSid = payload["messagingServiceSid"];
+        this.themeSetId = payload["themeSetId"];
+        this.useCaseCategories = payload["useCaseCategories"];
+        this.useCaseDescription = payload["useCaseDescription"];
+        this.useCaseSampleMessage1 = payload["useCaseSampleMessage1"];
+        this.useCaseSampleMessage2 = payload["useCaseSampleMessage2"];
+        this.useCaseSampleMessage3 = payload["useCaseSampleMessage3"];
+        this.useCaseSampleMessage4 = payload["useCaseSampleMessage4"];
+        this.useCaseSampleMessage5 = payload["useCaseSampleMessage5"];
+        this.useCaseOptInTypes = payload["useCaseOptInTypes"];
+        this.useCaseOptInDescription = payload["useCaseOptInDescription"];
+        this.hasEmbeddedLinks = payload["hasEmbeddedLinks"];
+        this.hasEmbeddedPhone = payload["hasEmbeddedPhone"];
+        this.embeddedUrlSample = payload["embeddedUrlSample"];
+        this.directLending = payload["directLending"];
+        this.ageGated = payload["ageGated"];
+        this.privacyPolicyUrl = payload["privacyPolicyUrl"];
+        this.termsAndConditionsUrl = payload["termsAndConditionsUrl"];
+        this.optInKeywords = payload["optInKeywords"];
+        this.optInMessageSample = payload["optInMessageSample"];
+        this.optOutKeywords = payload["optOutKeywords"];
+        this.optOutMessageSample = payload["optOutMessageSample"];
+        this.helpKeywords = payload["helpKeywords"];
+        this.helpMessageSample = payload["helpMessageSample"];
+      }
+    };
+    exports2.TrusthubV1A2pCampaignRegistrationRequest = TrusthubV1A2pCampaignRegistrationRequest;
+    function A2PCampaignRegistrationListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/A2PCampaignRegistrations`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new A2PCampaignRegistrationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new A2PCampaignRegistrationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var A2PCampaignRegistrationInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.id = payload.id;
+        this.sessionId = payload.sessionId;
+        this.sessionToken = payload.sessionToken;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          sessionId: this.sessionId,
+          sessionToken: this.sessionToken
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.A2PCampaignRegistrationInstance = A2PCampaignRegistrationInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js
+var require_a2PCampaignRegistrationEmbeddedSession = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.A2PCampaignRegistrationEmbeddedSessionInstance = void 0;
+    exports2.A2PCampaignRegistrationEmbeddedSessionListInstance = A2PCampaignRegistrationEmbeddedSessionListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    function A2PCampaignRegistrationEmbeddedSessionListInstance(version, id) {
+      if (!(0, utility_1.isValidPathParam)(id)) {
+        throw new Error("Parameter 'id' is not valid.");
+      }
+      const instance = {};
+      instance._version = version;
+      instance._solution = { id };
+      instance._uri = `/A2PCampaignRegistrations/${id}/EmbeddedSessions`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new A2PCampaignRegistrationEmbeddedSessionInstance(operationVersion, payload, instance._solution.id));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new A2PCampaignRegistrationEmbeddedSessionInstance(operationVersion, response.body, instance._solution.id)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var A2PCampaignRegistrationEmbeddedSessionInstance = class {
+      constructor(_version, payload, id) {
+        this._version = _version;
+        this.id = payload.id;
+        this.sessionId = payload.sessionId;
+        this.sessionToken = payload.sessionToken;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          sessionId: this.sessionId,
+          sessionToken: this.sessionToken
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.A2PCampaignRegistrationEmbeddedSessionInstance = A2PCampaignRegistrationEmbeddedSessionInstance;
   }
 });
 
@@ -197044,7 +195103,7 @@ var require_complianceInquiries = __commonJS({
         this.inquirySessionToken = payload.inquiry_session_token;
         this.customerId = payload.customer_id;
         this.url = payload.url;
-        this._solution = { customerId: customerId || this.customerId };
+        this._solution = { customerId };
       }
       get _proxy() {
         this._context = this._context || new ComplianceInquiriesContextImpl(this._version, this._solution.customerId);
@@ -197245,7 +195304,7 @@ var require_complianceRegistrationInquiries = __commonJS({
         this.inquirySessionToken = payload.inquiry_session_token;
         this.registrationId = payload.registration_id;
         this.url = payload.url;
-        this._solution = { registrationId: registrationId || this.registrationId };
+        this._solution = { registrationId };
       }
       get _proxy() {
         this._context = this._context || new ComplianceRegistrationInquiriesContextImpl(this._version, this._solution.registrationId);
@@ -197845,7 +195904,7 @@ var require_customerProfilesChannelEndpointAssignment = __commonJS({
         this.channelEndpointSid = payload.channel_endpoint_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid: sid || this.sid };
+        this._solution = { customerProfileSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesChannelEndpointAssignmentContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -198195,7 +196254,7 @@ var require_customerProfilesEntityAssignments = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid: sid || this.sid };
+        this._solution = { customerProfileSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesEntityAssignmentsContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -198517,7 +196576,7 @@ var require_customerProfilesEvaluations = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid: sid || this.sid };
+        this._solution = { customerProfileSid, sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesEvaluationsContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -198919,7 +196978,7 @@ var require_customerProfiles = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.errors = payload.errors;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesContextImpl(this._version, this._solution.sid);
@@ -199217,6 +197276,201 @@ var require_customerProfiles = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js
+var require_customerProfilesProvisionalCopy = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CustomerProfilesProvisionalCopyInstance = exports2.CustomerProfilesProvisionalCopyContextImpl = void 0;
+    exports2.CustomerProfilesProvisionalCopyListInstance = CustomerProfilesProvisionalCopyListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var CustomerProfilesProvisionalCopyContextImpl = class {
+      constructor(_version, customerProfileSid) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(customerProfileSid)) {
+          throw new Error("Parameter 'customerProfileSid' is not valid.");
+        }
+        this._solution = { customerProfileSid };
+        this._uri = `/CustomerProfiles/${customerProfileSid}/ProvisionalCopy`;
+      }
+      create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new CustomerProfilesProvisionalCopyInstance(operationVersion, payload, instance._solution.customerProfileSid));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new CustomerProfilesProvisionalCopyInstance(operationVersion, response.body, instance._solution.customerProfileSid)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new CustomerProfilesProvisionalCopyInstance(operationVersion, payload, instance._solution.customerProfileSid));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new CustomerProfilesProvisionalCopyInstance(operationVersion, response.body, instance._solution.customerProfileSid)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.CustomerProfilesProvisionalCopyContextImpl = CustomerProfilesProvisionalCopyContextImpl;
+    var CustomerProfilesProvisionalCopyInstance = class {
+      constructor(_version, payload, customerProfileSid) {
+        this._version = _version;
+        this.customerProfileSid = payload.customer_profile_sid;
+        this.accountSid = payload.account_sid;
+        this.policySid = payload.policy_sid;
+        this.friendlyName = payload.friendly_name;
+        this.status = payload.status;
+        this.email = payload.email;
+        this.statusCallback = payload.status_callback;
+        this.validUntil = deserialize.iso8601DateTime(payload.valid_until);
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.url = payload.url;
+        this._solution = { customerProfileSid };
+      }
+      get _proxy() {
+        this._context = this._context || new CustomerProfilesProvisionalCopyContextImpl(this._version, this._solution.customerProfileSid);
+        return this._context;
+      }
+      /**
+       * Create a CustomerProfilesProvisionalCopyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed CustomerProfilesProvisionalCopyInstance
+       */
+      create(callback) {
+        return this._proxy.create(callback);
+      }
+      /**
+       * Create a CustomerProfilesProvisionalCopyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed CustomerProfilesProvisionalCopyInstance with HTTP metadata
+       */
+      createWithHttpInfo(callback) {
+        return this._proxy.createWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a CustomerProfilesProvisionalCopyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed CustomerProfilesProvisionalCopyInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a CustomerProfilesProvisionalCopyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed CustomerProfilesProvisionalCopyInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          customerProfileSid: this.customerProfileSid,
+          accountSid: this.accountSid,
+          policySid: this.policySid,
+          friendlyName: this.friendlyName,
+          status: this.status,
+          email: this.email,
+          statusCallback: this.statusCallback,
+          validUntil: this.validUntil,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          url: this.url
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.CustomerProfilesProvisionalCopyInstance = CustomerProfilesProvisionalCopyInstance;
+    function CustomerProfilesProvisionalCopyListInstance(version) {
+      const instance = ((customerProfileSid) => instance.get(customerProfileSid));
+      instance.get = function get(customerProfileSid) {
+        return new CustomerProfilesProvisionalCopyContextImpl(version, customerProfileSid);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
 // node_modules/twilio/lib/rest/trusthub/v1/endUser.js
 var require_endUser2 = __commonJS({
   "node_modules/twilio/lib/rest/trusthub/v1/endUser.js"(exports2) {
@@ -199371,7 +197625,7 @@ var require_endUser2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserContextImpl(this._version, this._solution.sid);
@@ -199700,7 +197954,7 @@ var require_endUserType2 = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserTypeContextImpl(this._version, this._solution.sid);
@@ -199940,7 +198194,7 @@ var require_policies = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.requirements = payload.requirements;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new PoliciesContextImpl(this._version, this._solution.sid);
@@ -200262,7 +198516,7 @@ var require_supportingDocument2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentContextImpl(this._version, this._solution.sid);
@@ -200593,7 +198847,7 @@ var require_supportingDocumentType2 = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentTypeContextImpl(this._version, this._solution.sid);
@@ -200861,7 +199115,7 @@ var require_trustProductsChannelEndpointAssignment = __commonJS({
         this.channelEndpointSid = payload.channel_endpoint_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid: sid || this.sid };
+        this._solution = { trustProductSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsChannelEndpointAssignmentContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -201216,7 +199470,7 @@ var require_trustProductsEntityAssignments = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid: sid || this.sid };
+        this._solution = { trustProductSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsEntityAssignmentsContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -201538,7 +199792,7 @@ var require_trustProductsEvaluations = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid: sid || this.sid };
+        this._solution = { trustProductSid, sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsEvaluationsContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -201940,7 +200194,7 @@ var require_trustProducts = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.errors = payload.errors;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsContextImpl(this._version, this._solution.sid);
@@ -202238,8 +200492,203 @@ var require_trustProducts = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js
+var require_trustProductsProvisionalCopy = __commonJS({
+  "node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.TrustProductsProvisionalCopyInstance = exports2.TrustProductsProvisionalCopyContextImpl = void 0;
+    exports2.TrustProductsProvisionalCopyListInstance = TrustProductsProvisionalCopyListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var TrustProductsProvisionalCopyContextImpl = class {
+      constructor(_version, trustProductSid) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(trustProductSid)) {
+          throw new Error("Parameter 'trustProductSid' is not valid.");
+        }
+        this._solution = { trustProductSid };
+        this._uri = `/TrustProducts/${trustProductSid}/ProvisionalCopy`;
+      }
+      create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TrustProductsProvisionalCopyInstance(operationVersion, payload, instance._solution.trustProductSid));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TrustProductsProvisionalCopyInstance(operationVersion, response.body, instance._solution.trustProductSid)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TrustProductsProvisionalCopyInstance(operationVersion, payload, instance._solution.trustProductSid));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TrustProductsProvisionalCopyInstance(operationVersion, response.body, instance._solution.trustProductSid)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TrustProductsProvisionalCopyContextImpl = TrustProductsProvisionalCopyContextImpl;
+    var TrustProductsProvisionalCopyInstance = class {
+      constructor(_version, payload, trustProductSid) {
+        this._version = _version;
+        this.trustProductSid = payload.trust_product_sid;
+        this.accountSid = payload.account_sid;
+        this.policySid = payload.policy_sid;
+        this.friendlyName = payload.friendly_name;
+        this.status = payload.status;
+        this.email = payload.email;
+        this.statusCallback = payload.status_callback;
+        this.validUntil = deserialize.iso8601DateTime(payload.valid_until);
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.url = payload.url;
+        this._solution = { trustProductSid };
+      }
+      get _proxy() {
+        this._context = this._context || new TrustProductsProvisionalCopyContextImpl(this._version, this._solution.trustProductSid);
+        return this._context;
+      }
+      /**
+       * Create a TrustProductsProvisionalCopyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TrustProductsProvisionalCopyInstance
+       */
+      create(callback) {
+        return this._proxy.create(callback);
+      }
+      /**
+       * Create a TrustProductsProvisionalCopyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TrustProductsProvisionalCopyInstance with HTTP metadata
+       */
+      createWithHttpInfo(callback) {
+        return this._proxy.createWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a TrustProductsProvisionalCopyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TrustProductsProvisionalCopyInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a TrustProductsProvisionalCopyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TrustProductsProvisionalCopyInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          trustProductSid: this.trustProductSid,
+          accountSid: this.accountSid,
+          policySid: this.policySid,
+          friendlyName: this.friendlyName,
+          status: this.status,
+          email: this.email,
+          statusCallback: this.statusCallback,
+          validUntil: this.validUntil,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          url: this.url
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TrustProductsProvisionalCopyInstance = TrustProductsProvisionalCopyInstance;
+    function TrustProductsProvisionalCopyListInstance(version) {
+      const instance = ((trustProductSid) => instance.get(trustProductSid));
+      instance.get = function get(trustProductSid) {
+        return new TrustProductsProvisionalCopyContextImpl(version, trustProductSid);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
 // node_modules/twilio/lib/rest/trusthub/V1.js
-var require_V131 = __commonJS({
+var require_V130 = __commonJS({
   "node_modules/twilio/lib/rest/trusthub/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -202247,16 +200696,22 @@ var require_V131 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
+    var a2PBrandRegistration_1 = require_a2PBrandRegistration();
+    var a2PBrandRegistrationEmbeddedSession_1 = require_a2PBrandRegistrationEmbeddedSession();
+    var a2PCampaignRegistration_1 = require_a2PCampaignRegistration();
+    var a2PCampaignRegistrationEmbeddedSession_1 = require_a2PCampaignRegistrationEmbeddedSession();
     var complianceInquiries_1 = require_complianceInquiries();
     var complianceRegistrationInquiries_1 = require_complianceRegistrationInquiries();
     var complianceTollfreeInquiries_1 = require_complianceTollfreeInquiries();
     var customerProfiles_1 = require_customerProfiles();
+    var customerProfilesProvisionalCopy_1 = require_customerProfilesProvisionalCopy();
     var endUser_1 = require_endUser2();
     var endUserType_1 = require_endUserType2();
     var policies_1 = require_policies();
     var supportingDocument_1 = require_supportingDocument2();
     var supportingDocumentType_1 = require_supportingDocumentType2();
     var trustProducts_1 = require_trustProducts();
+    var trustProductsProvisionalCopy_1 = require_trustProductsProvisionalCopy();
     var V1 = class extends Version_1.default {
       /**
        * Initialize the V1 version of Trusthub
@@ -202265,6 +200720,24 @@ var require_V131 = __commonJS({
        */
       constructor(domain) {
         super(domain, "v1");
+      }
+      /** Getter for a2PBrandRegistrations resource */
+      get a2PBrandRegistrations() {
+        this._a2PBrandRegistrations = this._a2PBrandRegistrations || (0, a2PBrandRegistration_1.A2PBrandRegistrationListInstance)(this);
+        return this._a2PBrandRegistrations;
+      }
+      /** Accessor for a2PBrandRegistrationEmbeddedSessions resource */
+      a2PBrandRegistrationEmbeddedSessions(Id) {
+        return (0, a2PBrandRegistrationEmbeddedSession_1.A2PBrandRegistrationEmbeddedSessionListInstance)(this, Id);
+      }
+      /** Getter for a2PCampaignRegistrations resource */
+      get a2PCampaignRegistrations() {
+        this._a2PCampaignRegistrations = this._a2PCampaignRegistrations || (0, a2PCampaignRegistration_1.A2PCampaignRegistrationListInstance)(this);
+        return this._a2PCampaignRegistrations;
+      }
+      /** Accessor for a2PCampaignRegistrationEmbeddedSessions resource */
+      a2PCampaignRegistrationEmbeddedSessions(Id) {
+        return (0, a2PCampaignRegistrationEmbeddedSession_1.A2PCampaignRegistrationEmbeddedSessionListInstance)(this, Id);
       }
       /** Getter for complianceInquiries resource */
       get complianceInquiries() {
@@ -202285,6 +200758,11 @@ var require_V131 = __commonJS({
       get customerProfiles() {
         this._customerProfiles = this._customerProfiles || (0, customerProfiles_1.CustomerProfilesListInstance)(this);
         return this._customerProfiles;
+      }
+      /** Getter for customerProfilesProvisionalCopy resource */
+      get customerProfilesProvisionalCopy() {
+        this._customerProfilesProvisionalCopy = this._customerProfilesProvisionalCopy || (0, customerProfilesProvisionalCopy_1.CustomerProfilesProvisionalCopyListInstance)(this);
+        return this._customerProfilesProvisionalCopy;
       }
       /** Getter for endUsers resource */
       get endUsers() {
@@ -202316,6 +200794,11 @@ var require_V131 = __commonJS({
         this._trustProducts = this._trustProducts || (0, trustProducts_1.TrustProductsListInstance)(this);
         return this._trustProducts;
       }
+      /** Getter for trustProductsProvisionalCopy resource */
+      get trustProductsProvisionalCopy() {
+        this._trustProductsProvisionalCopy = this._trustProductsProvisionalCopy || (0, trustProductsProvisionalCopy_1.TrustProductsProvisionalCopyListInstance)(this);
+        return this._trustProductsProvisionalCopy;
+      }
     };
     exports2.default = V1;
   }
@@ -202329,7 +200812,7 @@ var require_TrusthubBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V131());
+    var V1_1 = __importDefault(require_V130());
     var TrusthubBase = class extends Domain_1.default {
       /**
        * Initialize trusthub domain
@@ -202480,7 +200963,7 @@ var require_form = __commonJS({
         this.forms = payload.forms;
         this.formMeta = payload.form_meta;
         this.url = payload.url;
-        this._solution = { formType: formType || this.formType };
+        this._solution = { formType };
       }
       get _proxy() {
         this._context = this._context || new FormContextImpl(this._version, this._solution.formType);
@@ -202633,7 +201116,7 @@ var require_safelist2 = __commonJS({
         this.sid = payload.sid;
         this.phoneNumber = payload.phone_number;
         this.url = payload.url;
-        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
+        this._solution = { phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new SafelistContextImpl(this._version, this._solution.phoneNumber);
@@ -202840,7 +201323,7 @@ var require_accessToken = __commonJS({
         this.url = payload.url;
         this.ttl = deserialize.integer(payload.ttl);
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new AccessTokenContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -203399,7 +201882,7 @@ var require_challenge = __commonJS({
         this.factorType = payload.factor_type;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, identity, sid: sid || this.sid };
+        this._solution = { serviceSid, identity, sid };
       }
       get _proxy() {
         this._context = this._context || new ChallengeContextImpl(this._version, this._solution.serviceSid, this._solution.identity, this._solution.sid);
@@ -203869,7 +202352,7 @@ var require_factor = __commonJS({
         this.config = payload.config;
         this.metadata = payload.metadata;
         this.url = payload.url;
-        this._solution = { serviceSid, identity, sid: sid || this.sid };
+        this._solution = { serviceSid, identity, sid };
       }
       get _proxy() {
         this._context = this._context || new FactorContextImpl(this._version, this._solution.serviceSid, this._solution.identity, this._solution.sid);
@@ -204377,7 +202860,7 @@ var require_entity = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, identity: identity || this.identity };
+        this._solution = { serviceSid, identity };
       }
       get _proxy() {
         this._context = this._context || new EntityContextImpl(this._version, this._solution.serviceSid, this._solution.identity);
@@ -204785,7 +203268,7 @@ var require_messagingConfiguration = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, country: country || this.country };
+        this._solution = { serviceSid, country };
       }
       get _proxy() {
         this._context = this._context || new MessagingConfigurationContextImpl(this._version, this._solution.serviceSid, this._solution.country);
@@ -205660,7 +204143,7 @@ var require_bucket2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, rateLimitSid, sid: sid || this.sid };
+        this._solution = { serviceSid, rateLimitSid, sid };
       }
       get _proxy() {
         this._context = this._context || new BucketContextImpl(this._version, this._solution.serviceSid, this._solution.rateLimitSid, this._solution.sid);
@@ -206077,7 +204560,7 @@ var require_rateLimit2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RateLimitContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -206466,7 +204949,7 @@ var require_verification = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.sna = payload.sna;
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new VerificationContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -206982,7 +205465,7 @@ var require_webhook8 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid: sid || this.sid };
+        this._solution = { serviceSid, sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -207574,7 +206057,7 @@ var require_service12 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -208241,7 +206724,7 @@ var require_verificationAttempt = __commonJS({
         this.price = payload.price;
         this.channelData = payload.channel_data;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new VerificationAttemptContextImpl(this._version, this._solution.sid);
@@ -208849,7 +207332,7 @@ var require_composition = __commonJS({
         this.statusCallbackMethod = payload.status_callback_method;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CompositionContextImpl(this._version, this._solution.sid);
@@ -209338,7 +207821,7 @@ var require_compositionHook = __commonJS({
         this.statusCallback = payload.status_callback;
         this.statusCallbackMethod = payload.status_callback_method;
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CompositionHookContextImpl(this._version, this._solution.sid);
@@ -209960,7 +208443,7 @@ var require_recording5 = __commonJS({
         this.statusCallback = payload.status_callback;
         this.statusCallbackMethod = payload.status_callback_method;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.sid);
@@ -210634,7 +209117,7 @@ var require_publishedTrack = __commonJS({
         this.enabled = payload.enabled;
         this.kind = payload.kind;
         this.url = payload.url;
-        this._solution = { roomSid, participantSid, sid: sid || this.sid };
+        this._solution = { roomSid, participantSid, sid };
       }
       get _proxy() {
         this._context = this._context || new PublishedTrackContextImpl(this._version, this._solution.roomSid, this._solution.participantSid, this._solution.sid);
@@ -211044,7 +209527,7 @@ var require_subscribedTrack = __commonJS({
         this.enabled = payload.enabled;
         this.kind = payload.kind;
         this.url = payload.url;
-        this._solution = { roomSid, participantSid, sid: sid || this.sid };
+        this._solution = { roomSid, participantSid, sid };
       }
       get _proxy() {
         this._context = this._context || new SubscribedTrackContextImpl(this._version, this._solution.roomSid, this._solution.participantSid, this._solution.sid);
@@ -211377,7 +209860,7 @@ var require_participant7 = __commonJS({
         this.duration = deserialize.integer(payload.duration);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { roomSid, sid: sid || this.sid };
+        this._solution = { roomSid, sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.roomSid, this._solution.sid);
@@ -211853,7 +210336,7 @@ var require_roomRecording = __commonJS({
         this.mediaExternalLocation = payload.media_external_location;
         this.roomSid = payload.room_sid;
         this.links = payload.links;
-        this._solution = { roomSid, sid: sid || this.sid };
+        this._solution = { roomSid, sid };
       }
       get _proxy() {
         this._context = this._context || new RoomRecordingContextImpl(this._version, this._solution.roomSid, this._solution.sid);
@@ -212210,7 +210693,7 @@ var require_transcriptions = __commonJS({
         this.duration = deserialize.integer(payload.duration);
         this.url = payload.url;
         this.configuration = payload.configuration;
-        this._solution = { roomSid, ttid: ttid || this.ttid };
+        this._solution = { roomSid, ttid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionsContextImpl(this._version, this._solution.roomSid, this._solution.ttid);
@@ -212604,7 +211087,7 @@ var require_room2 = __commonJS({
         this.largeRoom = payload.large_room;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RoomContextImpl(this._version, this._solution.sid);
@@ -212950,7 +211433,7 @@ var require_room2 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/video/V1.js
-var require_V132 = __commonJS({
+var require_V131 = __commonJS({
   "node_modules/twilio/lib/rest/video/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -213016,7 +211499,7 @@ var require_VideoBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V132());
+    var V1_1 = __importDefault(require_V131());
     var VideoBase = class extends Domain_1.default {
       /**
        * Initialize video domain
@@ -213361,7 +211844,7 @@ var require_byocTrunk = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ByocTrunkContextImpl(this._version, this._solution.sid);
@@ -213821,7 +212304,7 @@ var require_connectionPolicyTarget = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { connectionPolicySid, sid: sid || this.sid };
+        this._solution = { connectionPolicySid, sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectionPolicyTargetContextImpl(this._version, this._solution.connectionPolicySid, this._solution.sid);
@@ -214240,7 +212723,7 @@ var require_connectionPolicy = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectionPolicyContextImpl(this._version, this._solution.sid);
@@ -214825,7 +213308,7 @@ var require_country6 = __commonJS({
         this.highRiskTollfraudNumbersEnabled = payload.high_risk_tollfraud_numbers_enabled;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { isoCode: isoCode || this.isoCode };
+        this._solution = { isoCode };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCode);
@@ -215409,7 +213892,7 @@ var require_ipRecord = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new IpRecordContextImpl(this._version, this._solution.sid);
@@ -215806,7 +214289,7 @@ var require_sourceIpMapping = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SourceIpMappingContextImpl(this._version, this._solution.sid);
@@ -216056,7 +214539,7 @@ var require_sourceIpMapping = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/voice/V1.js
-var require_V133 = __commonJS({
+var require_V132 = __commonJS({
   "node_modules/twilio/lib/rest/voice/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -216114,8 +214597,1620 @@ var require_V133 = __commonJS({
   }
 });
 
-// node_modules/twilio/lib/rest/voice/v3/transcription.js
+// node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js
+var require_accountDefaultConfiguration = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.AccountDefaultConfigurationInstance = exports2.AccountDefaultConfigurationContextImpl = exports2.VoiceV2AccountDefaultConfigurationRequest = void 0;
+    exports2.AccountDefaultConfigurationListInstance = AccountDefaultConfigurationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var VoiceV2AccountDefaultConfigurationRequest = class {
+      constructor(payload) {
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2AccountDefaultConfigurationRequest = VoiceV2AccountDefaultConfigurationRequest;
+    var AccountDefaultConfigurationContextImpl = class {
+      constructor(_version, type) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(type)) {
+          throw new Error("Parameter 'type' is not valid.");
+        }
+        this._solution = { type };
+        this._uri = `/AccountDefaultConfiguration/${type}`;
+      }
+      create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AccountDefaultConfigurationInstance(operationVersion, payload, instance._solution.type));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AccountDefaultConfigurationInstance(operationVersion, response.body, instance._solution.type)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AccountDefaultConfigurationInstance(operationVersion, payload, instance._solution.type));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AccountDefaultConfigurationInstance(operationVersion, response.body, instance._solution.type)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AccountDefaultConfigurationInstance(operationVersion, payload, instance._solution.type));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AccountDefaultConfigurationInstance(operationVersion, response.body, instance._solution.type)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.AccountDefaultConfigurationContextImpl = AccountDefaultConfigurationContextImpl;
+    var AccountDefaultConfigurationInstance = class {
+      constructor(_version, payload, type) {
+        this._version = _version;
+        this.accountSid = payload.account_sid;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this._solution = { type };
+      }
+      get _proxy() {
+        this._context = this._context || new AccountDefaultConfigurationContextImpl(this._version, this._solution.type);
+        return this._context;
+      }
+      create(params, callback) {
+        return this._proxy.create(params, callback);
+      }
+      createWithHttpInfo(params, callback) {
+        return this._proxy.createWithHttpInfo(params, callback);
+      }
+      /**
+       * Remove a AccountDefaultConfigurationInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a AccountDefaultConfigurationInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a AccountDefaultConfigurationInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed AccountDefaultConfigurationInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a AccountDefaultConfigurationInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed AccountDefaultConfigurationInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          accountSid: this.accountSid,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration,
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.AccountDefaultConfigurationInstance = AccountDefaultConfigurationInstance;
+    function AccountDefaultConfigurationListInstance(version) {
+      const instance = ((type) => instance.get(type));
+      instance.get = function get(type) {
+        return new AccountDefaultConfigurationContextImpl(version, type);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v2/configuration/default.js
+var require_default = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/configuration/default.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.DefaultInstance = exports2.DefaultConfigurationRequest = void 0;
+    exports2.DefaultListInstance = DefaultListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var DefaultConfigurationRequest = class {
+      constructor(payload) {
+        this.configurationId = payload["configuration_id"];
+      }
+    };
+    exports2.DefaultConfigurationRequest = DefaultConfigurationRequest;
+    function DefaultListInstance(version, type) {
+      if (!(0, utility_1.isValidPathParam)(type)) {
+        throw new Error("Parameter 'type' is not valid.");
+      }
+      const instance = {};
+      instance._version = version;
+      instance._solution = { type };
+      instance._uri = `/Configurations/${type}/Default`;
+      instance.create = function create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: void 0
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.fetch = function fetch2(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new DefaultInstance(operationVersion, payload, instance._solution.type));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.fetchWithHttpInfo = function fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new DefaultInstance(operationVersion, response.body, instance._solution.type)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var DefaultInstance = class {
+      constructor(_version, payload, type) {
+        this._version = _version;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this.id = payload.id;
+        this.accountSid = payload.account_sid;
+        this.uniqueName = payload.unique_name;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo,
+          id: this.id,
+          accountSid: this.accountSid,
+          uniqueName: this.uniqueName,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.DefaultInstance = DefaultInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v2/configuration.js
+var require_configuration6 = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/configuration.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.VoiceV2ConfigurationRequest = void 0;
+    exports2.ConfigurationListInstance = ConfigurationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var default_1 = require_default();
+    var VoiceV2ConfigurationRequest = class {
+      constructor(payload) {
+        this.uniqueName = payload["unique_name"];
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRequest = VoiceV2ConfigurationRequest;
+    var ConfigurationContextImpl = class {
+      constructor(_version, type) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(type)) {
+          throw new Error("Parameter 'type' is not valid.");
+        }
+        this._solution = { type };
+        this._uri = `/Configurations/${type}`;
+      }
+      get default() {
+        this._default = this._default || (0, default_1.DefaultListInstance)(this._version, this._solution.type);
+        return this._default;
+      }
+      create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.type));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.type)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.ConfigurationContextImpl = ConfigurationContextImpl;
+    var ConfigurationInstance = class {
+      constructor(_version, payload, type) {
+        this._version = _version;
+        this.id = payload.id;
+        this.accountSid = payload.account_sid;
+        this.uniqueName = payload.unique_name;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration;
+        this._solution = { type };
+      }
+      get _proxy() {
+        this._context = this._context || new ConfigurationContextImpl(this._version, this._solution.type);
+        return this._context;
+      }
+      create(params, callback) {
+        return this._proxy.create(params, callback);
+      }
+      createWithHttpInfo(params, callback) {
+        return this._proxy.createWithHttpInfo(params, callback);
+      }
+      /**
+       * Access the default.
+       */
+      default() {
+        return this._proxy.default;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          accountSid: this.accountSid,
+          uniqueName: this.uniqueName,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.ConfigurationInstance = ConfigurationInstance;
+    function ConfigurationListInstance(version) {
+      const instance = ((type) => instance.get(type));
+      instance.get = function get(type) {
+        return new ConfigurationContextImpl(version, type);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v2/recording.js
+var require_recording6 = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/recording.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.RecordingInstance = exports2.RecordingContextImpl = exports2.VoiceV2ConfigurationRecordingStatusCallback = exports2.VoiceV2ConfigurationRecordingRequest = exports2.VoiceV2ConfigurationRecordingFeature = exports2.VoiceV2ConfigurationRecordingConfiguration = exports2.VoiceV2ConfigurationRecordingCompositionPolicy = void 0;
+    exports2.RecordingListInstance = RecordingListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var VoiceV2ConfigurationRecordingCompositionPolicy = class {
+      constructor(payload) {
+        this.channels = payload["channels"];
+        this.trim = payload["trim"];
+        this.track = payload["track"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingCompositionPolicy = VoiceV2ConfigurationRecordingCompositionPolicy;
+    var VoiceV2ConfigurationRecordingConfiguration = class {
+      constructor(payload) {
+        this.configurationType = payload["configurationType"];
+        this.compositionPolicy = payload["compositionPolicy"];
+        this.callRecordingStatusCallback = payload["callRecordingStatusCallback"];
+        this.conferenceRecordingStatusCallback = payload["conferenceRecordingStatusCallback"];
+        this.features = payload["features"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingConfiguration = VoiceV2ConfigurationRecordingConfiguration;
+    var VoiceV2ConfigurationRecordingFeature = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.featureId = payload["featureId"];
+        this.description = payload["description"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingFeature = VoiceV2ConfigurationRecordingFeature;
+    var VoiceV2ConfigurationRecordingRequest = class {
+      constructor(payload) {
+        this.uniqueName = payload["unique_name"];
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingRequest = VoiceV2ConfigurationRecordingRequest;
+    var VoiceV2ConfigurationRecordingStatusCallback = class {
+      constructor(payload) {
+        this.url = payload["url"];
+        this.method = payload["method"];
+        this.events = payload["events"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingStatusCallback = VoiceV2ConfigurationRecordingStatusCallback;
+    var RecordingContextImpl = class {
+      constructor(_version, idOrUniqueName) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(idOrUniqueName)) {
+          throw new Error("Parameter 'idOrUniqueName' is not valid.");
+        }
+        this._solution = { idOrUniqueName };
+        this._uri = `/Configurations/Recording/${idOrUniqueName}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingInstance(operationVersion, payload, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingInstance(operationVersion, response.body, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingInstance(operationVersion, payload, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingInstance(operationVersion, response.body, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RecordingContextImpl = RecordingContextImpl;
+    var RecordingInstance = class {
+      constructor(_version, payload, idOrUniqueName) {
+        this._version = _version;
+        this.id = payload.id;
+        this.accountSid = payload.account_sid;
+        this.uniqueName = payload.unique_name;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new VoiceV2ConfigurationRecordingConfiguration(payload.configuration) : null;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this._solution = { idOrUniqueName };
+      }
+      get _proxy() {
+        this._context = this._context || new RecordingContextImpl(this._version, this._solution.idOrUniqueName);
+        return this._context;
+      }
+      /**
+       * Remove a RecordingInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a RecordingInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a RecordingInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RecordingInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a RecordingInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RecordingInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          accountSid: this.accountSid,
+          uniqueName: this.uniqueName,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration,
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RecordingInstance = RecordingInstance;
+    function RecordingListInstance(version) {
+      const instance = ((idOrUniqueName) => instance.get(idOrUniqueName));
+      instance.get = function get(idOrUniqueName) {
+        return new RecordingContextImpl(version, idOrUniqueName);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Configurations/Recording`;
+      instance.create = function create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v2/transcription.js
 var require_transcription4 = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/transcription.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.TranscriptionInstance = exports2.TranscriptionContextImpl = exports2.VoiceV2ConfigurationTranscriptionStatusCallback = exports2.VoiceV2ConfigurationTranscriptionRequest = exports2.VoiceV2ConfigurationTranscriptionParticipantDefault = exports2.VoiceV2ConfigurationTranscriptionConfiguration = void 0;
+    exports2.TranscriptionListInstance = TranscriptionListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var VoiceV2ConfigurationTranscriptionConfiguration = class {
+      constructor(payload) {
+        this.configurationType = payload["configurationType"];
+        this.transcriptionEngine = payload["transcriptionEngine"];
+        this.speechModel = payload["speechModel"];
+        this.language = payload["language"];
+        this.transcriptionStatusCallback = payload["transcriptionStatusCallback"];
+        this.conversationConfigurationId = payload["conversationConfigurationId"];
+        this.participantDefaults = payload["participantDefaults"];
+      }
+    };
+    exports2.VoiceV2ConfigurationTranscriptionConfiguration = VoiceV2ConfigurationTranscriptionConfiguration;
+    var VoiceV2ConfigurationTranscriptionParticipantDefault = class {
+      constructor(payload) {
+        this.audioChannelIndex = payload["audioChannelIndex"];
+        this.type = payload["type"];
+      }
+    };
+    exports2.VoiceV2ConfigurationTranscriptionParticipantDefault = VoiceV2ConfigurationTranscriptionParticipantDefault;
+    var VoiceV2ConfigurationTranscriptionRequest = class {
+      constructor(payload) {
+        this.uniqueName = payload["unique_name"];
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2ConfigurationTranscriptionRequest = VoiceV2ConfigurationTranscriptionRequest;
+    var VoiceV2ConfigurationTranscriptionStatusCallback = class {
+      constructor(payload) {
+        this.url = payload["url"];
+        this.method = payload["method"];
+      }
+    };
+    exports2.VoiceV2ConfigurationTranscriptionStatusCallback = VoiceV2ConfigurationTranscriptionStatusCallback;
+    var TranscriptionContextImpl = class {
+      constructor(_version, idOrUniqueName) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(idOrUniqueName)) {
+          throw new Error("Parameter 'idOrUniqueName' is not valid.");
+        }
+        this._solution = { idOrUniqueName };
+        this._uri = `/Configurations/Transcription/${idOrUniqueName}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TranscriptionInstance(operationVersion, payload, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TranscriptionInstance(operationVersion, response.body, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TranscriptionInstance(operationVersion, payload, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TranscriptionInstance(operationVersion, response.body, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TranscriptionContextImpl = TranscriptionContextImpl;
+    var TranscriptionInstance = class {
+      constructor(_version, payload, idOrUniqueName) {
+        this._version = _version;
+        this.id = payload.id;
+        this.accountSid = payload.account_sid;
+        this.uniqueName = payload.unique_name;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new VoiceV2ConfigurationTranscriptionConfiguration(payload.configuration) : null;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this._solution = { idOrUniqueName };
+      }
+      get _proxy() {
+        this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.idOrUniqueName);
+        return this._context;
+      }
+      /**
+       * Remove a TranscriptionInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a TranscriptionInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a TranscriptionInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TranscriptionInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a TranscriptionInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TranscriptionInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          accountSid: this.accountSid,
+          uniqueName: this.uniqueName,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration,
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TranscriptionInstance = TranscriptionInstance;
+    function TranscriptionListInstance(version) {
+      const instance = ((idOrUniqueName) => instance.get(idOrUniqueName));
+      instance.get = function get(idOrUniqueName) {
+        return new TranscriptionContextImpl(version, idOrUniqueName);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Configurations/Transcription`;
+      instance.create = function create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TranscriptionInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TranscriptionInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v2/type.js
+var require_type2 = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/type.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.TypeInstance = exports2.TypeContextImpl = exports2.VoiceV2ConfigurationRequest = void 0;
+    exports2.TypeListInstance = TypeListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var VoiceV2ConfigurationRequest = class {
+      constructor(payload) {
+        this.uniqueName = payload["unique_name"];
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRequest = VoiceV2ConfigurationRequest;
+    var TypeContextImpl = class {
+      constructor(_version, type, idOrUniqueName) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(type)) {
+          throw new Error("Parameter 'type' is not valid.");
+        }
+        if (!(0, utility_1.isValidPathParam)(idOrUniqueName)) {
+          throw new Error("Parameter 'idOrUniqueName' is not valid.");
+        }
+        this._solution = { type, idOrUniqueName };
+        this._uri = `/Configurations/${type}/${idOrUniqueName}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TypeInstance(operationVersion, payload, instance._solution.type, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TypeInstance(operationVersion, response.body, instance._solution.type, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TypeInstance(operationVersion, payload, instance._solution.type, instance._solution.idOrUniqueName));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TypeInstance(operationVersion, response.body, instance._solution.type, instance._solution.idOrUniqueName)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TypeContextImpl = TypeContextImpl;
+    var TypeInstance = class {
+      constructor(_version, payload, type, idOrUniqueName) {
+        this._version = _version;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this.id = payload.id;
+        this.accountSid = payload.account_sid;
+        this.uniqueName = payload.unique_name;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration;
+        this._solution = { type, idOrUniqueName };
+      }
+      get _proxy() {
+        this._context = this._context || new TypeContextImpl(this._version, this._solution.type, this._solution.idOrUniqueName);
+        return this._context;
+      }
+      /**
+       * Remove a TypeInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a TypeInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a TypeInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TypeInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a TypeInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed TypeInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo,
+          id: this.id,
+          accountSid: this.accountSid,
+          uniqueName: this.uniqueName,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TypeInstance = TypeInstance;
+    function TypeListInstance(version) {
+      const instance = ((type, idOrUniqueName) => instance.get(type, idOrUniqueName));
+      instance.get = function get(type, idOrUniqueName) {
+        return new TypeContextImpl(version, type, idOrUniqueName);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/V2.js
+var require_V217 = __commonJS({
+  "node_modules/twilio/lib/rest/voice/V2.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    var Version_1 = __importDefault(require_Version());
+    var accountDefaultConfiguration_1 = require_accountDefaultConfiguration();
+    var configuration_1 = require_configuration6();
+    var recording_1 = require_recording6();
+    var transcription_1 = require_transcription4();
+    var type_1 = require_type2();
+    var V2 = class extends Version_1.default {
+      /**
+       * Initialize the V2 version of Voice
+       *
+       * @param domain - The Twilio (Twilio.Voice) domain
+       */
+      constructor(domain) {
+        super(domain, "v2");
+      }
+      /** Getter for accountDefaultConfiguration resource */
+      get accountDefaultConfiguration() {
+        this._accountDefaultConfiguration = this._accountDefaultConfiguration || (0, accountDefaultConfiguration_1.AccountDefaultConfigurationListInstance)(this);
+        return this._accountDefaultConfiguration;
+      }
+      /** Getter for configurations resource */
+      get configurations() {
+        this._configurations = this._configurations || (0, configuration_1.ConfigurationListInstance)(this);
+        return this._configurations;
+      }
+      /** Getter for recording resource */
+      get recording() {
+        this._recording = this._recording || (0, recording_1.RecordingListInstance)(this);
+        return this._recording;
+      }
+      /** Getter for transcription resource */
+      get transcription() {
+        this._transcription = this._transcription || (0, transcription_1.TranscriptionListInstance)(this);
+        return this._transcription;
+      }
+      /** Getter for type resource */
+      get type() {
+        this._type = this._type || (0, type_1.TypeListInstance)(this);
+        return this._type;
+      }
+    };
+    exports2.default = V2;
+  }
+});
+
+// node_modules/twilio/lib/rest/voice/v3/transcription.js
+var require_transcription5 = __commonJS({
   "node_modules/twilio/lib/rest/voice/v3/transcription.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -216358,7 +216453,7 @@ var require_transcription4 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/voice/V3.js
-var require_V36 = __commonJS({
+var require_V37 = __commonJS({
   "node_modules/twilio/lib/rest/voice/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -216366,7 +216461,7 @@ var require_V36 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
-    var transcription_1 = require_transcription4();
+    var transcription_1 = require_transcription5();
     var V3 = class extends Version_1.default {
       /**
        * Initialize the V3 version of Voice
@@ -216394,8 +216489,9 @@ var require_VoiceBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V133());
-    var V3_1 = __importDefault(require_V36());
+    var V1_1 = __importDefault(require_V132());
+    var V2_1 = __importDefault(require_V217());
+    var V3_1 = __importDefault(require_V37());
     var VoiceBase = class extends Domain_1.default {
       /**
        * Initialize voice domain
@@ -216408,6 +216504,10 @@ var require_VoiceBase = __commonJS({
       get v1() {
         this._v1 = this._v1 || new V1_1.default(this);
         return this._v1;
+      }
+      get v2() {
+        this._v2 = this._v2 || new V2_1.default(this);
+        return this._v2;
       }
       get v3() {
         this._v3 = this._v3 || new V3_1.default(this);
@@ -216577,7 +216677,7 @@ var require_command2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new CommandContextImpl(this._version, this._solution.sid);
@@ -217020,7 +217120,7 @@ var require_ratePlan2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new RatePlanContextImpl(this._version, this._solution.sid);
@@ -217925,7 +218025,7 @@ var require_sim3 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.ipAddress = payload.ip_address;
-        this._solution = { sid: sid || this.sid };
+        this._solution = { sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -218341,7 +218441,7 @@ var require_usageRecord3 = __commonJS({
 });
 
 // node_modules/twilio/lib/rest/wireless/V1.js
-var require_V134 = __commonJS({
+var require_V133 = __commonJS({
   "node_modules/twilio/lib/rest/wireless/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
@@ -218395,7 +218495,7 @@ var require_WirelessBase = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V134());
+    var V1_1 = __importDefault(require_V133());
     var WirelessBase = class extends Domain_1.default {
       /**
        * Initialize wireless domain
@@ -218480,7 +218580,6 @@ var require_Twilio = __commonJS({
         if (this.opts?.lazyLoading === false) {
           this.accounts;
           this.api;
-          this.assistants;
           this.bulkexports;
           this.chat;
           this.content;
@@ -218527,10 +218626,6 @@ var require_Twilio = __commonJS({
       /** Getter for (Twilio.Api) domain */
       get api() {
         return this._api ?? (this._api = new (require_Api())(this));
-      }
-      /** Getter for (Twilio.Assistants) domain */
-      get assistants() {
-        return this._assistants ?? (this._assistants = new (require_Assistants())(this));
       }
       /** Getter for (Twilio.Bulkexports) domain */
       get bulkexports() {
@@ -224060,33 +224155,6 @@ var require_VoiceResponse = __commonJS({
         }
       }
       VoiceResponse2.ApplicationSid = ApplicationSid;
-      class Assistant extends TwiML_1.default {
-        /**
-         * <Assistant> TwiML Noun
-         */
-        constructor(assistant) {
-          super();
-          this.assistant = assistant;
-          this._propertyName = "assistant";
-        }
-        /**
-         * <Language> TwiML Noun
-         *
-         * @param attributes - TwiML attributes
-         */
-        language(attributes) {
-          return new VoiceResponse2.Language(this.assistant.ele("Language", attributes));
-        }
-        /**
-         * <Parameter> TwiML Noun
-         *
-         * @param attributes - TwiML attributes
-         */
-        parameter(attributes) {
-          return new VoiceResponse2.Parameter(this.assistant.ele("Parameter", attributes));
-        }
-      }
-      VoiceResponse2.Assistant = Assistant;
       class Autopilot extends TwiML_1.default {
         /**
          * <Autopilot> TwiML Noun
@@ -224162,14 +224230,6 @@ var require_VoiceResponse = __commonJS({
          */
         aiSession(attributes) {
           return new VoiceResponse2.AiSession(this.connect.ele("AiSession", attributes));
-        }
-        /**
-         * <Assistant> TwiML Noun
-         *
-         * @param attributes - TwiML attributes
-         */
-        assistant(attributes) {
-          return new VoiceResponse2.Assistant(this.connect.ele("Assistant", attributes));
         }
         autopilot(attributes, name) {
           if (typeof attributes === "string") {
@@ -226648,7 +226708,7 @@ mime-types/index.js:
    *)
 
 axios/dist/node/axios.cjs:
-  (*! Axios v1.19.0 Copyright (c) 2026 Matt Zabriskie and contributors *)
+  (*! Axios v1.20.0 Copyright (c) 2026 Matt Zabriskie and contributors *)
 
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
