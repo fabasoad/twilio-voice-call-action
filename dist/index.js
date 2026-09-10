@@ -42090,7 +42090,7 @@ var require_package = __commonJS({
     module2.exports = {
       name: "twilio",
       description: "A Twilio helper library",
-      version: "6.1.0",
+      version: "6.1.1",
       author: "API Team <api@twilio.com>",
       contributors: [
         {
@@ -59443,6 +59443,8 @@ var require_message = __commonJS({
           data["SendAsMms"] = serialize.bool(params["sendAsMms"]);
         if (params["contentVariables"] !== void 0)
           data["ContentVariables"] = params["contentVariables"];
+        if (params["messageIntent"] !== void 0)
+          data["MessageIntent"] = params["messageIntent"];
         if (params["riskCheck"] !== void 0)
           data["RiskCheck"] = params["riskCheck"];
         if (params["from"] !== void 0)
@@ -59513,6 +59515,8 @@ var require_message = __commonJS({
           data["SendAsMms"] = serialize.bool(params["sendAsMms"]);
         if (params["contentVariables"] !== void 0)
           data["ContentVariables"] = params["contentVariables"];
+        if (params["messageIntent"] !== void 0)
+          data["MessageIntent"] = params["messageIntent"];
         if (params["riskCheck"] !== void 0)
           data["RiskCheck"] = params["riskCheck"];
         if (params["from"] !== void 0)
@@ -81885,6 +81889,7 @@ var require_approvalCreate = __commonJS({
       constructor(payload) {
         this.name = payload["name"];
         this.category = payload["category"];
+        this.sendTtlSeconds = payload["send_ttl_seconds"];
       }
     };
     exports2.ContentApprovalRequest = ContentApprovalRequest;
@@ -81958,6 +81963,7 @@ var require_approvalCreate = __commonJS({
         this.status = payload.status;
         this.rejectionReason = payload.rejection_reason;
         this.allowCategoryChange = payload.allow_category_change;
+        this.sendTtlSeconds = payload.send_ttl_seconds;
       }
       /**
        * Provide a user-friendly representation
@@ -81971,7 +81977,8 @@ var require_approvalCreate = __commonJS({
           contentType: this.contentType,
           status: this.status,
           rejectionReason: this.rejectionReason,
-          allowCategoryChange: this.allowCategoryChange
+          allowCategoryChange: this.allowCategoryChange,
+          sendTtlSeconds: this.sendTtlSeconds
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -95050,7 +95057,7 @@ var require_configuration3 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConfigurationPage = exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.UpdateConfigurationRequestStatusCallbacks = exports2.UpdateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.UpdateConfigurationRequestChannelSettingsValueCaptureRules = exports2.UpdateConfigurationRequestChannelSettingsValue = exports2.UpdateConfigurationRequest = exports2.CreateConfigurationRequestStatusCallbacks = exports2.CreateConfigurationRequestConversationsV1Bridge = exports2.CreateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.CreateConfigurationRequestChannelSettingsValueCaptureRules = exports2.CreateConfigurationRequestChannelSettingsValue = exports2.CreateConfigurationRequest = exports2.ConversationsV2StatusTimeouts = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2ChannelSetting = exports2.ConversationsV2CaptureRule = void 0;
+    exports2.ConfigurationPage = exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.UpdateConfigurationRequestStatusCallbacks = exports2.UpdateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.UpdateConfigurationRequestChannelSettingsValueCaptureRules = exports2.UpdateConfigurationRequestChannelSettingsValue = exports2.UpdateConfigurationRequest = exports2.PatchConfigurationRequestConversationsV1Bridge = exports2.PatchConfigurationRequestChannelSettingsValue = exports2.PatchConfigurationRequest = exports2.CreateConfigurationRequestStatusCallbacks = exports2.CreateConfigurationRequestConversationsV1Bridge = exports2.CreateConfigurationRequestChannelSettingsValueStatusTimeouts = exports2.CreateConfigurationRequestChannelSettingsValueCaptureRules = exports2.CreateConfigurationRequestChannelSettingsValue = exports2.CreateConfigurationRequest = exports2.ConversationsV2StatusTimeouts = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2ChannelSetting = exports2.ConversationsV2CaptureRule = void 0;
     exports2.ConfigurationListInstance = ConfigurationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -95141,6 +95148,33 @@ var require_configuration3 = __commonJS({
       }
     };
     exports2.CreateConfigurationRequestStatusCallbacks = CreateConfigurationRequestStatusCallbacks;
+    var PatchConfigurationRequest = class {
+      constructor(payload) {
+        this.displayName = payload["displayName"];
+        this.description = payload["description"];
+        this.conversationGroupingType = payload["conversationGroupingType"];
+        this.memoryStoreId = payload["memoryStoreId"];
+        this.channelSettings = payload["channelSettings"];
+        this.statusCallbacks = payload["statusCallbacks"];
+        this.intelligenceConfigurationIds = payload["intelligenceConfigurationIds"];
+        this.memoryExtractionEnabled = payload["memoryExtractionEnabled"];
+        this.conversationsV1Bridge = payload["conversationsV1Bridge"];
+      }
+    };
+    exports2.PatchConfigurationRequest = PatchConfigurationRequest;
+    var PatchConfigurationRequestChannelSettingsValue = class {
+      constructor(payload) {
+        this.statusTimeouts = payload["statusTimeouts"];
+        this.captureRules = payload["captureRules"];
+      }
+    };
+    exports2.PatchConfigurationRequestChannelSettingsValue = PatchConfigurationRequestChannelSettingsValue;
+    var PatchConfigurationRequestConversationsV1Bridge = class {
+      constructor(payload) {
+        this.serviceId = payload["serviceId"];
+      }
+    };
+    exports2.PatchConfigurationRequestConversationsV1Bridge = PatchConfigurationRequestConversationsV1Bridge;
     var UpdateConfigurationRequest = class {
       constructor(payload) {
         this.displayName = payload["displayName"];
@@ -95271,6 +95305,59 @@ var require_configuration3 = __commonJS({
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       }
+      patch(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.patch({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new ConfigurationInstance(operationVersion, payload, instance._solution.id));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patchWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.patchWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new ConfigurationInstance(operationVersion, response.body, instance._solution.id)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
       update(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
@@ -95387,6 +95474,12 @@ var require_configuration3 = __commonJS({
        */
       fetchWithHttpInfo(callback) {
         return this._proxy.fetchWithHttpInfo(callback);
+      }
+      patch(params, callback) {
+        return this._proxy.patch(params, callback);
+      }
+      patchWithHttpInfo(params, callback) {
+        return this._proxy.patchWithHttpInfo(params, callback);
       }
       update(params, callback) {
         return this._proxy.update(params, callback);
@@ -96755,9 +96848,13 @@ var require_V23 = __commonJS({
       constructor(domain) {
         super(domain, "v2");
       }
-      /** Accessor for actions resource */
-      actions(ConversationId) {
-        return (0, action_1.ActionListInstance)(this, ConversationId);
+      /** Implementation */
+      actions(ConversationId, actionId) {
+        const listInstance = (0, action_1.ActionListInstance)(this, ConversationId);
+        if (actionId !== void 0) {
+          return listInstance.get(actionId);
+        }
+        return listInstance;
       }
       /** Implementation */
       communications(ConversationId, id) {
@@ -113682,28 +113779,13 @@ var require_inbound = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.InboundPage = exports2.InboundInstance = exports2.InboundContextImpl = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = void 0;
+    exports2.InboundPage = exports2.InboundInstance = exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = void 0;
     exports2.InboundListInstance = InboundListInstance;
     var util_1 = require("util");
     var Page_1 = __importDefault(require_Page());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
-    var InsightsV2CreatePhoneNumbersReportRequest = class {
-      constructor(payload) {
-        this.timeRange = payload["time_range"];
-        this.filters = payload["filters"];
-        this.size = payload["size"];
-      }
-    };
-    exports2.InsightsV2CreatePhoneNumbersReportRequest = InsightsV2CreatePhoneNumbersReportRequest;
-    var InsightsV2CreatePhoneNumbersReportRequestTimeRange = class {
-      constructor(payload) {
-        this.startDatetime = payload["start_datetime"];
-        this.endDatetime = payload["end_datetime"];
-      }
-    };
-    exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = InsightsV2CreatePhoneNumbersReportRequestTimeRange;
     var InsightsV2InboundPhoneNumberReportCallStatePercentage = class {
       constructor(payload) {
         this.completed = payload["completed"];
@@ -113714,160 +113796,11 @@ var require_inbound = __commonJS({
       }
     };
     exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = InsightsV2InboundPhoneNumberReportCallStatePercentage;
-    var PhoneNumberReportFilter = class {
-      constructor(payload) {
-        this.key = payload["key"];
-        this.values = payload["values"];
-      }
-    };
-    exports2.PhoneNumberReportFilter = PhoneNumberReportFilter;
-    var ReportFilter = class {
-      constructor(payload) {
-        this.key = payload["key"];
-        this.values = payload["values"];
-      }
-    };
-    exports2.ReportFilter = ReportFilter;
-    var ReportMetadata = class {
-      constructor(payload) {
-        this.startDatetime = payload["start_datetime"];
-        this.endDatetime = payload["end_datetime"];
-        this.filters = payload["filters"];
-      }
-    };
-    exports2.ReportMetadata = ReportMetadata;
-    var InboundContextImpl = class {
-      constructor(_version, reportId) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(reportId)) {
-          throw new Error("Parameter 'reportId' is not valid.");
-        }
-        this._solution = { reportId };
-        this._uri = `/Voice/Reports/PhoneNumbers/Inbound`;
-      }
-      create(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new InboundInstance(operationVersion, payload, instance._solution.reportId));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      createWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new InboundInstance(operationVersion, response.body, instance._solution.reportId)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.InboundContextImpl = InboundContextImpl;
-    var InboundInstance = class {
-      constructor(_version, payload, reportId) {
-        this._version = _version;
-        this.accountSid = payload.account_sid;
-        this.reportId = payload.report_id;
-        this.status = payload.status;
-        this.requestMeta = payload.request_meta !== null && payload.request_meta !== void 0 ? new ReportMetadata(payload.request_meta) : null;
-        this.url = payload.url;
-        this.handle = payload.handle;
-        this.totalCalls = deserialize.integer(payload.total_calls);
-        this.callAnswerScore = payload.call_answer_score;
-        this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2InboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
-        this.silentCallsPercentage = payload.silent_calls_percentage;
-        this._solution = { reportId };
-      }
-      get _proxy() {
-        this._context = this._context || new InboundContextImpl(this._version, this._solution.reportId);
-        return this._context;
-      }
-      create(params, callback) {
-        return this._proxy.create(params, callback);
-      }
-      createWithHttpInfo(params, callback) {
-        return this._proxy.createWithHttpInfo(params, callback);
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return {
-          accountSid: this.accountSid,
-          reportId: this.reportId,
-          status: this.status,
-          requestMeta: this.requestMeta,
-          url: this.url,
-          handle: this.handle,
-          totalCalls: this.totalCalls,
-          callAnswerScore: this.callAnswerScore,
-          callStatePercentage: this.callStatePercentage,
-          silentCallsPercentage: this.silentCallsPercentage
-        };
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.InboundInstance = InboundInstance;
     function InboundListInstance(version, reportId) {
       if (!(0, utility_1.isValidPathParam)(reportId)) {
         throw new Error("Parameter 'reportId' is not valid.");
       }
-      const instance = ((reportId2) => instance.get(reportId2));
-      instance.get = function get(reportId2) {
-        return new InboundContextImpl(version, reportId2);
-      };
+      const instance = {};
       instance._version = version;
       instance._solution = { reportId };
       instance._uri = `/Voice/Reports/PhoneNumbers/Inbound/${reportId}`;
@@ -113958,6 +113891,34 @@ var require_inbound = __commonJS({
       };
       return instance;
     }
+    var InboundInstance = class {
+      constructor(_version, payload, reportId) {
+        this._version = _version;
+        this.handle = payload.handle;
+        this.totalCalls = deserialize.integer(payload.total_calls);
+        this.callAnswerScore = payload.call_answer_score;
+        this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2InboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
+        this.silentCallsPercentage = payload.silent_calls_percentage;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          handle: this.handle,
+          totalCalls: this.totalCalls,
+          callAnswerScore: this.callAnswerScore,
+          callStatePercentage: this.callStatePercentage,
+          silentCallsPercentage: this.silentCallsPercentage
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.InboundInstance = InboundInstance;
     var InboundPage = class extends Page_1.default {
       /**
        * Initialize the InboundPage
@@ -113985,37 +113946,16 @@ var require_inbound = __commonJS({
   }
 });
 
-// node_modules/twilio/lib/rest/insights/v2/outbound.js
-var require_outbound = __commonJS({
-  "node_modules/twilio/lib/rest/insights/v2/outbound.js"(exports2) {
+// node_modules/twilio/lib/rest/insights/v2/inboundReport.js
+var require_inboundReport = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v2/inboundReport.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.OutboundPage = exports2.OutboundInstance = exports2.OutboundContextImpl = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = exports2.CountyCarrierValueCarriers = exports2.CountyCarrierValue = void 0;
-    exports2.OutboundListInstance = OutboundListInstance;
+    exports2.InboundReportInstance = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = void 0;
+    exports2.InboundReportListInstance = InboundReportListInstance;
     var util_1 = require("util");
-    var Page_1 = __importDefault(require_Page());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
-    var utility_1 = require_utility();
-    var CountyCarrierValue = class {
-      constructor(payload) {
-        this.country = payload["country"];
-        this.carriers = payload["carriers"];
-      }
-    };
-    exports2.CountyCarrierValue = CountyCarrierValue;
-    var CountyCarrierValueCarriers = class {
-      constructor(payload) {
-        this.carrier = payload["carrier"];
-        this.totalCalls = payload["total_calls"];
-        this.blockedCalls = payload["blocked_calls"];
-        this.blockedCallsPercentage = payload["blocked_calls_percentage"];
-      }
-    };
-    exports2.CountyCarrierValueCarriers = CountyCarrierValueCarriers;
     var InsightsV2CreatePhoneNumbersReportRequest = class {
       constructor(payload) {
         this.timeRange = payload["time_range"];
@@ -114031,24 +113971,6 @@ var require_outbound = __commonJS({
       }
     };
     exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = InsightsV2CreatePhoneNumbersReportRequestTimeRange;
-    var InsightsV2InboundPhoneNumberReportCallStatePercentage = class {
-      constructor(payload) {
-        this.completed = payload["completed"];
-        this.fail = payload["fail"];
-        this.busy = payload["busy"];
-        this.noanswer = payload["noanswer"];
-        this.canceled = payload["canceled"];
-      }
-    };
-    exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = InsightsV2InboundPhoneNumberReportCallStatePercentage;
-    var InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = class {
-      constructor(payload) {
-        this.totalCalls = payload["total_calls"];
-        this.answeredByHumanPercentage = payload["answered_by_human_percentage"];
-        this.answeredByMachinePercentage = payload["answered_by_machine_percentage"];
-      }
-    };
-    exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection;
     var PhoneNumberReportFilter = class {
       constructor(payload) {
         this.key = payload["key"];
@@ -114071,16 +113993,12 @@ var require_outbound = __commonJS({
       }
     };
     exports2.ReportMetadata = ReportMetadata;
-    var OutboundContextImpl = class {
-      constructor(_version, reportId) {
-        this._version = _version;
-        if (!(0, utility_1.isValidPathParam)(reportId)) {
-          throw new Error("Parameter 'reportId' is not valid.");
-        }
-        this._solution = { reportId };
-        this._uri = `/Voice/Reports/PhoneNumbers/Outbound`;
-      }
-      create(params, headers, callback) {
+    function InboundReportListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Voice/Reports/PhoneNumbers/Inbound`;
+      instance.create = function create(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
           params = {};
@@ -114094,18 +114012,17 @@ var require_outbound = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
+        let operationVersion = version, operationPromise = operationVersion.create({
           uri: instance._uri,
           method: "post",
           data,
           headers
         });
-        operationPromise = operationPromise.then((payload) => new OutboundInstance(operationVersion, payload, instance._solution.reportId));
+        operationPromise = operationPromise.then((payload) => new InboundReportInstance(operationVersion, payload));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      createWithHttpInfo(params, headers, callback) {
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
         if (params instanceof Function) {
           callback = params;
           params = {};
@@ -114119,8 +114036,7 @@ var require_outbound = __commonJS({
         }
         headers["Content-Type"] = "application/json";
         headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
+        let operationVersion = version;
         let operationPromise = operationVersion.createWithResponseInfo({
           uri: instance._uri,
           method: "post",
@@ -114128,55 +114044,27 @@ var require_outbound = __commonJS({
           headers
         }).then((response) => ({
           ...response,
-          body: new OutboundInstance(operationVersion, response.body, instance._solution.reportId)
+          body: new InboundReportInstance(operationVersion, response.body)
         }));
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
-      }
-      /**
-       * Provide a user-friendly representation
-       *
-       * @returns Object
-       */
-      toJSON() {
-        return this._solution;
-      }
-      [util_1.inspect.custom](_depth, options) {
-        return (0, util_1.inspect)(this.toJSON(), options);
-      }
-    };
-    exports2.OutboundContextImpl = OutboundContextImpl;
-    var OutboundInstance = class {
-      constructor(_version, payload, reportId) {
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var InboundReportInstance = class {
+      constructor(_version, payload) {
         this._version = _version;
         this.accountSid = payload.account_sid;
         this.reportId = payload.report_id;
         this.status = payload.status;
         this.requestMeta = payload.request_meta !== null && payload.request_meta !== void 0 ? new ReportMetadata(payload.request_meta) : null;
         this.url = payload.url;
-        this.handle = payload.handle;
-        this.totalCalls = deserialize.integer(payload.total_calls);
-        this.callAnswerScore = payload.call_answer_score;
-        this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2InboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
-        this.silentCallsPercentage = payload.silent_calls_percentage;
-        this.callsByDeviceType = payload.calls_by_device_type;
-        this.answerRateDeviceType = payload.answer_rate_device_type;
-        this.blockedCallsByCarrier = payload.blocked_calls_by_carrier !== null && payload.blocked_calls_by_carrier !== void 0 ? payload.blocked_calls_by_carrier.map((payload2) => new CountyCarrierValue(payload2)) : null;
-        this.shortDurationCallsPercentage = payload.short_duration_calls_percentage;
-        this.longDurationCallsPercentage = payload.long_duration_calls_percentage;
-        this.potentialRobocallsPercentage = payload.potential_robocalls_percentage;
-        this.answeringMachineDetection = payload.answering_machine_detection !== null && payload.answering_machine_detection !== void 0 ? new InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection(payload.answering_machine_detection) : null;
-        this._solution = { reportId };
-      }
-      get _proxy() {
-        this._context = this._context || new OutboundContextImpl(this._version, this._solution.reportId);
-        return this._context;
-      }
-      create(params, callback) {
-        return this._proxy.create(params, callback);
-      }
-      createWithHttpInfo(params, callback) {
-        return this._proxy.createWithHttpInfo(params, callback);
       }
       /**
        * Provide a user-friendly representation
@@ -114189,34 +114077,71 @@ var require_outbound = __commonJS({
           reportId: this.reportId,
           status: this.status,
           requestMeta: this.requestMeta,
-          url: this.url,
-          handle: this.handle,
-          totalCalls: this.totalCalls,
-          callAnswerScore: this.callAnswerScore,
-          callStatePercentage: this.callStatePercentage,
-          silentCallsPercentage: this.silentCallsPercentage,
-          callsByDeviceType: this.callsByDeviceType,
-          answerRateDeviceType: this.answerRateDeviceType,
-          blockedCallsByCarrier: this.blockedCallsByCarrier,
-          shortDurationCallsPercentage: this.shortDurationCallsPercentage,
-          longDurationCallsPercentage: this.longDurationCallsPercentage,
-          potentialRobocallsPercentage: this.potentialRobocallsPercentage,
-          answeringMachineDetection: this.answeringMachineDetection
+          url: this.url
         };
       }
       [util_1.inspect.custom](_depth, options) {
         return (0, util_1.inspect)(this.toJSON(), options);
       }
     };
-    exports2.OutboundInstance = OutboundInstance;
+    exports2.InboundReportInstance = InboundReportInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/insights/v2/outbound.js
+var require_outbound = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v2/outbound.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.OutboundPage = exports2.OutboundInstance = exports2.InsightsV2OutboundPhoneNumberReportCallStatePercentage = exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = exports2.CountyCarrierValueCarriers = exports2.CountyCarrierValue = void 0;
+    exports2.OutboundListInstance = OutboundListInstance;
+    var util_1 = require("util");
+    var Page_1 = __importDefault(require_Page());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var CountyCarrierValue = class {
+      constructor(payload) {
+        this.country = payload["country"];
+        this.carriers = payload["carriers"];
+      }
+    };
+    exports2.CountyCarrierValue = CountyCarrierValue;
+    var CountyCarrierValueCarriers = class {
+      constructor(payload) {
+        this.carrier = payload["carrier"];
+        this.totalCalls = payload["total_calls"];
+        this.blockedCalls = payload["blocked_calls"];
+        this.blockedCallsPercentage = payload["blocked_calls_percentage"];
+      }
+    };
+    exports2.CountyCarrierValueCarriers = CountyCarrierValueCarriers;
+    var InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = class {
+      constructor(payload) {
+        this.totalCalls = payload["total_calls"];
+        this.answeredByHumanPercentage = payload["answered_by_human_percentage"];
+        this.answeredByMachinePercentage = payload["answered_by_machine_percentage"];
+      }
+    };
+    exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection;
+    var InsightsV2OutboundPhoneNumberReportCallStatePercentage = class {
+      constructor(payload) {
+        this.completed = payload["completed"];
+        this.fail = payload["fail"];
+        this.busy = payload["busy"];
+        this.noanswer = payload["noanswer"];
+        this.canceled = payload["canceled"];
+      }
+    };
+    exports2.InsightsV2OutboundPhoneNumberReportCallStatePercentage = InsightsV2OutboundPhoneNumberReportCallStatePercentage;
     function OutboundListInstance(version, reportId) {
       if (!(0, utility_1.isValidPathParam)(reportId)) {
         throw new Error("Parameter 'reportId' is not valid.");
       }
-      const instance = ((reportId2) => instance.get(reportId2));
-      instance.get = function get(reportId2) {
-        return new OutboundContextImpl(version, reportId2);
-      };
+      const instance = {};
       instance._version = version;
       instance._solution = { reportId };
       instance._uri = `/Voice/Reports/PhoneNumbers/Outbound/${reportId}`;
@@ -114307,6 +114232,48 @@ var require_outbound = __commonJS({
       };
       return instance;
     }
+    var OutboundInstance = class {
+      constructor(_version, payload, reportId) {
+        this._version = _version;
+        this.handle = payload.handle;
+        this.totalCalls = deserialize.integer(payload.total_calls);
+        this.callAnswerScore = payload.call_answer_score;
+        this.callsByDeviceType = payload.calls_by_device_type;
+        this.answerRateDeviceType = payload.answer_rate_device_type;
+        this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2OutboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
+        this.blockedCallsByCarrier = payload.blocked_calls_by_carrier !== null && payload.blocked_calls_by_carrier !== void 0 ? payload.blocked_calls_by_carrier.map((payload2) => new CountyCarrierValue(payload2)) : null;
+        this.silentCallsPercentage = payload.silent_calls_percentage;
+        this.shortDurationCallsPercentage = payload.short_duration_calls_percentage;
+        this.longDurationCallsPercentage = payload.long_duration_calls_percentage;
+        this.potentialRobocallsPercentage = payload.potential_robocalls_percentage;
+        this.answeringMachineDetection = payload.answering_machine_detection !== null && payload.answering_machine_detection !== void 0 ? new InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection(payload.answering_machine_detection) : null;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          handle: this.handle,
+          totalCalls: this.totalCalls,
+          callAnswerScore: this.callAnswerScore,
+          callsByDeviceType: this.callsByDeviceType,
+          answerRateDeviceType: this.answerRateDeviceType,
+          callStatePercentage: this.callStatePercentage,
+          blockedCallsByCarrier: this.blockedCallsByCarrier,
+          silentCallsPercentage: this.silentCallsPercentage,
+          shortDurationCallsPercentage: this.shortDurationCallsPercentage,
+          longDurationCallsPercentage: this.longDurationCallsPercentage,
+          potentialRobocallsPercentage: this.potentialRobocallsPercentage,
+          answeringMachineDetection: this.answeringMachineDetection
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.OutboundInstance = OutboundInstance;
     var OutboundPage = class extends Page_1.default {
       /**
        * Initialize the OutboundPage
@@ -114334,12 +114301,154 @@ var require_outbound = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/insights/v2/outboundReport.js
+var require_outboundReport = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v2/outboundReport.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.OutboundReportInstance = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = void 0;
+    exports2.OutboundReportListInstance = OutboundReportListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var InsightsV2CreatePhoneNumbersReportRequest = class {
+      constructor(payload) {
+        this.timeRange = payload["time_range"];
+        this.filters = payload["filters"];
+        this.size = payload["size"];
+      }
+    };
+    exports2.InsightsV2CreatePhoneNumbersReportRequest = InsightsV2CreatePhoneNumbersReportRequest;
+    var InsightsV2CreatePhoneNumbersReportRequestTimeRange = class {
+      constructor(payload) {
+        this.startDatetime = payload["start_datetime"];
+        this.endDatetime = payload["end_datetime"];
+      }
+    };
+    exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = InsightsV2CreatePhoneNumbersReportRequestTimeRange;
+    var PhoneNumberReportFilter = class {
+      constructor(payload) {
+        this.key = payload["key"];
+        this.values = payload["values"];
+      }
+    };
+    exports2.PhoneNumberReportFilter = PhoneNumberReportFilter;
+    var ReportFilter = class {
+      constructor(payload) {
+        this.key = payload["key"];
+        this.values = payload["values"];
+      }
+    };
+    exports2.ReportFilter = ReportFilter;
+    var ReportMetadata = class {
+      constructor(payload) {
+        this.startDatetime = payload["start_datetime"];
+        this.endDatetime = payload["end_datetime"];
+        this.filters = payload["filters"];
+      }
+    };
+    exports2.ReportMetadata = ReportMetadata;
+    function OutboundReportListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Voice/Reports/PhoneNumbers/Outbound`;
+      instance.create = function create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new OutboundReportInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new OutboundReportInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var OutboundReportInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.accountSid = payload.account_sid;
+        this.reportId = payload.report_id;
+        this.status = payload.status;
+        this.requestMeta = payload.request_meta !== null && payload.request_meta !== void 0 ? new ReportMetadata(payload.request_meta) : null;
+        this.url = payload.url;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          accountSid: this.accountSid,
+          reportId: this.reportId,
+          status: this.status,
+          requestMeta: this.requestMeta,
+          url: this.url
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.OutboundReportInstance = OutboundReportInstance;
+  }
+});
+
 // node_modules/twilio/lib/rest/insights/v2/report.js
 var require_report = __commonJS({
   "node_modules/twilio/lib/rest/insights/v2/report.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ReportInstance = exports2.ReportContextImpl = exports2.VoiceIntegrityCallsPerBundle = exports2.VoiceIntegrity = exports2.StirShakenPercentage = exports2.StirShakenCallCount = exports2.StirShakenAnswerRate = exports2.StirShaken = exports2.ReportMetadata = exports2.ReportFilter = exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = exports2.InsightsV2CreateAccountReportRequestTimeRange = exports2.InsightsV2CreateAccountReportRequest = exports2.CountyCarrierValueCarriers = exports2.CountyCarrierValue = exports2.BrandedUseCaseDetail = exports2.BrandedCalling = exports2.AccountReportNetworkIssuesTwilioGateway = exports2.AccountReportNetworkIssuesSdk = exports2.AccountReportNetworkIssues = exports2.AccountReportKYTOutboundCarrierCalling = exports2.AccountReportKYT = exports2.AccountReportCallType = exports2.AccountReportCallState = exports2.AccountReportCallDirection = exports2.AccountReportAnsweringMachineDetection = exports2.AccountReport = void 0;
+    exports2.ReportInstance = exports2.ReportContextImpl = exports2.VoiceIntegrityCallsPerBundle = exports2.VoiceIntegrity = exports2.StirShakenPercentage = exports2.StirShakenCallCount = exports2.StirShakenAnswerRate = exports2.StirShaken = exports2.ReportMetadata = exports2.ReportFilter = exports2.InsightsV2CreateAccountReportRequestTimeRange = exports2.InsightsV2CreateAccountReportRequest = exports2.CountyCarrierValueCarriers = exports2.CountyCarrierValue = exports2.BrandedUseCaseDetail = exports2.BrandedCalling = exports2.AccountReportNetworkIssuesTwilioGateway = exports2.AccountReportNetworkIssuesSdk = exports2.AccountReportNetworkIssues = exports2.AccountReportKYTOutboundCarrierCalling = exports2.AccountReportKYT = exports2.AccountReportCallType = exports2.AccountReportCallState = exports2.AccountReportCallDirection = exports2.AccountReportAnsweringMachineDetection = exports2.AccountReport = void 0;
     exports2.ReportListInstance = ReportListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -114496,24 +114605,6 @@ var require_report = __commonJS({
       }
     };
     exports2.InsightsV2CreateAccountReportRequestTimeRange = InsightsV2CreateAccountReportRequestTimeRange;
-    var InsightsV2InboundPhoneNumberReportCallStatePercentage = class {
-      constructor(payload) {
-        this.completed = payload["completed"];
-        this.fail = payload["fail"];
-        this.busy = payload["busy"];
-        this.noanswer = payload["noanswer"];
-        this.canceled = payload["canceled"];
-      }
-    };
-    exports2.InsightsV2InboundPhoneNumberReportCallStatePercentage = InsightsV2InboundPhoneNumberReportCallStatePercentage;
-    var InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = class {
-      constructor(payload) {
-        this.totalCalls = payload["total_calls"];
-        this.answeredByHumanPercentage = payload["answered_by_human_percentage"];
-        this.answeredByMachinePercentage = payload["answered_by_machine_percentage"];
-      }
-    };
-    exports2.InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection = InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection;
     var ReportFilter = class {
       constructor(payload) {
         this.key = payload["key"];
@@ -114588,59 +114679,6 @@ var require_report = __commonJS({
         this._solution = { reportId };
         this._uri = `/Voice/Reports/${reportId}`;
       }
-      create(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version, operationPromise = operationVersion.create({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        });
-        operationPromise = operationPromise.then((payload) => new ReportInstance(operationVersion, payload, instance._solution.reportId));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
-      createWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
-        }
-        let data = {};
-        data = params;
-        if (headers === null || headers === void 0) {
-          headers = {};
-        }
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
-        const instance = this;
-        let operationVersion = instance._version;
-        let operationPromise = operationVersion.createWithResponseInfo({
-          uri: instance._uri,
-          method: "post",
-          data,
-          headers
-        }).then((response) => ({
-          ...response,
-          body: new ReportInstance(operationVersion, response.body, instance._solution.reportId)
-        }));
-        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
-        return operationPromise;
-      }
       fetch(callback) {
         const headers = {};
         headers["Accept"] = "application/json";
@@ -114691,30 +114729,12 @@ var require_report = __commonJS({
         this.status = payload.status;
         this.requestMeta = payload.request_meta !== null && payload.request_meta !== void 0 ? new ReportMetadata(payload.request_meta) : null;
         this.url = payload.url;
-        this.handle = payload.handle;
-        this.totalCalls = deserialize.integer(payload.total_calls);
-        this.callAnswerScore = payload.call_answer_score;
-        this.callStatePercentage = payload.call_state_percentage !== null && payload.call_state_percentage !== void 0 ? new InsightsV2InboundPhoneNumberReportCallStatePercentage(payload.call_state_percentage) : null;
-        this.silentCallsPercentage = payload.silent_calls_percentage;
-        this.callsByDeviceType = payload.calls_by_device_type;
-        this.answerRateDeviceType = payload.answer_rate_device_type;
-        this.blockedCallsByCarrier = payload.blocked_calls_by_carrier !== null && payload.blocked_calls_by_carrier !== void 0 ? payload.blocked_calls_by_carrier.map((payload2) => new CountyCarrierValue(payload2)) : null;
-        this.shortDurationCallsPercentage = payload.short_duration_calls_percentage;
-        this.longDurationCallsPercentage = payload.long_duration_calls_percentage;
-        this.potentialRobocallsPercentage = payload.potential_robocalls_percentage;
-        this.answeringMachineDetection = payload.answering_machine_detection !== null && payload.answering_machine_detection !== void 0 ? new InsightsV2OutboundPhoneNumberReportAnsweringMachineDetection(payload.answering_machine_detection) : null;
         this.report = payload.report !== null && payload.report !== void 0 ? new AccountReport(payload.report) : null;
         this._solution = { reportId };
       }
       get _proxy() {
         this._context = this._context || new ReportContextImpl(this._version, this._solution.reportId);
         return this._context;
-      }
-      create(params, callback) {
-        return this._proxy.create(params, callback);
-      }
-      createWithHttpInfo(params, callback) {
-        return this._proxy.createWithHttpInfo(params, callback);
       }
       /**
        * Fetch a ReportInstance
@@ -114748,18 +114768,6 @@ var require_report = __commonJS({
           status: this.status,
           requestMeta: this.requestMeta,
           url: this.url,
-          handle: this.handle,
-          totalCalls: this.totalCalls,
-          callAnswerScore: this.callAnswerScore,
-          callStatePercentage: this.callStatePercentage,
-          silentCallsPercentage: this.silentCallsPercentage,
-          callsByDeviceType: this.callsByDeviceType,
-          answerRateDeviceType: this.answerRateDeviceType,
-          blockedCallsByCarrier: this.blockedCallsByCarrier,
-          shortDurationCallsPercentage: this.shortDurationCallsPercentage,
-          longDurationCallsPercentage: this.longDurationCallsPercentage,
-          potentialRobocallsPercentage: this.potentialRobocallsPercentage,
-          answeringMachineDetection: this.answeringMachineDetection,
           report: this.report
         };
       }
@@ -114775,7 +114783,58 @@ var require_report = __commonJS({
       };
       instance._version = version;
       instance._solution = {};
-      instance._uri = ``;
+      instance._uri = `/Voice/Reports`;
+      instance.create = function create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new ReportInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new ReportInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
       instance.toJSON = function toJSON() {
         return instance._solution;
       };
@@ -114797,7 +114856,9 @@ var require_V25 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
     var inbound_1 = require_inbound();
+    var inboundReport_1 = require_inboundReport();
     var outbound_1 = require_outbound();
+    var outboundReport_1 = require_outboundReport();
     var report_1 = require_report();
     var V2 = class extends Version_1.default {
       /**
@@ -114812,9 +114873,19 @@ var require_V25 = __commonJS({
       inbound(reportId) {
         return (0, inbound_1.InboundListInstance)(this, reportId);
       }
+      /** Getter for inboundReports resource */
+      get inboundReports() {
+        this._inboundReports = this._inboundReports || (0, inboundReport_1.InboundReportListInstance)(this);
+        return this._inboundReports;
+      }
       /** Accessor for outbound resource */
       outbound(reportId) {
         return (0, outbound_1.OutboundListInstance)(this, reportId);
+      }
+      /** Getter for outboundReports resource */
+      get outboundReports() {
+        this._outboundReports = this._outboundReports || (0, outboundReport_1.OutboundReportListInstance)(this);
+        return this._outboundReports;
       }
       /** Getter for reports resource */
       get reports() {
@@ -115244,6 +115315,7 @@ var require_queryJob = __commonJS({
         this.completedAt = deserialize.iso8601DateTime(payload.completedAt);
         this.error = payload.error !== null && payload.error !== void 0 ? new OperationError(payload.error) : null;
         this.resultUrl = payload.resultUrl;
+        this.resultId = payload.resultId;
         this.resultRetentionPeriod = payload.resultRetentionPeriod;
         this._solution = { operationId };
       }
@@ -115285,6 +115357,7 @@ var require_queryJob = __commonJS({
           completedAt: this.completedAt,
           error: this.error,
           resultUrl: this.resultUrl,
+          resultId: this.resultId,
           resultRetentionPeriod: this.resultRetentionPeriod
         };
       }
@@ -131246,7 +131319,7 @@ var require_knowledge2 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.KnowledgePage = exports2.KnowledgeInstance = exports2.KnowledgeContextImpl = exports2.KnowledgeSourceTypes = exports2.KnowledgeCore = void 0;
+    exports2.KnowledgePage = exports2.KnowledgeInstance = exports2.KnowledgeContextImpl = exports2.KnowledgeSourceTypes = exports2.KnowledgeErrorInstance = exports2.KnowledgeErrorGroup = exports2.KnowledgeCore = void 0;
     exports2.KnowledgeListInstance = KnowledgeListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -131261,6 +131334,22 @@ var require_knowledge2 = __commonJS({
       }
     };
     exports2.KnowledgeCore = KnowledgeCore;
+    var KnowledgeErrorGroup = class {
+      constructor(payload) {
+        this.title = payload["title"];
+        this.instances = payload["instances"];
+      }
+    };
+    exports2.KnowledgeErrorGroup = KnowledgeErrorGroup;
+    var KnowledgeErrorInstance = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.code = payload["code"];
+        this.instance = payload["instance"];
+        this.detail = payload["detail"];
+      }
+    };
+    exports2.KnowledgeErrorInstance = KnowledgeErrorInstance;
     var KnowledgeSourceTypes = class {
       constructor(payload) {
         this.type = payload["type"];
@@ -131268,6 +131357,7 @@ var require_knowledge2 = __commonJS({
         this.url = payload["url"];
         this.crawlDepth = payload["crawlDepth"];
         this.crawlPeriod = payload["crawlPeriod"];
+        this.errors = payload["errors"];
         this.fileName = payload["fileName"];
         this.fileSize = payload["fileSize"];
         this.mimeType = payload["mimeType"];
@@ -152147,6 +152237,325 @@ var require_signingRequestConfiguration = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/numbers/v1/smsVerification.js
+var require_smsVerification = __commonJS({
+  "node_modules/twilio/lib/rest/numbers/v1/smsVerification.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.SmsVerificationInstance = exports2.NumbersV1SmsVerificationSendCodeAttempts = void 0;
+    exports2.SmsVerificationListInstance = SmsVerificationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var NumbersV1SmsVerificationSendCodeAttempts = class {
+      constructor(payload) {
+        this.attemptSid = payload["attemptSid"];
+        this.time = payload["time"];
+      }
+    };
+    exports2.NumbersV1SmsVerificationSendCodeAttempts = NumbersV1SmsVerificationSendCodeAttempts;
+    function SmsVerificationListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/CallerIds/SmsVerifications`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SmsVerificationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SmsVerificationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var SmsVerificationInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.to = payload.to;
+        this.verificationSid = payload.verificationSid;
+        this.sendCodeAttempts = payload.sendCodeAttempts !== null && payload.sendCodeAttempts !== void 0 ? payload.sendCodeAttempts.map((payload2) => new NumbersV1SmsVerificationSendCodeAttempts(payload2)) : null;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          to: this.to,
+          verificationSid: this.verificationSid,
+          sendCodeAttempts: this.sendCodeAttempts
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SmsVerificationInstance = SmsVerificationInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js
+var require_smsVerificationCheck = __commonJS({
+  "node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.SmsVerificationCheckInstance = void 0;
+    exports2.SmsVerificationCheckListInstance = SmsVerificationCheckListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    function SmsVerificationCheckListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/CallerIds/SmsVerificationChecks`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SmsVerificationCheckInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SmsVerificationCheckInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var SmsVerificationCheckInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.to = payload.to;
+        this.verificationSid = payload.verificationSid;
+        this.status = payload.status;
+        this.callerIdSid = payload.callerIdSid;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          to: this.to,
+          verificationSid: this.verificationSid,
+          status: this.status,
+          callerIdSid: this.callerIdSid
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SmsVerificationCheckInstance = SmsVerificationCheckInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js
+var require_voiceVerification = __commonJS({
+  "node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.VoiceVerificationInstance = void 0;
+    exports2.VoiceVerificationListInstance = VoiceVerificationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    function VoiceVerificationListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/CallerIds/VoiceVerifications`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new VoiceVerificationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new VoiceVerificationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var VoiceVerificationInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.accountSid = payload.accountSid;
+        this.phoneNumber = payload.phoneNumber;
+        this.friendlyName = payload.friendlyName;
+        this.validationCode = payload.validationCode;
+        this.callSid = payload.callSid;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          accountSid: this.accountSid,
+          phoneNumber: this.phoneNumber,
+          friendlyName: this.friendlyName,
+          validationCode: this.validationCode,
+          callSid: this.callSid
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.VoiceVerificationInstance = VoiceVerificationInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/numbers/v1/voiceVerificationCheck.js
+var require_voiceVerificationCheck = __commonJS({
+  "node_modules/twilio/lib/rest/numbers/v1/voiceVerificationCheck.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.VoiceVerificationCheckInstance = void 0;
+    exports2.VoiceVerificationCheckListInstance = VoiceVerificationCheckListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    function VoiceVerificationCheckListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/CallerIds/VoiceVerificationChecks`;
+      instance.create = function create(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new VoiceVerificationCheckInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new VoiceVerificationCheckInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var VoiceVerificationCheckInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.to = payload.to;
+        this.callerIdSid = payload.callerIdSid;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          to: this.to,
+          callerIdSid: this.callerIdSid
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.VoiceVerificationCheckInstance = VoiceVerificationCheckInstance;
+  }
+});
+
 // node_modules/twilio/lib/rest/numbers/v1/webhook.js
 var require_webhook7 = __commonJS({
   "node_modules/twilio/lib/rest/numbers/v1/webhook.js"(exports2) {
@@ -152250,6 +152659,10 @@ var require_V120 = __commonJS({
     var portingWebhookConfigurationDelete_1 = require_portingWebhookConfigurationDelete();
     var senderIdRegistration_1 = require_senderIdRegistration();
     var signingRequestConfiguration_1 = require_signingRequestConfiguration();
+    var smsVerification_1 = require_smsVerification();
+    var smsVerificationCheck_1 = require_smsVerificationCheck();
+    var voiceVerification_1 = require_voiceVerification();
+    var voiceVerificationCheck_1 = require_voiceVerificationCheck();
     var webhook_1 = require_webhook7();
     var V1 = class extends Version_1.default {
       /**
@@ -152313,6 +152726,26 @@ var require_V120 = __commonJS({
       get signingRequestConfigurations() {
         this._signingRequestConfigurations = this._signingRequestConfigurations || (0, signingRequestConfiguration_1.SigningRequestConfigurationListInstance)(this);
         return this._signingRequestConfigurations;
+      }
+      /** Getter for smsVerifications resource */
+      get smsVerifications() {
+        this._smsVerifications = this._smsVerifications || (0, smsVerification_1.SmsVerificationListInstance)(this);
+        return this._smsVerifications;
+      }
+      /** Getter for smsVerificationChecks resource */
+      get smsVerificationChecks() {
+        this._smsVerificationChecks = this._smsVerificationChecks || (0, smsVerificationCheck_1.SmsVerificationCheckListInstance)(this);
+        return this._smsVerificationChecks;
+      }
+      /** Getter for voiceVerifications resource */
+      get voiceVerifications() {
+        this._voiceVerifications = this._voiceVerifications || (0, voiceVerification_1.VoiceVerificationListInstance)(this);
+        return this._voiceVerifications;
+      }
+      /** Getter for voiceVerificationChecks resource */
+      get voiceVerificationChecks() {
+        this._voiceVerificationChecks = this._voiceVerificationChecks || (0, voiceVerificationCheck_1.VoiceVerificationCheckListInstance)(this);
+        return this._voiceVerificationChecks;
       }
       /** Getter for webhook resource */
       get webhook() {
@@ -158154,17 +158587,16 @@ var require_token5 = __commonJS({
       instance._solution = {};
       instance._uri = `/token`;
       instance.create = function create(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        if (params["grantType"] === null || params["grantType"] === void 0) {
+          throw new Error(`Required parameter "params['grantType']" missing.`);
         }
         let data = {};
         if (params["accountSid"] !== void 0)
           data["account_sid"] = params["accountSid"];
-        if (params["grantType"] !== void 0)
-          data["grant_type"] = params["grantType"];
+        data["grant_type"] = params["grantType"];
         if (params["clientId"] !== void 0)
           data["client_id"] = params["clientId"];
         if (params["clientSecret"] !== void 0)
@@ -158195,17 +158627,16 @@ var require_token5 = __commonJS({
         return operationPromise;
       };
       instance.createWithHttpInfo = function createWithHttpInfo(params, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        if (params["grantType"] === null || params["grantType"] === void 0) {
+          throw new Error(`Required parameter "params['grantType']" missing.`);
         }
         let data = {};
         if (params["accountSid"] !== void 0)
           data["account_sid"] = params["accountSid"];
-        if (params["grantType"] !== void 0)
-          data["grant_type"] = params["grantType"];
+        data["grant_type"] = params["grantType"];
         if (params["clientId"] !== void 0)
           data["client_id"] = params["clientId"];
         if (params["clientSecret"] !== void 0)
@@ -203549,8 +203980,11 @@ var require_newChallenge = __commonJS({
         this._uri = `/Services/${serviceSid}/Passkeys/Challenges`;
       }
       create(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
         }
         let data = {};
         data = params;
@@ -203571,8 +204005,11 @@ var require_newChallenge = __commonJS({
         return operationPromise;
       }
       createWithHttpInfo(params, headers, callback) {
-        if (params === null || params === void 0) {
-          throw new Error('Required parameter "params" missing.');
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
         }
         let data = {};
         data = params;
@@ -205058,6 +205495,8 @@ var require_verification = __commonJS({
           data["TemplateSid"] = params["templateSid"];
         if (params["templateCustomSubstitutions"] !== void 0)
           data["TemplateCustomSubstitutions"] = params["templateCustomSubstitutions"];
+        if (params["templates"] !== void 0)
+          data["Templates"] = params["templates"];
         if (params["deviceIp"] !== void 0)
           data["DeviceIp"] = params["deviceIp"];
         if (params["enableSnaClientToken"] !== void 0)
@@ -205116,6 +205555,8 @@ var require_verification = __commonJS({
           data["TemplateSid"] = params["templateSid"];
         if (params["templateCustomSubstitutions"] !== void 0)
           data["TemplateCustomSubstitutions"] = params["templateCustomSubstitutions"];
+        if (params["templates"] !== void 0)
+          data["Templates"] = params["templates"];
         if (params["deviceIp"] !== void 0)
           data["DeviceIp"] = params["deviceIp"];
         if (params["enableSnaClientToken"] !== void 0)
@@ -216213,10 +216654,14 @@ var require_V217 = __commonJS({
 var require_transcription5 = __commonJS({
   "node_modules/twilio/lib/rest/voice/v3/transcription.js"(exports2) {
     "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.TranscriptionInstance = exports2.TranscriptionContextImpl = exports2.VoiceV3TranscriptionTranscriptionStatusCallback = exports2.VoiceV3TranscriptionTranscription = exports2.VoiceV3TranscriptionResolvedConfigurationParticipantDefaults = exports2.VoiceV3TranscriptionResolvedConfiguration = exports2.VoiceV3TranscriptionParticipant = exports2.CreateV3TranscriptionsRequest = void 0;
+    exports2.TranscriptionPage = exports2.TranscriptionInstance = exports2.TranscriptionContextImpl = exports2.VoiceV3TranscriptionTranscriptionStatusCallback = exports2.VoiceV3TranscriptionTranscription = exports2.VoiceV3TranscriptionResolvedConfigurationParticipantDefaults = exports2.VoiceV3TranscriptionResolvedConfiguration = exports2.VoiceV3TranscriptionParticipant = exports2.CreateV3TranscriptionsRequest = void 0;
     exports2.TranscriptionListInstance = TranscriptionListInstance;
     var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
@@ -216274,6 +216719,7 @@ var require_transcription5 = __commonJS({
         this.createdAt = payload["createdAt"];
         this.updatedAt = payload["updatedAt"];
         this.url = payload["url"];
+        this.links = payload["links"];
       }
     };
     exports2.VoiceV3TranscriptionTranscription = VoiceV3TranscriptionTranscription;
@@ -216344,6 +216790,20 @@ var require_transcription5 = __commonJS({
         this.statusUrl = payload.statusUrl;
         this.transcription = payload.transcription !== null && payload.transcription !== void 0 ? new VoiceV3TranscriptionTranscription(payload.transcription) : null;
         this.operationId = payload.operationId;
+        this.id = payload.id;
+        this.accountId = payload.accountId;
+        this.transcriptionConfigurationId = payload.transcriptionConfigurationId;
+        this.mediaUrl = payload.mediaUrl;
+        this.sourceId = payload.sourceId;
+        this.audioStartedAt = deserialize.iso8601DateTime(payload.audioStartedAt);
+        this.conversationId = payload.conversationId;
+        this.participants = payload.participants !== null && payload.participants !== void 0 ? payload.participants.map((payload2) => new VoiceV3TranscriptionParticipant(payload2)) : null;
+        this.duration = deserialize.integer(payload.duration);
+        this.resolvedConfiguration = payload.resolvedConfiguration !== null && payload.resolvedConfiguration !== void 0 ? new VoiceV3TranscriptionResolvedConfiguration(payload.resolvedConfiguration) : null;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+        this.url = payload.url;
+        this.links = payload.links;
         this._solution = { transcriptionId };
       }
       get _proxy() {
@@ -216380,7 +216840,21 @@ var require_transcription5 = __commonJS({
           status: this.status,
           statusUrl: this.statusUrl,
           transcription: this.transcription,
-          operationId: this.operationId
+          operationId: this.operationId,
+          id: this.id,
+          accountId: this.accountId,
+          transcriptionConfigurationId: this.transcriptionConfigurationId,
+          mediaUrl: this.mediaUrl,
+          sourceId: this.sourceId,
+          audioStartedAt: this.audioStartedAt,
+          conversationId: this.conversationId,
+          participants: this.participants,
+          duration: this.duration,
+          resolvedConfiguration: this.resolvedConfiguration,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt,
+          url: this.url,
+          links: this.links
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -216441,6 +216915,101 @@ var require_transcription5 = __commonJS({
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["createdAfter"] !== void 0)
+          data["createdAfter"] = serialize.iso8601DateTime(params["createdAfter"]);
+        if (params["createdBefore"] !== void 0)
+          data["createdBefore"] = serialize.iso8601DateTime(params["createdBefore"]);
+        if (params["languageCode"] !== void 0)
+          data["languageCode"] = params["languageCode"];
+        if (params["sourceId"] !== void 0)
+          data["sourceId"] = params["sourceId"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TranscriptionPage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new TranscriptionPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["createdAfter"] !== void 0)
+          data["createdAfter"] = serialize.iso8601DateTime(params["createdAfter"]);
+        if (params["createdBefore"] !== void 0)
+          data["createdBefore"] = serialize.iso8601DateTime(params["createdBefore"]);
+        if (params["languageCode"] !== void 0)
+          data["languageCode"] = params["languageCode"];
+        if (params["sourceId"] !== void 0)
+          data["sourceId"] = params["sourceId"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new TranscriptionPage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new TranscriptionPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
       instance.toJSON = function toJSON() {
         return instance._solution;
       };
@@ -216449,6 +217018,32 @@ var require_transcription5 = __commonJS({
       };
       return instance;
     }
+    var TranscriptionPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the TranscriptionPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of TranscriptionInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new TranscriptionInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TranscriptionPage = TranscriptionPage;
   }
 });
 

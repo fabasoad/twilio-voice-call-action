@@ -30,10 +30,10 @@
   "dependencies": {
     "@actions/core": "~3.0.1",
     "@actions/github": "~9.1.1",
-    "twilio": "~6.1.0"
+    "twilio": "~6.1.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.5.12",
+    "@biomejs/biome": "~2.5.13",
     "@types/node": "~26.4.1",
     "@vitest/coverage-v8": "~5.0.0",
     "esbuild": "~0.28.2",
