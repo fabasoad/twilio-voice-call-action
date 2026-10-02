@@ -42090,7 +42090,7 @@ var require_package = __commonJS({
     module2.exports = {
       name: "twilio",
       description: "A Twilio helper library",
-      version: "6.1.1",
+      version: "6.1.2",
       author: "API Team <api@twilio.com>",
       contributors: [
         {
@@ -95699,13 +95699,19 @@ var require_conversation3 = __commonJS({
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConversationPage = exports2.ConversationInstance = exports2.ConversationContextImpl = exports2.UpdateConversationByIdRequest = exports2.PatchConversationByIdRequestConfiguration = exports2.PatchConversationByIdRequest = exports2.ListConversationByAccount200ResponseConversationsConfiguration = exports2.CreateConversationWithConfigRequestParticipantsAddresses = exports2.CreateConversationWithConfigRequestParticipants = exports2.CreateConversationWithConfigRequestConfiguration = exports2.CreateConversationWithConfigRequest = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2Participant = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2Address = void 0;
+    exports2.ConversationPage = exports2.ConversationInstance = exports2.ConversationContextImpl = exports2.UpdateConversationByIdRequest = exports2.PatchConversationByIdRequestConfiguration = exports2.PatchConversationByIdRequest = exports2.ListConversationByAccount200ResponseConversationsConfiguration = exports2.CreateConversationWithConfigRequestParticipantsAddresses = exports2.CreateConversationWithConfigRequestParticipants = exports2.CreateConversationWithConfigRequestConfiguration = exports2.CreateConversationWithConfigRequest = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2Participant = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2Address = exports2.ConversationWorkflow = void 0;
     exports2.ConversationListInstance = ConversationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
     var deserialize = require_deserialize();
     var serialize = require_serialize();
     var utility_1 = require_utility();
+    var ConversationWorkflow = class {
+      constructor(payload) {
+        this.flowId = payload["flowId"];
+      }
+    };
+    exports2.ConversationWorkflow = ConversationWorkflow;
     var ConversationsV2Address = class {
       constructor(payload) {
         this.channel = payload["channel"];
@@ -95747,12 +95753,14 @@ var require_conversation3 = __commonJS({
         this.name = payload["name"];
         this.configuration = payload["configuration"];
         this.participants = payload["participants"];
+        this.metadata = payload["metadata"];
       }
     };
     exports2.CreateConversationWithConfigRequest = CreateConversationWithConfigRequest;
     var CreateConversationWithConfigRequestConfiguration = class {
       constructor(payload) {
         this.intelligenceConfigurationIds = payload["intelligenceConfigurationIds"];
+        this.workflows = payload["workflows"];
       }
     };
     exports2.CreateConversationWithConfigRequestConfiguration = CreateConversationWithConfigRequestConfiguration;
@@ -95792,6 +95800,7 @@ var require_conversation3 = __commonJS({
         this.name = payload["name"];
         this.status = payload["status"];
         this.configuration = payload["configuration"];
+        this.metadata = payload["metadata"];
       }
     };
     exports2.PatchConversationByIdRequest = PatchConversationByIdRequest;
@@ -95805,6 +95814,7 @@ var require_conversation3 = __commonJS({
       constructor(payload) {
         this.name = payload["name"];
         this.status = payload["status"];
+        this.metadata = payload["metadata"];
       }
     };
     exports2.UpdateConversationByIdRequest = UpdateConversationByIdRequest;
@@ -96028,7 +96038,9 @@ var require_conversation3 = __commonJS({
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new ListConversationByAccount200ResponseConversationsConfiguration(payload.configuration) : null;
+        this.metadata = payload.metadata;
         this.participants = payload.participants !== null && payload.participants !== void 0 ? payload.participants.map((payload2) => new ConversationsV2Participant(payload2)) : null;
+        this.actionId = payload.actionId;
         this._solution = { id };
       }
       get _proxy() {
@@ -96090,7 +96102,9 @@ var require_conversation3 = __commonJS({
           createdAt: this.createdAt,
           updatedAt: this.updatedAt,
           configuration: this.configuration,
-          participants: this.participants
+          metadata: this.metadata,
+          participants: this.participants,
+          actionId: this.actionId
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -114897,6 +114911,250 @@ var require_V25 = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/insights/v3/capacity.js
+var require_capacity = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v3/capacity.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CapacityInstance = exports2.CategoryCapacity = void 0;
+    exports2.CapacityListInstance = CapacityListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var CategoryCapacity = class {
+      constructor(payload) {
+        this.consumed = payload["consumed"];
+        this.remaining = payload["remaining"];
+      }
+    };
+    exports2.CategoryCapacity = CategoryCapacity;
+    function CapacityListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/ControlPlane/ConversationInsights/CustomFieldMappings/Capacity`;
+      instance.fetch = function fetch2(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new CapacityInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.fetchWithHttpInfo = function fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new CapacityInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var CapacityInstance = class {
+      constructor(_version, _payload) {
+        this._version = _version;
+        const payload = _payload;
+        this.measure = payload.measure !== null && payload.measure !== void 0 ? new CategoryCapacity(payload.measure) : null;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          measure: this.measure
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.CapacityInstance = CapacityInstance;
+  }
+});
+
+// node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js
+var require_customFieldMapping = __commonJS({
+  "node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CustomFieldMappingInstance = exports2.IntelligenceOperatorEntityMetadata = exports2.CustomFieldMappingResponse = exports2.CustomFieldMappingRequest = void 0;
+    exports2.CustomFieldMappingListInstance = CustomFieldMappingListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var CustomFieldMappingRequest = class {
+      constructor(payload) {
+        this.category = payload["category"];
+        this.name = payload["name"];
+        this.description = payload["description"];
+        this.entityMetadata = payload["entityMetadata"];
+      }
+    };
+    exports2.CustomFieldMappingRequest = CustomFieldMappingRequest;
+    var CustomFieldMappingResponse = class {
+      constructor(payload) {
+        this.id = payload["id"];
+        this.category = payload["category"];
+        this.name = payload["name"];
+        this.description = payload["description"];
+        this.entityMetadata = payload["entityMetadata"];
+        this.createdAt = payload["createdAt"];
+        this.updatedAt = payload["updatedAt"];
+      }
+    };
+    exports2.CustomFieldMappingResponse = CustomFieldMappingResponse;
+    var IntelligenceOperatorEntityMetadata = class {
+      constructor(payload) {
+        this.sourceType = payload["sourceType"];
+        this.operatorId = payload["operatorId"];
+        this.operatorName = payload["operatorName"];
+        this.field = payload["field"];
+      }
+    };
+    exports2.IntelligenceOperatorEntityMetadata = IntelligenceOperatorEntityMetadata;
+    function CustomFieldMappingListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/ControlPlane/ConversationInsights/CustomFieldMappings`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new CustomFieldMappingInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new CustomFieldMappingInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.fetch = function fetch2(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new CustomFieldMappingInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.fetchWithHttpInfo = function fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new CustomFieldMappingInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var CustomFieldMappingInstance = class {
+      constructor(_version, _payload) {
+        this._version = _version;
+        const payload = _payload;
+        this.mappings = payload.mappings !== null && payload.mappings !== void 0 ? payload.mappings.map((payload2) => new CustomFieldMappingResponse(payload2)) : null;
+        this.id = payload.id;
+        this.category = payload.category;
+        this.name = payload.name;
+        this.description = payload.description;
+        this.entityMetadata = payload.entityMetadata !== null && payload.entityMetadata !== void 0 ? new IntelligenceOperatorEntityMetadata(payload.entityMetadata) : null;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          mappings: this.mappings,
+          id: this.id,
+          category: this.category,
+          name: this.name,
+          description: this.description,
+          entityMetadata: this.entityMetadata,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.CustomFieldMappingInstance = CustomFieldMappingInstance;
+  }
+});
+
 // node_modules/twilio/lib/rest/insights/v3/metadata.js
 var require_metadata = __commonJS({
   "node_modules/twilio/lib/rest/insights/v3/metadata.js"(exports2) {
@@ -115544,6 +115802,8 @@ var require_V32 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Version_1 = __importDefault(require_Version());
+    var capacity_1 = require_capacity();
+    var customFieldMapping_1 = require_customFieldMapping();
     var metadata_1 = require_metadata();
     var query_1 = require_query();
     var queryJob_1 = require_queryJob();
@@ -115555,6 +115815,16 @@ var require_V32 = __commonJS({
        */
       constructor(domain) {
         super(domain, "v3");
+      }
+      /** Getter for capacity resource */
+      get capacity() {
+        this._capacity = this._capacity || (0, capacity_1.CapacityListInstance)(this);
+        return this._capacity;
+      }
+      /** Getter for customFieldMappings resource */
+      get customFieldMappings() {
+        this._customFieldMappings = this._customFieldMappings || (0, customFieldMapping_1.CustomFieldMappingListInstance)(this);
+        return this._customFieldMappings;
       }
       /** Getter for metadata resource */
       get metadata() {
@@ -120728,7 +120998,7 @@ var require_ruleExecution = __commonJS({
   "node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CreateRuleExecutionRequest = void 0;
+    exports2.RuleOverride = exports2.OperatorOverride = exports2.CreateRuleExecutionRequest = void 0;
     exports2.RuleExecutionListInstance = RuleExecutionListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -120738,9 +121008,23 @@ var require_ruleExecution = __commonJS({
         this.intelligenceConfigurationId = payload["intelligenceConfigurationId"];
         this.ruleId = payload["ruleId"];
         this.conversationId = payload["conversationId"];
+        this.rule = payload["rule"];
       }
     };
     exports2.CreateRuleExecutionRequest = CreateRuleExecutionRequest;
+    var OperatorOverride = class {
+      constructor(payload) {
+        this.id = payload["id"];
+        this.parameters = payload["parameters"];
+      }
+    };
+    exports2.OperatorOverride = OperatorOverride;
+    var RuleOverride = class {
+      constructor(payload) {
+        this.operators = payload["operators"];
+      }
+    };
+    exports2.RuleOverride = RuleOverride;
     function RuleExecutionListInstance(version) {
       const instance = {};
       instance._version = version;
@@ -136677,11 +136961,8 @@ var require_dataMapping = __commonJS({
         return operationPromise;
       }
       patch(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -136702,11 +136983,8 @@ var require_dataMapping = __commonJS({
         return operationPromise;
       }
       patchWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -139576,11 +139854,8 @@ var require_store = __commonJS({
         return operationPromise;
       }
       patch(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -139601,11 +139876,8 @@ var require_store = __commonJS({
         return operationPromise;
       }
       patchWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -140324,11 +140596,8 @@ var require_traitGroup = __commonJS({
         return operationPromise;
       }
       patch(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -140349,11 +140618,8 @@ var require_traitGroup = __commonJS({
         return operationPromise;
       }
       patchWithHttpInfo(params, headers, callback) {
-        if (params instanceof Function) {
-          callback = params;
-          params = {};
-        } else {
-          params = params || {};
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
         }
         let data = {};
         data = params;
@@ -216007,6 +216273,345 @@ var require_recording6 = __commonJS({
   }
 });
 
+// node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js
+var require_recordingAccountDefaultConfiguration = __commonJS({
+  "node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.RecordingAccountDefaultConfigurationInstance = exports2.RecordingAccountDefaultConfigurationContextImpl = exports2.VoiceV2ConfigurationRecordingStatusCallback = exports2.VoiceV2ConfigurationRecordingFeature = exports2.VoiceV2ConfigurationRecordingConfiguration = exports2.VoiceV2ConfigurationRecordingCompositionPolicy = exports2.VoiceV2AccountDefaultConfigurationRecordingRequest = void 0;
+    exports2.RecordingAccountDefaultConfigurationListInstance = RecordingAccountDefaultConfigurationListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var VoiceV2AccountDefaultConfigurationRecordingRequest = class {
+      constructor(payload) {
+        this.description = payload["description"];
+        this.configuration = payload["configuration"];
+      }
+    };
+    exports2.VoiceV2AccountDefaultConfigurationRecordingRequest = VoiceV2AccountDefaultConfigurationRecordingRequest;
+    var VoiceV2ConfigurationRecordingCompositionPolicy = class {
+      constructor(payload) {
+        this.channels = payload["channels"];
+        this.trim = payload["trim"];
+        this.track = payload["track"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingCompositionPolicy = VoiceV2ConfigurationRecordingCompositionPolicy;
+    var VoiceV2ConfigurationRecordingConfiguration = class {
+      constructor(payload) {
+        this.configurationType = payload["configurationType"];
+        this.compositionPolicy = payload["compositionPolicy"];
+        this.callRecordingStatusCallback = payload["callRecordingStatusCallback"];
+        this.conferenceRecordingStatusCallback = payload["conferenceRecordingStatusCallback"];
+        this.features = payload["features"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingConfiguration = VoiceV2ConfigurationRecordingConfiguration;
+    var VoiceV2ConfigurationRecordingFeature = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.featureId = payload["featureId"];
+        this.description = payload["description"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingFeature = VoiceV2ConfigurationRecordingFeature;
+    var VoiceV2ConfigurationRecordingStatusCallback = class {
+      constructor(payload) {
+        this.url = payload["url"];
+        this.method = payload["method"];
+        this.events = payload["events"];
+      }
+    };
+    exports2.VoiceV2ConfigurationRecordingStatusCallback = VoiceV2ConfigurationRecordingStatusCallback;
+    var RecordingAccountDefaultConfigurationContextImpl = class {
+      constructor(_version) {
+        this._version = _version;
+        this._solution = {};
+        this._uri = `/AccountDefaultConfiguration/Recording`;
+      }
+      create(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingAccountDefaultConfigurationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      createWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingAccountDefaultConfigurationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingAccountDefaultConfigurationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingAccountDefaultConfigurationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      update(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RecordingAccountDefaultConfigurationInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      updateWithHttpInfo(params, headers, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "put",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RecordingAccountDefaultConfigurationInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RecordingAccountDefaultConfigurationContextImpl = RecordingAccountDefaultConfigurationContextImpl;
+    var RecordingAccountDefaultConfigurationInstance = class {
+      constructor(_version, payload) {
+        this._version = _version;
+        this.accountSid = payload.account_sid;
+        this.description = payload.description;
+        this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
+        this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
+        this.configuration = payload.configuration !== null && payload.configuration !== void 0 ? new VoiceV2ConfigurationRecordingConfiguration(payload.configuration) : null;
+        this.message = payload.message;
+        this.code = payload.code;
+        this.status = payload.status;
+        this.moreInfo = payload.more_info;
+        this._solution = {};
+      }
+      get _proxy() {
+        this._context = this._context || new RecordingAccountDefaultConfigurationContextImpl(this._version);
+        return this._context;
+      }
+      create(params, callback) {
+        return this._proxy.create(params, callback);
+      }
+      createWithHttpInfo(params, callback) {
+        return this._proxy.createWithHttpInfo(params, callback);
+      }
+      /**
+       * Remove a RecordingAccountDefaultConfigurationInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a RecordingAccountDefaultConfigurationInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a RecordingAccountDefaultConfigurationInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RecordingAccountDefaultConfigurationInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a RecordingAccountDefaultConfigurationInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RecordingAccountDefaultConfigurationInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      update(params, callback) {
+        return this._proxy.update(params, callback);
+      }
+      updateWithHttpInfo(params, callback) {
+        return this._proxy.updateWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          accountSid: this.accountSid,
+          description: this.description,
+          dateCreated: this.dateCreated,
+          dateUpdated: this.dateUpdated,
+          configuration: this.configuration,
+          message: this.message,
+          code: this.code,
+          status: this.status,
+          moreInfo: this.moreInfo
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RecordingAccountDefaultConfigurationInstance = RecordingAccountDefaultConfigurationInstance;
+    function RecordingAccountDefaultConfigurationListInstance(version) {
+      const instance = (() => instance.get());
+      instance.get = function get() {
+        return new RecordingAccountDefaultConfigurationContextImpl(version);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = ``;
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+  }
+});
+
 // node_modules/twilio/lib/rest/voice/v2/transcription.js
 var require_transcription4 = __commonJS({
   "node_modules/twilio/lib/rest/voice/v2/transcription.js"(exports2) {
@@ -216609,6 +217214,7 @@ var require_V217 = __commonJS({
     var accountDefaultConfiguration_1 = require_accountDefaultConfiguration();
     var configuration_1 = require_configuration6();
     var recording_1 = require_recording6();
+    var recordingAccountDefaultConfiguration_1 = require_recordingAccountDefaultConfiguration();
     var transcription_1 = require_transcription4();
     var type_1 = require_type2();
     var V2 = class extends Version_1.default {
@@ -216634,6 +217240,11 @@ var require_V217 = __commonJS({
       get recording() {
         this._recording = this._recording || (0, recording_1.RecordingListInstance)(this);
         return this._recording;
+      }
+      /** Getter for recordingAccountDefaultConfiguration resource */
+      get recordingAccountDefaultConfiguration() {
+        this._recordingAccountDefaultConfiguration = this._recordingAccountDefaultConfiguration || (0, recordingAccountDefaultConfiguration_1.RecordingAccountDefaultConfigurationListInstance)(this);
+        return this._recordingAccountDefaultConfiguration;
       }
       /** Getter for transcription resource */
       get transcription() {
