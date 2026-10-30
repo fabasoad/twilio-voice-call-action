@@ -3,12 +3,13 @@
   "version": "3.0.8",
   "description": "This GitHub action sends voice call with the defined text.",
   "main": "dist/index.js",
+  "packageManager": "pnpm@12.16.1",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --outfile=dist/index.js",
     "lint": "biome lint --write src",
     "test": "vitest run --coverage",
     "clean": "rm -rf coverage && rm -rf temp",
-    "clean:unsafe": "rm -f package-lock.json && rm -rf node_modules && rm -rf dist"
+    "clean:unsafe": "rm -f pnpm-lock.yaml && rm -rf node_modules && rm -rf dist"
   },
   "repository": {
     "type": "git",
@@ -30,10 +31,10 @@
   "dependencies": {
     "@actions/core": "~3.0.1",
     "@actions/github": "~9.1.1",
-    "twilio": "~6.1.2"
+    "twilio": "~6.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.5.15",
+    "@biomejs/biome": "~2.6.4",
     "@types/node": "~26.6.6",
     "@vitest/coverage-v8": "~5.0.5",
     "esbuild": "~0.28.2",
