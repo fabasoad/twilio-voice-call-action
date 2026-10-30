@@ -8,6 +8,8 @@ on: # yamllint disable-line rule:truthy
       - .tool-versions
       - vitest.config.ts
       - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
       - src/**
       - tsconfig.json
   push:
