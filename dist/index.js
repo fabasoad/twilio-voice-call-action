@@ -30518,9 +30518,9 @@ var require_dist = __commonJS({
   }
 });
 
-// node_modules/.pnpm/follow-redirects@1.16.2_debug@4.4.3/node_modules/follow-redirects/debug.js
+// node_modules/.pnpm/follow-redirects@1.16.3_debug@4.4.3/node_modules/follow-redirects/debug.js
 var require_debug = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.16.2_debug@4.4.3/node_modules/follow-redirects/debug.js"(exports2, module2) {
+  "node_modules/.pnpm/follow-redirects@1.16.3_debug@4.4.3/node_modules/follow-redirects/debug.js"(exports2, module2) {
     var debug2;
     module2.exports = function() {
       if (!debug2) {
@@ -30538,9 +30538,9 @@ var require_debug = __commonJS({
   }
 });
 
-// node_modules/.pnpm/follow-redirects@1.16.2_debug@4.4.3/node_modules/follow-redirects/index.js
+// node_modules/.pnpm/follow-redirects@1.16.3_debug@4.4.3/node_modules/follow-redirects/index.js
 var require_follow_redirects = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.16.2_debug@4.4.3/node_modules/follow-redirects/index.js"(exports2, module2) {
+  "node_modules/.pnpm/follow-redirects@1.16.3_debug@4.4.3/node_modules/follow-redirects/index.js"(exports2, module2) {
     var url = require("url");
     var URL2 = url.URL;
     var http = require("http");
@@ -31045,16 +31045,16 @@ var require_follow_redirects = __commonJS({
       return URL2 && value instanceof URL2;
     }
     function escapeRegex(regex) {
-      return regex.replace(/[[\]\\/()*+?.^$|]/g, "\\$&");
+      return regex.replace(/[\^$\\.*+?()[\]{}|]/g, "\\$&");
     }
     module2.exports = wrap({ http, https });
     module2.exports.wrap = wrap;
   }
 });
 
-// node_modules/.pnpm/axios@1.21.0_debug@4.4.3/node_modules/axios/dist/node/axios.cjs
+// node_modules/.pnpm/axios@1.21.1_debug@4.4.3/node_modules/axios/dist/node/axios.cjs
 var require_axios = __commonJS({
-  "node_modules/.pnpm/axios@1.21.0_debug@4.4.3/node_modules/axios/dist/node/axios.cjs"(exports2, module2) {
+  "node_modules/.pnpm/axios@1.21.1_debug@4.4.3/node_modules/axios/dist/node/axios.cjs"(exports2, module2) {
     "use strict";
     var FormData$1 = require_form_data();
     var crypto = require("crypto");
@@ -33010,7 +33010,7 @@ var require_axios = __commonJS({
     function getEnv(key) {
       return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || "";
     }
-    var VERSION = "1.21.0";
+    var VERSION = "1.21.1";
     function parseProtocol(url2) {
       const match = /^([-+\w]{1,25}):(?:\/\/)?/.exec(url2);
       return match && match[1].toLowerCase() || "";
@@ -36218,8 +36218,11 @@ var require_axios = __commonJS({
         throw new CanceledError(null, config);
       }
     }
-    function elapsedSince(start) {
-      return Math.max(0, Date.now() - start);
+    function resolveClock() {
+      return typeof performance !== "undefined" && utils$1.isFunction(performance.now) ? () => performance.now() : Date.now;
+    }
+    function elapsedSince(now, start) {
+      return Math.max(0, Math.round(now() - start));
     }
     function dispatchRequest(_config) {
       const config = utils$1.toSafeFlatObject(_config);
@@ -36230,10 +36233,11 @@ var require_axios = __commonJS({
         config.headers.setContentType("application/x-www-form-urlencoded", false);
       }
       const adapter = adapters.getAdapter(config.adapter || defaults.adapter, config);
-      const start = Date.now();
+      const now = resolveClock();
+      const start = now();
       return adapter(config).then(function onAdapterResolution(response) {
         throwIfCancellationRequested(config);
-        response.duration = elapsedSince(start);
+        response.duration = elapsedSince(now, start);
         config.response = response;
         try {
           response.data = transformData.call(config, config.transformResponse, response);
@@ -36246,7 +36250,7 @@ var require_axios = __commonJS({
         if (!isCancel(reason)) {
           throwIfCancellationRequested(config);
           if (reason && reason.response) {
-            reason.response.duration = elapsedSince(start);
+            reason.response.duration = elapsedSince(now, start);
             config.response = reason.response;
             try {
               reason.response.data = transformData.call(config, config.transformResponse, reason.response);
@@ -38756,9 +38760,9 @@ var require_lib = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/response.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/response.js
 var require_response2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/response.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/response.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Response = class {
@@ -38775,9 +38779,9 @@ var require_response2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/request.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/request.js
 var require_request3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/request.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/request.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var Request = class {
@@ -38843,9 +38847,9 @@ var require_request3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/RequestCanonicalizer.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/RequestCanonicalizer.js
 var require_RequestCanonicalizer = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/RequestCanonicalizer.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/RequestCanonicalizer.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -39796,9 +39800,9 @@ var require_timespan = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/constants.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/constants.js
 var require_constants6 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/constants.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/constants.js"(exports2, module2) {
     "use strict";
     var SEMVER_SPEC_VERSION = "2.0.0";
     var MAX_LENGTH = 256;
@@ -39806,6 +39810,33 @@ var require_constants6 = __commonJS({
     9007199254740991;
     var MAX_SAFE_COMPONENT_LENGTH = 16;
     var MAX_SAFE_BUILD_LENGTH = MAX_LENGTH - 6;
+    var WHITESPACE_CHARACTERS = [
+      "	",
+      "\n",
+      "\v",
+      "\f",
+      "\r",
+      " ",
+      "\xA0",
+      "\u1680",
+      "\u2000",
+      "\u2001",
+      "\u2002",
+      "\u2003",
+      "\u2004",
+      "\u2005",
+      "\u2006",
+      "\u2007",
+      "\u2008",
+      "\u2009",
+      "\u200A",
+      "\u2028",
+      "\u2029",
+      "\u202F",
+      "\u205F",
+      "\u3000",
+      "\uFEFF"
+    ];
     var RELEASE_TYPES = [
       "major",
       "premajor",
@@ -39820,6 +39851,7 @@ var require_constants6 = __commonJS({
       MAX_SAFE_COMPONENT_LENGTH,
       MAX_SAFE_BUILD_LENGTH,
       MAX_SAFE_INTEGER,
+      WHITESPACE_CHARACTERS,
       RELEASE_TYPES,
       SEMVER_SPEC_VERSION,
       FLAG_INCLUDE_PRERELEASE: 1,
@@ -39828,9 +39860,9 @@ var require_constants6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/debug.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/debug.js
 var require_debug2 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/debug.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/debug.js"(exports2, module2) {
     "use strict";
     var debug2 = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {
     };
@@ -39838,9 +39870,9 @@ var require_debug2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/re.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/re.js
 var require_re = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/re.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/re.js"(exports2, module2) {
     "use strict";
     var {
       MAX_SAFE_COMPONENT_LENGTH,
@@ -39926,9 +39958,9 @@ var require_re = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/parse-options.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/parse-options.js
 var require_parse_options = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/parse-options.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/parse-options.js"(exports2, module2) {
     "use strict";
     var looseOption = Object.freeze({ loose: true });
     var emptyOpts = Object.freeze({});
@@ -39945,9 +39977,9 @@ var require_parse_options = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/identifiers.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/identifiers.js
 var require_identifiers = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/identifiers.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/identifiers.js"(exports2, module2) {
     "use strict";
     var numeric = /^[0-9]+$/;
     var compareIdentifiers = (a, b) => {
@@ -39970,9 +40002,9 @@ var require_identifiers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/semver.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/semver.js
 var require_semver = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/semver.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/semver.js"(exports2, module2) {
     "use strict";
     var debug2 = require_debug2();
     var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants6();
@@ -40262,9 +40294,9 @@ var require_semver = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/parse.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/parse.js
 var require_parse3 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/parse.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/parse.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse = (version, options, throwErrors = false) => {
@@ -40284,9 +40316,9 @@ var require_parse3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/valid.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/valid.js
 var require_valid = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/valid.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/valid.js"(exports2, module2) {
     "use strict";
     var parse = require_parse3();
     var valid = (version, options) => {
@@ -40297,9 +40329,9 @@ var require_valid = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/clean.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/clean.js
 var require_clean = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/clean.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/clean.js"(exports2, module2) {
     "use strict";
     var parse = require_parse3();
     var clean = (version, options) => {
@@ -40310,9 +40342,9 @@ var require_clean = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/inc.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/inc.js
 var require_inc = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/inc.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/inc.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var inc = (version, release, options, identifier, identifierBase) => {
@@ -40334,9 +40366,9 @@ var require_inc = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/diff.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/diff.js
 var require_diff = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/diff.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/diff.js"(exports2, module2) {
     "use strict";
     var parse = require_parse3();
     var diff = (version1, version2) => {
@@ -40378,9 +40410,9 @@ var require_diff = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/major.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/major.js
 var require_major = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/major.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/major.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var major = (a, loose) => new SemVer(a, loose).major;
@@ -40388,9 +40420,9 @@ var require_major = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/minor.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/minor.js
 var require_minor = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/minor.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/minor.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var minor = (a, loose) => new SemVer(a, loose).minor;
@@ -40398,9 +40430,9 @@ var require_minor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/patch.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/patch.js
 var require_patch = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/patch.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/patch.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var patch = (a, loose) => new SemVer(a, loose).patch;
@@ -40408,9 +40440,9 @@ var require_patch = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/prerelease.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/prerelease.js
 var require_prerelease = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/prerelease.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/prerelease.js"(exports2, module2) {
     "use strict";
     var parse = require_parse3();
     var prerelease = (version, options) => {
@@ -40421,9 +40453,9 @@ var require_prerelease = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare.js
 var require_compare = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compare = (a, b, loose) => new SemVer(a, loose).compare(new SemVer(b, loose));
@@ -40431,9 +40463,9 @@ var require_compare = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/rcompare.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/rcompare.js
 var require_rcompare = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/rcompare.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/rcompare.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var rcompare = (a, b, loose) => compare(b, a, loose);
@@ -40441,9 +40473,9 @@ var require_rcompare = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare-loose.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare-loose.js
 var require_compare_loose = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare-loose.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare-loose.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var compareLoose = (a, b) => compare(a, b, true);
@@ -40451,9 +40483,9 @@ var require_compare_loose = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare-build.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare-build.js
 var require_compare_build = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare-build.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/compare-build.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compareBuild = (a, b, loose) => {
@@ -40465,9 +40497,9 @@ var require_compare_build = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/sort.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/sort.js
 var require_sort = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/sort.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/sort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var sort = (list, loose) => list.sort((a, b) => compareBuild(a, b, loose));
@@ -40475,9 +40507,9 @@ var require_sort = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/rsort.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/rsort.js
 var require_rsort = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/rsort.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/rsort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var rsort = (list, loose) => list.sort((a, b) => compareBuild(b, a, loose));
@@ -40485,9 +40517,9 @@ var require_rsort = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gt.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/gt.js
 var require_gt = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gt.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/gt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gt = (a, b, loose) => compare(a, b, loose) > 0;
@@ -40495,9 +40527,9 @@ var require_gt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lt.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/lt.js
 var require_lt = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lt.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/lt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var lt = (a, b, loose) => compare(a, b, loose) < 0;
@@ -40505,9 +40537,9 @@ var require_lt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/eq.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/eq.js
 var require_eq = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/eq.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/eq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var eq = (a, b, loose) => compare(a, b, loose) === 0;
@@ -40515,9 +40547,9 @@ var require_eq = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/neq.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/neq.js
 var require_neq = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/neq.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/neq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var neq = (a, b, loose) => compare(a, b, loose) !== 0;
@@ -40525,9 +40557,9 @@ var require_neq = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gte.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/gte.js
 var require_gte = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gte.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/gte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gte = (a, b, loose) => compare(a, b, loose) >= 0;
@@ -40535,9 +40567,9 @@ var require_gte = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lte.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/lte.js
 var require_lte = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lte.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/lte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var lte = (a, b, loose) => compare(a, b, loose) <= 0;
@@ -40545,9 +40577,9 @@ var require_lte = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/cmp.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/cmp.js
 var require_cmp = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/cmp.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/cmp.js"(exports2, module2) {
     "use strict";
     var eq = require_eq();
     var neq = require_neq();
@@ -40595,9 +40627,9 @@ var require_cmp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/coerce.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/coerce.js
 var require_coerce = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/coerce.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/coerce.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse = require_parse3();
@@ -40641,9 +40673,9 @@ var require_coerce = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/truncate.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/truncate.js
 var require_truncate = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/truncate.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/truncate.js"(exports2, module2) {
     "use strict";
     var parse = require_parse3();
     var constants3 = require_constants6();
@@ -40682,9 +40714,9 @@ var require_truncate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/lrucache.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/lrucache.js
 var require_lrucache = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/lrucache.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/lrucache.js"(exports2, module2) {
     "use strict";
     var LRUCache = class {
       constructor() {
@@ -40720,9 +40752,200 @@ var require_lrucache = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/range.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/trim-comparator-whitespace.js
+var require_trim_comparator_whitespace = __commonJS({
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/internal/trim-comparator-whitespace.js"(exports2, module2) {
+    "use strict";
+    var {
+      MAX_LENGTH,
+      MAX_SAFE_BUILD_LENGTH,
+      WHITESPACE_CHARACTERS
+    } = require_constants6();
+    var whitespace = new Uint8Array(65536);
+    for (const char of WHITESPACE_CHARACTERS) {
+      whitespace[char.charCodeAt(0)] = 1;
+    }
+    var isWhitespace = (char) => char !== void 0 && whitespace[char.charCodeAt(0)] === 1;
+    var isVersionPrefix = (char) => char === "v" || char === "=" || isWhitespace(char);
+    var isDigit = (char) => char !== void 0 && char >= "0" && char <= "9";
+    var isLetter = (char) => char !== void 0 && (char >= "a" && char <= "z" || char >= "A" && char <= "Z");
+    var isIdentifierCharacter = (char) => isDigit(char) || isLetter(char) || char === "-";
+    var isVersionStart = (char) => isDigit(char) || char === "x" || char === "X" || char === "*";
+    var findDigitsEndIndex = (range, start, limit, digitRuns) => {
+      if (!isDigit(range[start])) {
+        return start;
+      }
+      if (start >= digitRuns.start && start < digitRuns.end) {
+        return Math.min(start + limit, digitRuns.end);
+      }
+      if (start >= digitRuns.previousStart && start < digitRuns.previousEnd) {
+        return Math.min(start + limit, digitRuns.previousEnd);
+      }
+      let end = start + 1;
+      while (isDigit(range[end])) {
+        end++;
+      }
+      digitRuns.previousStart = digitRuns.start;
+      digitRuns.previousEnd = digitRuns.end;
+      digitRuns.start = start;
+      digitRuns.end = end;
+      return Math.min(start + limit, end);
+    };
+    var findVersionNumberEndIndex = (range, start, loose, digitRuns) => {
+      if (!loose && range[start] === "0") {
+        return start + 1;
+      }
+      return findDigitsEndIndex(range, start, loose ? MAX_LENGTH : MAX_LENGTH + 1, digitRuns);
+    };
+    var findPrereleaseIdentifierEndIndex = (range, start, loose, digitRuns) => {
+      const digitsEnd = findDigitsEndIndex(range, start, MAX_LENGTH, digitRuns);
+      if (isLetter(range[digitsEnd]) || range[digitsEnd] === "-") {
+        let end = digitsEnd + 1;
+        const limit = end + MAX_SAFE_BUILD_LENGTH;
+        while (end < limit && isIdentifierCharacter(range[end])) {
+          end++;
+        }
+        return end;
+      }
+      return findVersionNumberEndIndex(range, start, loose, digitRuns);
+    };
+    var findPrereleaseEndIndex = (range, start, loose, digitRuns) => {
+      const hyphen = range[start] === "-";
+      if (!loose && !hyphen) {
+        return start;
+      }
+      const identifierStart = start + (hyphen ? 1 : 0);
+      let end = findPrereleaseIdentifierEndIndex(range, identifierStart, loose, digitRuns);
+      if (end === identifierStart) {
+        if (!loose || !hyphen) {
+          return start;
+        }
+        end = findPrereleaseIdentifierEndIndex(range, start, loose, digitRuns);
+      }
+      while (range[end] === ".") {
+        const next = findPrereleaseIdentifierEndIndex(range, end + 1, loose, digitRuns);
+        if (next === end + 1) {
+          break;
+        }
+        end = next;
+      }
+      return end;
+    };
+    var findBuildIdentifierEndIndex = (range, start) => {
+      let end = start;
+      while (end - start < MAX_SAFE_BUILD_LENGTH && isIdentifierCharacter(range[end])) {
+        end++;
+      }
+      return end;
+    };
+    var findBuildEndIndex = (range, start) => {
+      if (range[start] !== "+") {
+        return start;
+      }
+      let end = findBuildIdentifierEndIndex(range, start + 1);
+      if (end === start + 1) {
+        return start;
+      }
+      while (range[end] === ".") {
+        const next = findBuildIdentifierEndIndex(range, end + 1);
+        if (next === end + 1) {
+          break;
+        }
+        end = next;
+      }
+      return end;
+    };
+    var findLooseFullVersionEndIndex = (range, start, digitRuns) => {
+      let end = start;
+      for (let component = 0; component < 3; component++) {
+        const next = findVersionNumberEndIndex(range, end, true, digitRuns);
+        if (next === end) {
+          return start;
+        }
+        end = next;
+        if (component < 2) {
+          if (range[end] !== ".") {
+            return start;
+          }
+          end++;
+        }
+      }
+      const prereleaseEnd = findPrereleaseEndIndex(range, end, true, digitRuns);
+      return findBuildEndIndex(range, prereleaseEnd);
+    };
+    var findPartialVersionComponentEndIndex = (range, start, digitRuns) => {
+      if (isDigit(range[start])) {
+        return findVersionNumberEndIndex(range, start, false, digitRuns);
+      }
+      return isVersionStart(range[start]) ? start + 1 : start;
+    };
+    var findPartialVersionEndIndex = (range, start, digitRuns) => {
+      let end = findPartialVersionComponentEndIndex(range, start, digitRuns);
+      for (let component = 0; component < 2; component++) {
+        if (range[end] !== ".") {
+          return end;
+        }
+        const next = findPartialVersionComponentEndIndex(range, end + 1, digitRuns);
+        if (next === end + 1) {
+          return end;
+        }
+        end = next;
+      }
+      const prereleaseEnd = findPrereleaseEndIndex(range, end, false, digitRuns);
+      return findBuildEndIndex(range, prereleaseEnd);
+    };
+    var findVersionEndIndex = (range, start, digitRuns) => {
+      const fullVersionEnd = findLooseFullVersionEndIndex(range, start, digitRuns);
+      return fullVersionEnd !== start ? fullVersionEnd : findPartialVersionEndIndex(range, start, digitRuns);
+    };
+    var findRemovableWhitespaceIndex = (range, matchStart) => {
+      let position = matchStart;
+      if (isWhitespace(range[position])) {
+        position++;
+      }
+      if (range[position] === "<" || range[position] === ">") {
+        position++;
+      }
+      if (range[position] === "=") {
+        position++;
+      }
+      return isWhitespace(range[position]) ? position : -1;
+    };
+    var trimComparatorWhitespace = (range) => {
+      let result = "";
+      let copyFrom = 0;
+      let cursor = 0;
+      const digitRuns = { start: -1, end: -1, previousStart: -1, previousEnd: -1 };
+      while (cursor < range.length) {
+        const matchStart = cursor;
+        if (range[cursor] === "<" || range[cursor] === ">") {
+          cursor++;
+        } else if (!isVersionPrefix(range[cursor]) && !isVersionStart(range[cursor])) {
+          cursor++;
+          continue;
+        }
+        while (cursor < range.length && isVersionPrefix(range[cursor])) {
+          cursor++;
+        }
+        if (!isVersionStart(range[cursor])) {
+          continue;
+        }
+        const whitespacePosition = findRemovableWhitespaceIndex(range, matchStart);
+        if (whitespacePosition !== -1) {
+          result += range.slice(copyFrom, whitespacePosition);
+          copyFrom = whitespacePosition + 1;
+        }
+        cursor = findVersionEndIndex(range, cursor, digitRuns);
+      }
+      return result + range.slice(copyFrom);
+    };
+    module2.exports = trimComparatorWhitespace;
+  }
+});
+
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/range.js
 var require_range2 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/range.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/range.js"(exports2, module2) {
     "use strict";
     var SPACE_CHARACTERS = /\s+/g;
     var Range = class _Range {
@@ -40801,7 +41024,7 @@ var require_range2 = __commonJS({
         const hr = loose ? re[t.HYPHENRANGELOOSE] : re[t.HYPHENRANGE];
         range = range.replace(hr, hyphenReplace(this.options.includePrerelease));
         debug2("hyphen replace", range);
-        range = range.replace(re[t.COMPARATORTRIM], comparatorTrimReplace);
+        range = trimComparatorWhitespace(range);
         debug2("comparator trim", range);
         range = range.replace(re[t.TILDETRIM], tildeTrimReplace);
         debug2("tilde trim", range);
@@ -40871,11 +41094,11 @@ var require_range2 = __commonJS({
     var Comparator = require_comparator();
     var debug2 = require_debug2();
     var SemVer = require_semver();
+    var trimComparatorWhitespace = require_trim_comparator_whitespace();
     var {
       safeRe: re,
       src,
       t,
-      comparatorTrimReplace,
       tildeTrimReplace,
       caretTrimReplace
     } = require_re();
@@ -41105,9 +41328,9 @@ var require_range2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/comparator.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/comparator.js
 var require_comparator = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/comparator.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/classes/comparator.js"(exports2, module2) {
     "use strict";
     var ANY = /* @__PURE__ */ Symbol("SemVer ANY");
     var Comparator = class _Comparator {
@@ -41218,9 +41441,9 @@ var require_comparator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/satisfies.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/satisfies.js
 var require_satisfies = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/satisfies.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/functions/satisfies.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var satisfies = (version, range, options) => {
@@ -41235,9 +41458,9 @@ var require_satisfies = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/to-comparators.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/to-comparators.js
 var require_to_comparators = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
@@ -41245,9 +41468,9 @@ var require_to_comparators = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/max-satisfying.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/max-satisfying.js
 var require_max_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/max-satisfying.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/max-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -41274,9 +41497,9 @@ var require_max_satisfying = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/min-satisfying.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/min-satisfying.js
 var require_min_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/min-satisfying.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/min-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -41303,9 +41526,9 @@ var require_min_satisfying = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/min-version.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/min-version.js
 var require_min_version = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/min-version.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/min-version.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -41362,9 +41585,9 @@ var require_min_version = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/valid.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/valid.js
 var require_valid2 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/valid.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/valid.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var validRange = (range, options) => {
@@ -41378,9 +41601,9 @@ var require_valid2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/outside.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/outside.js
 var require_outside = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/outside.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/outside.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Comparator = require_comparator();
@@ -41447,9 +41670,9 @@ var require_outside = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/gtr.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/gtr.js
 var require_gtr = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/gtr.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/gtr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var gtr = (version, range, options) => outside(version, range, ">", options);
@@ -41457,9 +41680,9 @@ var require_gtr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/ltr.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/ltr.js
 var require_ltr = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/ltr.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/ltr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var ltr = (version, range, options) => outside(version, range, "<", options);
@@ -41467,9 +41690,9 @@ var require_ltr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/intersects.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/intersects.js
 var require_intersects = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/intersects.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/intersects.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var intersects = (r1, r2, options) => {
@@ -41481,9 +41704,9 @@ var require_intersects = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/simplify.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/simplify.js
 var require_simplify = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/simplify.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/simplify.js"(exports2, module2) {
     "use strict";
     var satisfies = require_satisfies();
     var compare = require_compare();
@@ -41531,9 +41754,9 @@ var require_simplify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/subset.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/subset.js
 var require_subset = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/subset.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/ranges/subset.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var Comparator = require_comparator();
@@ -41693,9 +41916,9 @@ var require_subset = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.8.5/node_modules/semver/index.js
+// node_modules/.pnpm/semver@7.8.6/node_modules/semver/index.js
 var require_semver2 = __commonJS({
-  "node_modules/.pnpm/semver@7.8.5/node_modules/semver/index.js"(exports2, module2) {
+  "node_modules/.pnpm/semver@7.8.6/node_modules/semver/index.js"(exports2, module2) {
     "use strict";
     var internalRe = require_re();
     var constants3 = require_constants6();
@@ -42743,9 +42966,9 @@ var require_jsonwebtoken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/ValidationToken.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/ValidationToken.js
 var require_ValidationToken = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/ValidationToken.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/validation/ValidationToken.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -42868,9 +43091,9 @@ var require_ValidationToken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/RequestClient.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/RequestClient.js
 var require_RequestClient = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/RequestClient.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/RequestClient.js"(exports2, module2) {
     "use strict";
     var __createBinding = exports2 && exports2.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -43150,13 +43373,13 @@ var require_RequestClient = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/package.json
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/package.json
 var require_package = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/package.json"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/package.json"(exports2, module2) {
     module2.exports = {
       name: "twilio",
       description: "A Twilio helper library",
-      version: "6.2.0",
+      version: "6.3.0",
       author: "API Team <api@twilio.com>",
       contributors: [
         {
@@ -43194,7 +43417,6 @@ var require_package = __commonJS({
         express: "^4.17.1",
         jest: "^29.5.5",
         jshint: "^2.11.0",
-        "mock-fs": "^5.2.0",
         nock: "^13.2.9",
         "node-mocks-http": "^1.8.1",
         prettier: "^2.7.1",
@@ -43232,9 +43454,9 @@ var require_package = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/RestException.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/RestException.js
 var require_RestException = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/RestException.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/RestException.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var RestException = class extends Error {
@@ -43266,9 +43488,9 @@ var require_RestException = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/BaseTwilio.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/BaseTwilio.js
 var require_BaseTwilio = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/BaseTwilio.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/BaseTwilio.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -43483,9 +43705,9 @@ var require_BaseTwilio = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/utility.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/utility.js
 var require_utility = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/utility.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/utility.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.trim = void 0;
@@ -43502,9 +43724,9 @@ var require_utility = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Domain.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Domain.js
 var require_Domain = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Domain.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Domain.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var utility_1 = require_utility();
@@ -43558,9 +43780,9 @@ var require_Domain = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/TwilioServiceException.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/TwilioServiceException.js
 var require_TwilioServiceException = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/TwilioServiceException.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/TwilioServiceException.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var TwilioServiceException = class extends Error {
@@ -43608,9 +43830,9 @@ var require_TwilioServiceException = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Version.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Version.js
 var require_Version = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Version.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Version.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -44659,9 +44881,9 @@ var require_utc = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/deserialize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/deserialize.js
 var require_deserialize = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/deserialize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/deserialize.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -44707,9 +44929,9 @@ var require_deserialize = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/serialize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/serialize.js
 var require_serialize = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/serialize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/serialize.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -44796,9 +45018,9 @@ var require_serialize = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/authTokenPromotion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/authTokenPromotion.js
 var require_authTokenPromotion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/authTokenPromotion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/authTokenPromotion.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthTokenPromotionInstance = exports2.AuthTokenPromotionContextImpl = void 0;
@@ -44934,9 +45156,9 @@ var require_authTokenPromotion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkConsents.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkConsents.js
 var require_bulkConsents = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkConsents.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkConsents.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkConsentsInstance = void 0;
@@ -45027,9 +45249,9 @@ var require_bulkConsents = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkContacts.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkContacts.js
 var require_bulkContacts = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkContacts.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/bulkContacts.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkContactsInstance = void 0;
@@ -45120,9 +45342,9 @@ var require_bulkContacts = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Page.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Page.js
 var require_Page = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/Page.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/Page.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -45307,9 +45529,9 @@ var require_Page = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/aws.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/aws.js
 var require_aws = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/aws.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/aws.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -45455,7 +45677,7 @@ var require_aws = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AwsContextImpl(this._version, this._solution.sid);
@@ -45704,9 +45926,9 @@ var require_aws = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/publicKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/publicKey.js
 var require_publicKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/publicKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential/publicKey.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -45852,7 +46074,7 @@ var require_publicKey = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PublicKeyContextImpl(this._version, this._solution.sid);
@@ -46101,9 +46323,9 @@ var require_publicKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential.js
 var require_credential = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/credential.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CredentialListInstance = CredentialListInstance;
@@ -46144,9 +46366,9 @@ var require_credential = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/messagingGeopermissions.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/messagingGeopermissions.js
 var require_messagingGeopermissions = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/messagingGeopermissions.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/messagingGeopermissions.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.MessagingGeopermissionsInstance = void 0;
@@ -46284,9 +46506,9 @@ var require_messagingGeopermissions = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/safelist.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/safelist.js
 var require_safelist = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/safelist.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/safelist.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SafelistInstance = void 0;
@@ -46470,9 +46692,9 @@ var require_safelist = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/secondaryAuthToken.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/secondaryAuthToken.js
 var require_secondaryAuthToken = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/secondaryAuthToken.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/v1/secondaryAuthToken.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SecondaryAuthTokenInstance = exports2.SecondaryAuthTokenContextImpl = void 0;
@@ -46660,9 +46882,9 @@ var require_secondaryAuthToken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/V1.js
 var require_V1 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/accounts/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -46725,9 +46947,9 @@ var require_V1 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/AccountsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/AccountsBase.js
 var require_AccountsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/AccountsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/AccountsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -46752,9 +46974,9 @@ var require_AccountsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Accounts.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Accounts.js
 var require_Accounts = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Accounts.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Accounts.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -46787,9 +47009,9 @@ var require_Accounts = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address/dependentPhoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address/dependentPhoneNumber.js
 var require_dependentPhoneNumber = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address/dependentPhoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address/dependentPhoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -46997,9 +47219,9 @@ var require_dependentPhoneNumber = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address.js
 var require_address = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/address.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -47195,7 +47417,7 @@ var require_address = __commonJS({
         this.validated = payload.validated;
         this.verified = payload.verified;
         this.streetSecondary = payload.street_secondary;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AddressContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -47527,9 +47749,9 @@ var require_address = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/application.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/application.js
 var require_application = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/application.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/application.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -47753,7 +47975,7 @@ var require_application = __commonJS({
         this.voiceMethod = payload.voice_method;
         this.voiceUrl = payload.voice_url;
         this.publicApplicationConnectEnabled = payload.public_application_connect_enabled;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ApplicationContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -48078,9 +48300,9 @@ var require_application = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/authorizedConnectApp.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/authorizedConnectApp.js
 var require_authorizedConnectApp = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/authorizedConnectApp.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/authorizedConnectApp.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -48158,7 +48380,10 @@ var require_authorizedConnectApp = __commonJS({
         this.connectAppSid = payload.connect_app_sid;
         this.permissions = payload.permissions;
         this.uri = payload.uri;
-        this._solution = { accountSid, connectAppSid };
+        this._solution = {
+          accountSid,
+          connectAppSid: connectAppSid || this.connectAppSid
+        };
       }
       get _proxy() {
         this._context = this._context || new AuthorizedConnectAppContextImpl(this._version, this._solution.accountSid, this._solution.connectAppSid);
@@ -48331,9 +48556,9 @@ var require_authorizedConnectApp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/local.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/local.js
 var require_local = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/local.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/local.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -48587,9 +48812,9 @@ var require_local = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/machineToMachine.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/machineToMachine.js
 var require_machineToMachine = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/machineToMachine.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/machineToMachine.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -48843,9 +49068,9 @@ var require_machineToMachine = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/mobile.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/mobile.js
 var require_mobile = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/mobile.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/mobile.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -49099,9 +49324,9 @@ var require_mobile = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/national.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/national.js
 var require_national = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/national.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/national.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -49355,9 +49580,9 @@ var require_national = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/sharedCost.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/sharedCost.js
 var require_sharedCost = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/sharedCost.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/sharedCost.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -49611,9 +49836,9 @@ var require_sharedCost = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/tollFree.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/tollFree.js
 var require_tollFree = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/tollFree.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/tollFree.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -49867,9 +50092,9 @@ var require_tollFree = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/voip.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/voip.js
 var require_voip = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/voip.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry/voip.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -50123,9 +50348,9 @@ var require_voip = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry.js
 var require_availablePhoneNumberCountry = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/availablePhoneNumberCountry.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -50235,7 +50460,10 @@ var require_availablePhoneNumberCountry = __commonJS({
         this.uri = payload.uri;
         this.beta = payload.beta;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, countryCode };
+        this._solution = {
+          accountSid,
+          countryCode: countryCode || this.countryCode
+        };
       }
       get _proxy() {
         this._context = this._context || new AvailablePhoneNumberCountryContextImpl(this._version, this._solution.accountSid, this._solution.countryCode);
@@ -50447,9 +50675,9 @@ var require_availablePhoneNumberCountry = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/balance.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/balance.js
 var require_balance = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/balance.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/balance.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BalanceInstance = void 0;
@@ -50528,9 +50756,9 @@ var require_balance = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/event.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/event.js
 var require_event = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/event.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -50690,9 +50918,9 @@ var require_event = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/notification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/notification.js
 var require_notification = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/notification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/notification.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -50782,7 +51010,7 @@ var require_notification = __commonJS({
         this.responseHeaders = payload.response_headers;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new NotificationContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -50983,9 +51211,9 @@ var require_notification = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/payment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/payment.js
 var require_payment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/payment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/payment.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PaymentInstance = exports2.PaymentContextImpl = void 0;
@@ -51096,7 +51324,7 @@ var require_payment = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PaymentContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -51272,9 +51500,9 @@ var require_payment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/recording.js
 var require_recording = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/recording.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -51440,7 +51668,7 @@ var require_recording = __commonJS({
         this.source = payload.source;
         this.errorCode = deserialize.integer(payload.error_code);
         this.track = payload.track;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -51737,9 +51965,9 @@ var require_recording = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/siprec.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/siprec.js
 var require_siprec = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/siprec.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/siprec.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SiprecInstance = exports2.SiprecContextImpl = void 0;
@@ -51835,7 +52063,7 @@ var require_siprec = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SiprecContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -52750,9 +52978,9 @@ var require_siprec = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/stream.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/stream.js
 var require_stream = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/stream.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/stream.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.StreamInstance = exports2.StreamContextImpl = void 0;
@@ -52848,7 +53076,7 @@ var require_stream = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new StreamContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -53761,9 +53989,9 @@ var require_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/transcription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/transcription.js
 var require_transcription = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/transcription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/transcription.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TranscriptionInstance = exports2.TranscriptionContextImpl = void 0;
@@ -53859,7 +54087,7 @@ var require_transcription = __commonJS({
         this.status = payload.status;
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -54034,9 +54262,9 @@ var require_transcription = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessage.js
 var require_userDefinedMessage = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessage.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UserDefinedMessageInstance = void 0;
@@ -54144,9 +54372,9 @@ var require_userDefinedMessage = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessageSubscription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessageSubscription.js
 var require_userDefinedMessageSubscription = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessageSubscription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call/userDefinedMessageSubscription.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UserDefinedMessageSubscriptionInstance = exports2.UserDefinedMessageSubscriptionContextImpl = void 0;
@@ -54213,7 +54441,7 @@ var require_userDefinedMessageSubscription = __commonJS({
         this.sid = payload.sid;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.uri = payload.uri;
-        this._solution = { accountSid, callSid, sid };
+        this._solution = { accountSid, callSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserDefinedMessageSubscriptionContextImpl(this._version, this._solution.accountSid, this._solution.callSid, this._solution.sid);
@@ -54338,9 +54566,9 @@ var require_userDefinedMessageSubscription = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call.js
 var require_call = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/call.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -54583,10 +54811,11 @@ var require_call = __commonJS({
         this.groupSid = payload.group_sid;
         this.callerName = payload.caller_name;
         this.queueTime = payload.queue_time;
+        this.stirVerstat = payload.stir_verstat;
         this.trunkSid = payload.trunk_sid;
         this.uri = payload.uri;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -54722,6 +54951,7 @@ var require_call = __commonJS({
           groupSid: this.groupSid,
           callerName: this.callerName,
           queueTime: this.queueTime,
+          stirVerstat: this.stirVerstat,
           trunkSid: this.trunkSid,
           uri: this.uri,
           subresourceUris: this.subresourceUris
@@ -55096,9 +55326,9 @@ var require_call = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/participant.js
 var require_participant = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -55303,7 +55533,11 @@ var require_participant = __commonJS({
         this.status = payload.status;
         this.queueTime = payload.queue_time;
         this.uri = payload.uri;
-        this._solution = { accountSid, conferenceSid, callSid };
+        this._solution = {
+          accountSid,
+          conferenceSid,
+          callSid: callSid || this.callSid
+        };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.accountSid, this._solution.conferenceSid, this._solution.callSid);
@@ -55811,9 +56045,9 @@ var require_participant = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/recording.js
 var require_recording2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference/recording.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -55978,7 +56212,7 @@ var require_recording2 = __commonJS({
         this.errorCode = deserialize.integer(payload.error_code);
         this.encryptionDetails = payload.encryption_details;
         this.uri = payload.uri;
-        this._solution = { accountSid, conferenceSid, sid };
+        this._solution = { accountSid, conferenceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.conferenceSid, this._solution.sid);
@@ -56201,9 +56435,9 @@ var require_recording2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference.js
 var require_conference = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/conference.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -56354,7 +56588,7 @@ var require_conference = __commonJS({
         this.subresourceUris = payload.subresource_uris;
         this.reasonConferenceEnded = payload.reason_conference_ended;
         this.callSidEndingConference = payload.call_sid_ending_conference;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConferenceContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -56581,9 +56815,9 @@ var require_conference = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/connectApp.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/connectApp.js
 var require_connectApp = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/connectApp.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/connectApp.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -56765,7 +56999,7 @@ var require_connectApp = __commonJS({
         this.permissions = payload.permissions;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectAppContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -56967,9 +57201,9 @@ var require_connectApp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn/assignedAddOnExtension.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn/assignedAddOnExtension.js
 var require_assignedAddOnExtension = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn/assignedAddOnExtension.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn/assignedAddOnExtension.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -57054,7 +57288,12 @@ var require_assignedAddOnExtension = __commonJS({
         this.uniqueName = payload.unique_name;
         this.uri = payload.uri;
         this.enabled = payload.enabled;
-        this._solution = { accountSid, resourceSid, assignedAddOnSid, sid };
+        this._solution = {
+          accountSid,
+          resourceSid,
+          assignedAddOnSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new AssignedAddOnExtensionContextImpl(this._version, this._solution.accountSid, this._solution.resourceSid, this._solution.assignedAddOnSid, this._solution.sid);
@@ -57234,9 +57473,9 @@ var require_assignedAddOnExtension = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn.js
 var require_assignedAddOn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/assignedAddOn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -57347,7 +57586,7 @@ var require_assignedAddOn = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, resourceSid, sid };
+        this._solution = { accountSid, resourceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AssignedAddOnContextImpl(this._version, this._solution.accountSid, this._solution.resourceSid, this._solution.sid);
@@ -57599,9 +57838,9 @@ var require_assignedAddOn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/local.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/local.js
 var require_local2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/local.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/local.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -57973,9 +58212,9 @@ var require_local2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/mobile.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/mobile.js
 var require_mobile2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/mobile.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/mobile.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -58347,9 +58586,9 @@ var require_mobile2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/tollFree.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/tollFree.js
 var require_tollFree2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/tollFree.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber/tollFree.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -58721,9 +58960,9 @@ var require_tollFree2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber.js
 var require_incomingPhoneNumber = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/incomingPhoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -58997,7 +59236,7 @@ var require_incomingPhoneNumber = __commonJS({
         this.bundleSid = payload.bundle_sid;
         this.status = payload.status;
         this.type = payload.type;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IncomingPhoneNumberContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -59410,9 +59649,9 @@ var require_incomingPhoneNumber = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/key.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/key.js
 var require_key = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/key.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/key.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -59559,7 +59798,7 @@ var require_key = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new KeyContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -59754,9 +59993,9 @@ var require_key = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/feedback.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/feedback.js
 var require_feedback = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/feedback.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/feedback.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FeedbackInstance = void 0;
@@ -59866,9 +60105,9 @@ var require_feedback = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/media.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/media.js
 var require_media = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/media.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message/media.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -59970,7 +60209,7 @@ var require_media = __commonJS({
         this.parentSid = payload.parent_sid;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, messageSid, sid };
+        this._solution = { accountSid, messageSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MediaContextImpl(this._version, this._solution.accountSid, this._solution.messageSid, this._solution.sid);
@@ -60177,9 +60416,9 @@ var require_media = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message.js
 var require_message = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -60356,7 +60595,7 @@ var require_message = __commonJS({
         this.priceUnit = payload.price_unit;
         this.apiVersion = payload.api_version;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -60746,9 +60985,9 @@ var require_message = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newKey.js
 var require_newKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newKey.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewKeyInstance = void 0;
@@ -60853,9 +61092,9 @@ var require_newKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newSigningKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newSigningKey.js
 var require_newSigningKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newSigningKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/newSigningKey.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewSigningKeyInstance = void 0;
@@ -60960,9 +61199,9 @@ var require_newSigningKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/notification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/notification.js
 var require_notification2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/notification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/notification.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -61049,7 +61288,7 @@ var require_notification2 = __commonJS({
         this.responseHeaders = payload.response_headers;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new NotificationContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -61247,9 +61486,9 @@ var require_notification2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/outgoingCallerId.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/outgoingCallerId.js
 var require_outgoingCallerId = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/outgoingCallerId.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/outgoingCallerId.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -61399,7 +61638,7 @@ var require_outgoingCallerId = __commonJS({
         this.accountSid = payload.account_sid;
         this.phoneNumber = payload.phone_number;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new OutgoingCallerIdContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -61605,9 +61844,9 @@ var require_outgoingCallerId = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue/member.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue/member.js
 var require_member = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue/member.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue/member.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -61739,7 +61978,7 @@ var require_member = __commonJS({
         this.uri = payload.uri;
         this.waitTime = deserialize.integer(payload.wait_time);
         this.queueSid = payload.queue_sid;
-        this._solution = { accountSid, queueSid, callSid };
+        this._solution = { accountSid, queueSid, callSid: callSid || this.callSid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.accountSid, this._solution.queueSid, this._solution.callSid);
@@ -61919,9 +62158,9 @@ var require_member = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue.js
 var require_queue = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/queue.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -62082,7 +62321,7 @@ var require_queue = __commonJS({
         this.sid = payload.sid;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.maxSize = deserialize.integer(payload.max_size);
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new QueueContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -62339,9 +62578,9 @@ var require_queue = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload/data.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload/data.js
 var require_data = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload/data.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload/data.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DataInstance = exports2.DataContextImpl = void 0;
@@ -62481,9 +62720,9 @@ var require_data = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload.js
 var require_payload = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult/payload.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -62597,7 +62836,12 @@ var require_payload = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.referenceSid = payload.reference_sid;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, referenceSid, addOnResultSid, sid };
+        this._solution = {
+          accountSid,
+          referenceSid,
+          addOnResultSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new PayloadContextImpl(this._version, this._solution.accountSid, this._solution.referenceSid, this._solution.addOnResultSid, this._solution.sid);
@@ -62805,9 +63049,9 @@ var require_payload = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult.js
 var require_addOnResult = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/addOnResult.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -62917,7 +63161,7 @@ var require_addOnResult = __commonJS({
         this.dateCompleted = deserialize.rfc2822DateTime(payload.date_completed);
         this.referenceSid = payload.reference_sid;
         this.subresourceUris = payload.subresource_uris;
-        this._solution = { accountSid, referenceSid, sid };
+        this._solution = { accountSid, referenceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AddOnResultContextImpl(this._version, this._solution.accountSid, this._solution.referenceSid, this._solution.sid);
@@ -63121,9 +63365,9 @@ var require_addOnResult = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/transcription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/transcription.js
 var require_transcription2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/transcription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording/transcription.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -63231,7 +63475,7 @@ var require_transcription2 = __commonJS({
         this.transcriptionText = payload.transcription_text;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { accountSid, recordingSid, sid };
+        this._solution = { accountSid, recordingSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.recordingSid, this._solution.sid);
@@ -63432,9 +63676,9 @@ var require_transcription2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording.js
 var require_recording3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/recording.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -63575,7 +63819,7 @@ var require_recording3 = __commonJS({
         this.encryptionDetails = payload.encryption_details;
         this.subresourceUris = payload.subresource_uris;
         this.mediaUrl = payload.media_url;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -63801,9 +64045,9 @@ var require_recording3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/shortCode.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/shortCode.js
 var require_shortCode = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/shortCode.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/shortCode.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -63956,7 +64200,7 @@ var require_shortCode = __commonJS({
         this.smsMethod = payload.sms_method;
         this.smsUrl = payload.sms_url;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ShortCodeContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -64147,9 +64391,9 @@ var require_shortCode = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/signingKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/signingKey.js
 var require_signingKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/signingKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/signingKey.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -64296,7 +64540,7 @@ var require_signingKey = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SigningKeyContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -64491,9 +64735,9 @@ var require_signingKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList/credential.js
 var require_credential2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -64646,7 +64890,7 @@ var require_credential2 = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, credentialListSid, sid };
+        this._solution = { accountSid, credentialListSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.accountSid, this._solution.credentialListSid, this._solution.sid);
@@ -64902,9 +65146,9 @@ var require_credential2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList.js
 var require_credentialList = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/credentialList.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -65057,7 +65301,7 @@ var require_credentialList = __commonJS({
         this.sid = payload.sid;
         this.subresourceUris = payload.subresource_uris;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -65308,9 +65552,9 @@ var require_credentialList = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsCredentialListMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsCredentialListMapping.js
 var require_authCallsCredentialListMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsCredentialListMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsCredentialListMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -65410,7 +65654,7 @@ var require_authCallsCredentialListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid };
+        this._solution = { accountSid, domainSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AuthCallsCredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -65650,9 +65894,9 @@ var require_authCallsCredentialListMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsIpAccessControlListMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsIpAccessControlListMapping.js
 var require_authCallsIpAccessControlListMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsIpAccessControlListMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls/authCallsIpAccessControlListMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -65752,7 +65996,7 @@ var require_authCallsIpAccessControlListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid };
+        this._solution = { accountSid, domainSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AuthCallsIpAccessControlListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -65992,9 +66236,9 @@ var require_authCallsIpAccessControlListMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls.js
 var require_authTypeCalls = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeCalls.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthTypeCallsListInstance = AuthTypeCallsListInstance;
@@ -66042,9 +66286,9 @@ var require_authTypeCalls = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations/authRegistrationsCredentialListMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations/authRegistrationsCredentialListMapping.js
 var require_authRegistrationsCredentialListMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations/authRegistrationsCredentialListMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations/authRegistrationsCredentialListMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -66144,7 +66388,7 @@ var require_authRegistrationsCredentialListMapping = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
-        this._solution = { accountSid, domainSid, sid };
+        this._solution = { accountSid, domainSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AuthRegistrationsCredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -66384,9 +66628,9 @@ var require_authRegistrationsCredentialListMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations.js
 var require_authTypeRegistrations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes/authTypeRegistrations.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthTypeRegistrationsListInstance = AuthTypeRegistrationsListInstance;
@@ -66425,9 +66669,9 @@ var require_authTypeRegistrations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes.js
 var require_authTypes = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/authTypes.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthTypesListInstance = AuthTypesListInstance;
@@ -66475,9 +66719,9 @@ var require_authTypes = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/credentialListMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/credentialListMapping.js
 var require_credentialListMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/credentialListMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/credentialListMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -66579,7 +66823,7 @@ var require_credentialListMapping = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, domainSid, sid };
+        this._solution = { accountSid, domainSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -66821,9 +67065,9 @@ var require_credentialListMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/ipAccessControlListMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/ipAccessControlListMapping.js
 var require_ipAccessControlListMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/ipAccessControlListMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain/ipAccessControlListMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -66925,7 +67169,7 @@ var require_ipAccessControlListMapping = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.sid = payload.sid;
         this.uri = payload.uri;
-        this._solution = { accountSid, domainSid, sid };
+        this._solution = { accountSid, domainSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListMappingContextImpl(this._version, this._solution.accountSid, this._solution.domainSid, this._solution.sid);
@@ -67167,9 +67411,9 @@ var require_ipAccessControlListMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain.js
 var require_domain = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/domain.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -67396,7 +67640,7 @@ var require_domain = __commonJS({
         this.secure = payload.secure;
         this.byocTrunkSid = payload.byoc_trunk_sid;
         this.emergencyCallerSid = payload.emergency_caller_sid;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new DomainContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -67721,9 +67965,9 @@ var require_domain = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList/ipAddress.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList/ipAddress.js
 var require_ipAddress = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList/ipAddress.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList/ipAddress.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -67886,7 +68130,11 @@ var require_ipAddress = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.uri = payload.uri;
-        this._solution = { accountSid, ipAccessControlListSid, sid };
+        this._solution = {
+          accountSid,
+          ipAccessControlListSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new IpAddressContextImpl(this._version, this._solution.accountSid, this._solution.ipAccessControlListSid, this._solution.sid);
@@ -68148,9 +68396,9 @@ var require_ipAddress = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList.js
 var require_ipAccessControlList = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip/ipAccessControlList.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -68303,7 +68551,7 @@ var require_ipAccessControlList = __commonJS({
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.subresourceUris = payload.subresource_uris;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -68554,9 +68802,9 @@ var require_ipAccessControlList = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip.js
 var require_sip = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/sip.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SipListInstance = SipListInstance;
@@ -68610,9 +68858,9 @@ var require_sip = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/token.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/token.js
 var require_token = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/token.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/token.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TokenInstance = exports2.ApiV2010AccountTokenIceServers = void 0;
@@ -68730,9 +68978,9 @@ var require_token = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/transcription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/transcription.js
 var require_transcription3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/transcription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/transcription.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -68837,7 +69085,7 @@ var require_transcription3 = __commonJS({
         this.transcriptionText = payload.transcription_text;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -69035,9 +69283,9 @@ var require_transcription3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/allTime.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/allTime.js
 var require_allTime = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/allTime.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/allTime.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -69236,9 +69484,9 @@ var require_allTime = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/daily.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/daily.js
 var require_daily = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/daily.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/daily.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -69437,9 +69685,9 @@ var require_daily = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/lastMonth.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/lastMonth.js
 var require_lastMonth = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/lastMonth.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/lastMonth.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -69638,9 +69886,9 @@ var require_lastMonth = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/monthly.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/monthly.js
 var require_monthly = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/monthly.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/monthly.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -69839,9 +70087,9 @@ var require_monthly = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/thisMonth.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/thisMonth.js
 var require_thisMonth = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/thisMonth.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/thisMonth.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -70040,9 +70288,9 @@ var require_thisMonth = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/today.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/today.js
 var require_today = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/today.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/today.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -70241,9 +70489,9 @@ var require_today = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yearly.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yearly.js
 var require_yearly = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yearly.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yearly.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -70442,9 +70690,9 @@ var require_yearly = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yesterday.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yesterday.js
 var require_yesterday = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yesterday.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record/yesterday.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -70643,9 +70891,9 @@ var require_yesterday = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record.js
 var require_record = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/record.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -70916,9 +71164,9 @@ var require_record = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/trigger.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/trigger.js
 var require_trigger = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/trigger.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage/trigger.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -71085,7 +71333,7 @@ var require_trigger = __commonJS({
         this.uri = payload.uri;
         this.usageCategory = payload.usage_category;
         this.usageRecordUri = payload.usage_record_uri;
-        this._solution = { accountSid, sid };
+        this._solution = { accountSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TriggerContextImpl(this._version, this._solution.accountSid, this._solution.sid);
@@ -71383,9 +71631,9 @@ var require_trigger = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage.js
 var require_usage = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/usage.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UsageListInstance = UsageListInstance;
@@ -71430,9 +71678,9 @@ var require_usage = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/validationRequest.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/validationRequest.js
 var require_validationRequest = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/validationRequest.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account/validationRequest.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ValidationRequestInstance = void 0;
@@ -71555,9 +71803,9 @@ var require_validationRequest = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account.js
 var require_account = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/v2010/account.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -71809,7 +72057,7 @@ var require_account = __commonJS({
         this.subresourceUris = payload.subresource_uris;
         this.type = payload.type;
         this.uri = payload.uri;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AccountContextImpl(this._version, this._solution.sid);
@@ -72188,9 +72436,9 @@ var require_account = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/V2010.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/V2010.js
 var require_V2010 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/api/V2010.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/api/V2010.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -72222,9 +72470,9 @@ var require_V2010 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ApiBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ApiBase.js
 var require_ApiBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ApiBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ApiBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -72249,9 +72497,9 @@ var require_ApiBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Api.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Api.js
 var require_Api = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Api.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Api.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -72437,9 +72685,9 @@ var require_Api = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/day.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/day.js
 var require_day = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/day.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/day.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -72510,7 +72758,7 @@ var require_day = __commonJS({
         this.createDate = payload.create_date;
         this.friendlyName = payload.friendly_name;
         this.resourceType = payload.resource_type;
-        this._solution = { resourceType, day };
+        this._solution = { resourceType, day: day || this.day };
       }
       get _proxy() {
         this._context = this._context || new DayContextImpl(this._version, this._solution.resourceType, this._solution.day);
@@ -72681,9 +72929,9 @@ var require_day = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/exportCustomJob.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/exportCustomJob.js
 var require_exportCustomJob = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/exportCustomJob.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/exportCustomJob.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -72933,9 +73181,9 @@ var require_exportCustomJob = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/job.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/job.js
 var require_job = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/job.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export/job.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.JobInstance = exports2.JobContextImpl = void 0;
@@ -73032,7 +73280,7 @@ var require_job = __commonJS({
         this.url = payload.url;
         this.jobQueuePosition = payload.job_queue_position;
         this.estimatedCompletionTime = payload.estimated_completion_time;
-        this._solution = { jobSid };
+        this._solution = { jobSid: jobSid || this.jobSid };
       }
       get _proxy() {
         this._context = this._context || new JobContextImpl(this._version, this._solution.jobSid);
@@ -73123,9 +73371,9 @@ var require_job = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export.js
 var require_export = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/export.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExportInstance = exports2.ExportContextImpl = void 0;
@@ -73202,7 +73450,7 @@ var require_export = __commonJS({
         this.resourceType = payload.resource_type;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { resourceType };
+        this._solution = { resourceType: resourceType || this.resourceType };
       }
       get _proxy() {
         this._context = this._context || new ExportContextImpl(this._version, this._solution.resourceType);
@@ -73284,9 +73532,9 @@ var require_export = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/exportConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/exportConfiguration.js
 var require_exportConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/exportConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/v1/exportConfiguration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExportConfigurationInstance = exports2.ExportConfigurationContextImpl = void 0;
@@ -73413,7 +73661,7 @@ var require_exportConfiguration = __commonJS({
         this.webhookMethod = payload.webhook_method;
         this.resourceType = payload.resource_type;
         this.url = payload.url;
-        this._solution = { resourceType };
+        this._solution = { resourceType: resourceType || this.resourceType };
       }
       get _proxy() {
         this._context = this._context || new ExportConfigurationContextImpl(this._version, this._solution.resourceType);
@@ -73483,9 +73731,9 @@ var require_exportConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/V1.js
 var require_V12 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/bulkexports/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -73518,9 +73766,9 @@ var require_V12 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/BulkexportsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/BulkexportsBase.js
 var require_BulkexportsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/BulkexportsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/BulkexportsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -73545,9 +73793,9 @@ var require_BulkexportsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Bulkexports.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Bulkexports.js
 var require_Bulkexports = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Bulkexports.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Bulkexports.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -73573,9 +73821,9 @@ var require_Bulkexports = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/credential.js
 var require_credential3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -73743,7 +73991,7 @@ var require_credential3 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -74010,9 +74258,9 @@ var require_credential3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/invite.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/invite.js
 var require_invite = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/invite.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/invite.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -74117,7 +74365,7 @@ var require_invite = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -74370,9 +74618,9 @@ var require_invite = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/member.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/member.js
 var require_member2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/member.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/member.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -74533,7 +74781,7 @@ var require_member2 = __commonJS({
         this.lastConsumedMessageIndex = deserialize.integer(payload.last_consumed_message_index);
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -74793,9 +75041,9 @@ var require_member2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/message.js
 var require_message2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -74958,7 +75206,7 @@ var require_message2 = __commonJS({
         this.body = payload.body;
         this.index = deserialize.integer(payload.index);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -75224,9 +75472,9 @@ var require_message2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel.js
 var require_channel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/channel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -75406,7 +75654,7 @@ var require_channel = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -75694,9 +75942,9 @@ var require_channel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/role.js
 var require_role = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -75846,7 +76094,7 @@ var require_role = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -76109,9 +76357,9 @@ var require_role = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user/userChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user/userChannel.js
 var require_userChannel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user/userChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user/userChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -76283,9 +76531,9 @@ var require_userChannel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user.js
 var require_user = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -76455,7 +76703,7 @@ var require_user = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -76725,9 +76973,9 @@ var require_user = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service.js
 var require_service = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -77115,7 +77363,7 @@ var require_service = __commonJS({
         this.notifications = payload.notifications;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -77389,9 +77637,9 @@ var require_service = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V1.js
 var require_V13 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -77424,9 +77672,9 @@ var require_V13 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/credential.js
 var require_credential4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -77594,7 +77842,7 @@ var require_credential4 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -77861,9 +78109,9 @@ var require_credential4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/binding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/binding.js
 var require_binding = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/binding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/binding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -77967,7 +78215,7 @@ var require_binding = __commonJS({
         this.messageTypes = payload.message_types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -78172,9 +78420,9 @@ var require_binding = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/invite.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/invite.js
 var require_invite2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/invite.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/invite.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -78279,7 +78527,7 @@ var require_invite2 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -78532,9 +78780,9 @@ var require_invite2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/member.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/member.js
 var require_member3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/member.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/member.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -78740,7 +78988,7 @@ var require_member3 = __commonJS({
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
         this.attributes = payload.attributes;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -79011,9 +79259,9 @@ var require_member3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/message.js
 var require_message3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -79223,7 +79471,7 @@ var require_message3 = __commonJS({
         this.type = payload.type;
         this.media = payload.media;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -79500,9 +79748,9 @@ var require_message3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/webhook.js
 var require_webhook = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel/webhook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -79677,7 +79925,7 @@ var require_webhook = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -79951,9 +80199,9 @@ var require_webhook = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel.js
 var require_channel2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/channel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -80178,7 +80426,7 @@ var require_channel2 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -80474,9 +80722,9 @@ var require_channel2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/role.js
 var require_role2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -80626,7 +80874,7 @@ var require_role2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -80889,9 +81137,9 @@ var require_role2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userBinding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userBinding.js
 var require_userBinding = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userBinding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userBinding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -80998,7 +81246,7 @@ var require_userBinding = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { serviceSid, userSid, sid };
+        this._solution = { serviceSid, userSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserBindingContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.sid);
@@ -81202,9 +81450,9 @@ var require_userBinding = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userChannel.js
 var require_userChannel2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user/userChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -81393,7 +81641,11 @@ var require_userChannel2 = __commonJS({
         this.links = payload.links;
         this.url = payload.url;
         this.notificationLevel = payload.notification_level;
-        this._solution = { serviceSid, userSid, channelSid };
+        this._solution = {
+          serviceSid,
+          userSid,
+          channelSid: channelSid || this.channelSid
+        };
       }
       get _proxy() {
         this._context = this._context || new UserChannelContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.channelSid);
@@ -81584,9 +81836,9 @@ var require_userChannel2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user.js
 var require_user2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -81765,7 +82017,7 @@ var require_user2 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -82045,9 +82297,9 @@ var require_user2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service.js
 var require_service2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v2/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -82350,7 +82602,7 @@ var require_service2 = __commonJS({
         this.media = payload.media;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -82632,9 +82884,9 @@ var require_service2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V2.js
 var require_V2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -82667,9 +82919,9 @@ var require_V2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v3/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v3/channel.js
 var require_channel3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v3/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/v3/channel.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ChannelInstance = exports2.ChannelContextImpl = void 0;
@@ -82779,7 +83031,10 @@ var require_channel3 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = {
+          serviceSid: serviceSid || this.serviceSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -82838,9 +83093,9 @@ var require_channel3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V3.js
 var require_V3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/chat/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -82867,9 +83122,9 @@ var require_V3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ChatBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ChatBase.js
 var require_ChatBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ChatBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ChatBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -82904,9 +83159,9 @@ var require_ChatBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Chat.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Chat.js
 var require_Chat = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Chat.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Chat.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -82939,12 +83194,12 @@ var require_Chat = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalCreate.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalCreate.js
 var require_approvalCreate = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalCreate.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalCreate.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ApprovalCreateInstance = exports2.ContentApprovalRequest = void 0;
+    exports2.ApprovalCreateInstance = exports2.ContentApprovalUpdateRequest = exports2.ContentApprovalRequest = void 0;
     exports2.ApprovalCreateListInstance = ApprovalCreateListInstance;
     var util_1 = require("util");
     var deserialize = require_deserialize();
@@ -82955,9 +83210,16 @@ var require_approvalCreate = __commonJS({
         this.name = payload["name"];
         this.category = payload["category"];
         this.sendTtlSeconds = payload["send_ttl_seconds"];
+        this.bidAmount = payload["bid_amount"];
       }
     };
     exports2.ContentApprovalRequest = ContentApprovalRequest;
+    var ContentApprovalUpdateRequest = class {
+      constructor(payload) {
+        this.bidAmount = payload["bid_amount"];
+      }
+    };
+    exports2.ContentApprovalUpdateRequest = ContentApprovalUpdateRequest;
     function ApprovalCreateListInstance(version, contentSid) {
       if (!(0, utility_1.isValidPathParam)(contentSid)) {
         throw new Error("Parameter 'contentSid' is not valid.");
@@ -83011,6 +83273,51 @@ var require_approvalCreate = __commonJS({
         operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
         return operationPromise;
       };
+      instance.update = function update(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.update({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new ApprovalCreateInstance(operationVersion, payload, instance._solution.contentSid));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.updateWithHttpInfo = function updateWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.updateWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new ApprovalCreateInstance(operationVersion, response.body, instance._solution.contentSid)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
       instance.toJSON = function toJSON() {
         return instance._solution;
       };
@@ -83029,6 +83336,7 @@ var require_approvalCreate = __commonJS({
         this.rejectionReason = payload.rejection_reason;
         this.allowCategoryChange = payload.allow_category_change;
         this.sendTtlSeconds = payload.send_ttl_seconds;
+        this.bidAmount = payload.bid_amount;
       }
       /**
        * Provide a user-friendly representation
@@ -83043,7 +83351,8 @@ var require_approvalCreate = __commonJS({
           status: this.status,
           rejectionReason: this.rejectionReason,
           allowCategoryChange: this.allowCategoryChange,
-          sendTtlSeconds: this.sendTtlSeconds
+          sendTtlSeconds: this.sendTtlSeconds,
+          bidAmount: this.bidAmount
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -83054,9 +83363,9 @@ var require_approvalCreate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalFetch.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalFetch.js
 var require_approvalFetch = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalFetch.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content/approvalFetch.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ApprovalFetchInstance = exports2.ApprovalFetchContextImpl = void 0;
@@ -83189,9 +83498,9 @@ var require_approvalFetch = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content.js
 var require_content = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/content.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -83233,6 +83542,7 @@ var require_content = __commonJS({
         this.id = payload["id"];
         this.code = payload["code"];
         this.webviewSize = payload["webview_size"];
+        this.digitableLine = payload["digitable_line"];
       }
     };
     exports2.CardAction = CardAction;
@@ -83599,7 +83909,7 @@ var require_content = __commonJS({
         this.types = payload.types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ContentContextImpl(this._version, this._solution.sid);
@@ -83854,9 +84164,9 @@ var require_content = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/contentAndApprovals.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/contentAndApprovals.js
 var require_contentAndApprovals = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/contentAndApprovals.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/contentAndApprovals.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84023,9 +84333,9 @@ var require_contentAndApprovals = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/legacyContent.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/legacyContent.js
 var require_legacyContent = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/legacyContent.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v1/legacyContent.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84196,9 +84506,9 @@ var require_legacyContent = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V1.js
 var require_V14 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84237,9 +84547,9 @@ var require_V14 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/content.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/content.js
 var require_content2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/content.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/content.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84444,9 +84754,9 @@ var require_content2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/contentAndApprovals.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/contentAndApprovals.js
 var require_contentAndApprovals2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/contentAndApprovals.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/v2/contentAndApprovals.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84649,9 +84959,9 @@ var require_contentAndApprovals2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V2.js
 var require_V22 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/content/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84684,9 +84994,9 @@ var require_V22 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ContentBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ContentBase.js
 var require_ContentBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ContentBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ContentBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84716,9 +85026,9 @@ var require_ContentBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Content.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Content.js
 var require_Content = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Content.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Content.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84737,9 +85047,9 @@ var require_Content = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/addressConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/addressConfiguration.js
 var require_addressConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/addressConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/addressConfiguration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -84921,7 +85231,7 @@ var require_addressConfiguration = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.addressCountry = payload.address_country;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AddressConfigurationContextImpl(this._version, this._solution.sid);
@@ -85218,9 +85528,9 @@ var require_addressConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration/webhook.js
 var require_webhook2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration/webhook.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WebhookInstance = exports2.WebhookContextImpl = void 0;
@@ -85425,9 +85735,9 @@ var require_webhook2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration.js
 var require_configuration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/configuration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = void 0;
@@ -85637,9 +85947,9 @@ var require_configuration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message/deliveryReceipt.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message/deliveryReceipt.js
 var require_deliveryReceipt = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message/deliveryReceipt.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message/deliveryReceipt.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -85723,7 +86033,7 @@ var require_deliveryReceipt = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { conversationSid, messageSid, sid };
+        this._solution = { conversationSid, messageSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new DeliveryReceiptContextImpl(this._version, this._solution.conversationSid, this._solution.messageSid, this._solution.sid);
@@ -85902,9 +86212,9 @@ var require_deliveryReceipt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message.js
 var require_message4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -86115,7 +86425,7 @@ var require_message4 = __commonJS({
         this.delivery = payload.delivery;
         this.links = payload.links;
         this.contentSid = payload.content_sid;
-        this._solution = { conversationSid, sid };
+        this._solution = { conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -86402,9 +86712,9 @@ var require_message4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/participant.js
 var require_participant2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -86619,7 +86929,7 @@ var require_participant2 = __commonJS({
         this.url = payload.url;
         this.lastReadMessageIndex = deserialize.integer(payload.last_read_message_index);
         this.lastReadTimestamp = payload.last_read_timestamp;
-        this._solution = { conversationSid, sid };
+        this._solution = { conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -86889,9 +87199,9 @@ var require_participant2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/webhook.js
 var require_webhook3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation/webhook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -87058,7 +87368,7 @@ var require_webhook3 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { conversationSid, sid };
+        this._solution = { conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.conversationSid, this._solution.sid);
@@ -87328,9 +87638,9 @@ var require_webhook3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation.js
 var require_conversation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -87567,7 +87877,7 @@ var require_conversation = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.bindings = payload.bindings;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConversationContextImpl(this._version, this._solution.sid);
@@ -87878,9 +88188,9 @@ var require_conversation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversationWithParticipants.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversationWithParticipants.js
 var require_conversationWithParticipants = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversationWithParticipants.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/conversationWithParticipants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConversationWithParticipantsInstance = void 0;
@@ -88047,9 +88357,9 @@ var require_conversationWithParticipants = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/credential.js
 var require_credential5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -88221,7 +88531,7 @@ var require_credential5 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -88488,9 +88798,9 @@ var require_credential5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/participantConversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/participantConversation.js
 var require_participantConversation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/participantConversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/participantConversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -88679,9 +88989,9 @@ var require_participantConversation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/role.js
 var require_role3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -88828,7 +89138,7 @@ var require_role3 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.sid);
@@ -89088,9 +89398,9 @@ var require_role3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/binding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/binding.js
 var require_binding2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/binding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/binding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -89193,7 +89503,7 @@ var require_binding2 = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { chatServiceSid, sid };
+        this._solution = { chatServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -89397,9 +89707,9 @@ var require_binding2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/notification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/notification.js
 var require_notification3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/notification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/notification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NotificationInstance = exports2.NotificationContextImpl = void 0;
@@ -89643,9 +89953,9 @@ var require_notification3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/webhook.js
 var require_webhook4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration/webhook.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WebhookInstance = exports2.WebhookContextImpl = void 0;
@@ -89853,9 +90163,9 @@ var require_webhook4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration.js
 var require_configuration2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/configuration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = void 0;
@@ -90081,9 +90391,9 @@ var require_configuration2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message/deliveryReceipt.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message/deliveryReceipt.js
 var require_deliveryReceipt2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message/deliveryReceipt.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message/deliveryReceipt.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -90171,7 +90481,12 @@ var require_deliveryReceipt2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { chatServiceSid, conversationSid, messageSid, sid };
+        this._solution = {
+          chatServiceSid,
+          conversationSid,
+          messageSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new DeliveryReceiptContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.messageSid, this._solution.sid);
@@ -90354,9 +90669,9 @@ var require_deliveryReceipt2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js
 var require_message5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -90571,7 +90886,7 @@ var require_message5 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.contentSid = payload.content_sid;
-        this._solution = { chatServiceSid, conversationSid, sid };
+        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -90862,9 +91177,9 @@ var require_message5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/participant.js
 var require_participant3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -91083,7 +91398,7 @@ var require_participant3 = __commonJS({
         this.url = payload.url;
         this.lastReadMessageIndex = deserialize.integer(payload.last_read_message_index);
         this.lastReadTimestamp = payload.last_read_timestamp;
-        this._solution = { chatServiceSid, conversationSid, sid };
+        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -91357,9 +91672,9 @@ var require_participant3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/webhook.js
 var require_webhook5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation/webhook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -91530,7 +91845,7 @@ var require_webhook5 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { chatServiceSid, conversationSid, sid };
+        this._solution = { chatServiceSid, conversationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.chatServiceSid, this._solution.conversationSid, this._solution.sid);
@@ -91804,9 +92119,9 @@ var require_webhook5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation.js
 var require_conversation2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -92046,7 +92361,7 @@ var require_conversation2 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.bindings = payload.bindings;
-        this._solution = { chatServiceSid, sid };
+        this._solution = { chatServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConversationContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -92360,9 +92675,9 @@ var require_conversation2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversationWithParticipants.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversationWithParticipants.js
 var require_conversationWithParticipants2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversationWithParticipants.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/conversationWithParticipants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConversationWithParticipantsInstance = void 0;
@@ -92533,9 +92848,9 @@ var require_conversationWithParticipants2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/participantConversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/participantConversation.js
 var require_participantConversation2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/participantConversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/participantConversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -92728,9 +93043,9 @@ var require_participantConversation2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/role.js
 var require_role4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -92880,7 +93195,7 @@ var require_role4 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { chatServiceSid, sid };
+        this._solution = { chatServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -93143,9 +93458,9 @@ var require_role4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user/userConversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user/userConversation.js
 var require_userConversation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user/userConversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user/userConversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -93320,7 +93635,7 @@ var require_userConversation = __commonJS({
         this._solution = {
           chatServiceSid,
           userSid,
-          conversationSid
+          conversationSid: conversationSid || this.conversationSid
         };
       }
       get _proxy() {
@@ -93533,9 +93848,9 @@ var require_userConversation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user.js
 var require_user3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -93732,7 +94047,7 @@ var require_user3 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { chatServiceSid, sid };
+        this._solution = { chatServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.chatServiceSid, this._solution.sid);
@@ -93991,9 +94306,9 @@ var require_user3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service.js
 var require_service3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -94124,7 +94439,7 @@ var require_service3 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -94402,9 +94717,9 @@ var require_service3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user/userConversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user/userConversation.js
 var require_userConversation2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user/userConversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user/userConversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -94573,7 +94888,10 @@ var require_userConversation2 = __commonJS({
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { userSid, conversationSid };
+        this._solution = {
+          userSid,
+          conversationSid: conversationSid || this.conversationSid
+        };
       }
       get _proxy() {
         this._context = this._context || new UserConversationContextImpl(this._version, this._solution.userSid, this._solution.conversationSid);
@@ -94782,9 +95100,9 @@ var require_userConversation2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user.js
 var require_user4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v1/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -94978,7 +95296,7 @@ var require_user4 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.sid);
@@ -95234,9 +95552,9 @@ var require_user4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V1.js
 var require_V15 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -95311,9 +95629,9 @@ var require_V15 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/action.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/action.js
 var require_action = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/action.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/action.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ActionInstance = exports2.ActionContextImpl = exports2.CreateConversationActionRequest = exports2.ConversationsV2SendMessagePayload = exports2.ConversationsV2SendMessageParticipant = exports2.ConversationsV2SendMessageContent = void 0;
@@ -95538,9 +95856,9 @@ var require_action = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/TokenPage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/TokenPage.js
 var require_TokenPage = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/base/TokenPage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/base/TokenPage.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -95719,9 +96037,9 @@ var require_TokenPage = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/communication.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/communication.js
 var require_communication = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/communication.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/communication.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -96117,9 +96435,9 @@ var require_communication = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/configuration.js
 var require_configuration3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/configuration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -96496,6 +96814,8 @@ var require_configuration3 = __commonJS({
       constructor(_version, _payload, id) {
         this._version = _version;
         const payload = _payload;
+        this.statusUrl = payload.statusUrl;
+        this.related = payload.related;
         this.id = payload.id;
         this.displayName = payload.displayName;
         this.description = payload.description;
@@ -96507,12 +96827,11 @@ var require_configuration3 = __commonJS({
         this.traitExtractionStrategyIds = payload.traitExtractionStrategyIds;
         this.observationExtractionStrategyIds = payload.observationExtractionStrategyIds;
         this.memoryExtractionEnabled = payload.memoryExtractionEnabled;
+        this.redactionConfigurationId = payload.redactionConfigurationId;
         this.conversationsV1Bridge = payload.conversationsV1Bridge !== null && payload.conversationsV1Bridge !== void 0 ? new ConversationsV2ConversationsV1Bridge(payload.conversationsV1Bridge) : null;
         this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.version = payload.version;
-        this.statusUrl = payload.statusUrl;
-        this.related = payload.related;
         this._solution = { id };
       }
       get _proxy() {
@@ -96564,6 +96883,8 @@ var require_configuration3 = __commonJS({
        */
       toJSON() {
         return {
+          statusUrl: this.statusUrl,
+          related: this.related,
           id: this.id,
           displayName: this.displayName,
           description: this.description,
@@ -96575,12 +96896,11 @@ var require_configuration3 = __commonJS({
           traitExtractionStrategyIds: this.traitExtractionStrategyIds,
           observationExtractionStrategyIds: this.observationExtractionStrategyIds,
           memoryExtractionEnabled: this.memoryExtractionEnabled,
+          redactionConfigurationId: this.redactionConfigurationId,
           conversationsV1Bridge: this.conversationsV1Bridge,
           createdAt: this.createdAt,
           updatedAt: this.updatedAt,
-          version: this.version,
-          statusUrl: this.statusUrl,
-          related: this.related
+          version: this.version
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -96763,15 +97083,15 @@ var require_configuration3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/conversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/conversation.js
 var require_conversation3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/conversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/conversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConversationPage = exports2.ConversationInstance = exports2.ConversationContextImpl = exports2.UpdateConversationByIdRequest = exports2.PatchConversationByIdRequestConfiguration = exports2.PatchConversationByIdRequest = exports2.ListConversationByAccount200ResponseConversationsConfiguration = exports2.CreateConversationWithConfigRequestParticipantsAddresses = exports2.CreateConversationWithConfigRequestParticipants = exports2.CreateConversationWithConfigRequestConfiguration = exports2.CreateConversationWithConfigRequest = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2Participant = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2Address = exports2.ConversationWorkflow = void 0;
+    exports2.ConversationPage = exports2.ConversationInstance = exports2.ConversationContextImpl = exports2.UpdateConversationByIdRequest = exports2.PatchConversationByIdRequestConfiguration = exports2.PatchConversationByIdRequest = exports2.ListConversationByAccount200ResponseConversationsConfiguration = exports2.CreateConversationWithConfigRequestParticipantsAddresses = exports2.CreateConversationWithConfigRequestParticipants = exports2.CreateConversationWithConfigRequestConfigurationStatusCallbacks = exports2.CreateConversationWithConfigRequestConfigurationChannelSettingsValueStatusTimeouts = exports2.CreateConversationWithConfigRequestConfigurationChannelSettingsValue = exports2.CreateConversationWithConfigRequestConfiguration = exports2.CreateConversationWithConfigRequest = exports2.ConversationsV2StatusCallbackConfig = exports2.ConversationsV2Participant = exports2.ConversationsV2ConversationsV1Bridge = exports2.ConversationsV2Address = exports2.ConversationWorkflow = void 0;
     exports2.ConversationListInstance = ConversationListInstance;
     var util_1 = require("util");
     var TokenPage_1 = __importDefault(require_TokenPage());
@@ -96831,13 +97151,38 @@ var require_conversation3 = __commonJS({
     exports2.CreateConversationWithConfigRequest = CreateConversationWithConfigRequest;
     var CreateConversationWithConfigRequestConfiguration = class {
       constructor(payload) {
+        this.conversationGroupingType = payload["conversationGroupingType"];
+        this.memoryStoreId = payload["memoryStoreId"];
+        this.channelSettings = payload["channelSettings"];
+        this.memoryExtractionEnabled = payload["memoryExtractionEnabled"];
         this.intelligenceConfigurationIds = payload["intelligenceConfigurationIds"];
         this.traitExtractionStrategyIds = payload["traitExtractionStrategyIds"];
         this.observationExtractionStrategyIds = payload["observationExtractionStrategyIds"];
+        this.statusCallbacks = payload["statusCallbacks"];
         this.workflows = payload["workflows"];
       }
     };
     exports2.CreateConversationWithConfigRequestConfiguration = CreateConversationWithConfigRequestConfiguration;
+    var CreateConversationWithConfigRequestConfigurationChannelSettingsValue = class {
+      constructor(payload) {
+        this.statusTimeouts = payload["statusTimeouts"];
+      }
+    };
+    exports2.CreateConversationWithConfigRequestConfigurationChannelSettingsValue = CreateConversationWithConfigRequestConfigurationChannelSettingsValue;
+    var CreateConversationWithConfigRequestConfigurationChannelSettingsValueStatusTimeouts = class {
+      constructor(payload) {
+        this.inactive = payload["inactive"];
+        this.closed = payload["closed"];
+      }
+    };
+    exports2.CreateConversationWithConfigRequestConfigurationChannelSettingsValueStatusTimeouts = CreateConversationWithConfigRequestConfigurationChannelSettingsValueStatusTimeouts;
+    var CreateConversationWithConfigRequestConfigurationStatusCallbacks = class {
+      constructor(payload) {
+        this.url = payload["url"];
+        this.method = payload["method"];
+      }
+    };
+    exports2.CreateConversationWithConfigRequestConfigurationStatusCallbacks = CreateConversationWithConfigRequestConfigurationStatusCallbacks;
     var CreateConversationWithConfigRequestParticipants = class {
       constructor(payload) {
         this.name = payload["name"];
@@ -96867,6 +97212,7 @@ var require_conversation3 = __commonJS({
         this.traitExtractionStrategyIds = payload["traitExtractionStrategyIds"];
         this.observationExtractionStrategyIds = payload["observationExtractionStrategyIds"];
         this.memoryExtractionEnabled = payload["memoryExtractionEnabled"];
+        this.redactionConfigurationId = payload["redactionConfigurationId"];
         this.conversationsV1Bridge = payload["conversationsV1Bridge"];
       }
     };
@@ -97104,8 +97450,6 @@ var require_conversation3 = __commonJS({
       constructor(_version, _payload, id) {
         this._version = _version;
         const payload = _payload;
-        this.statusUrl = payload.statusUrl;
-        this.related = payload.related;
         this.id = payload.id;
         this.accountId = payload.accountId;
         this.configurationId = payload.configurationId;
@@ -97117,6 +97461,8 @@ var require_conversation3 = __commonJS({
         this.metadata = payload.metadata;
         this.participants = payload.participants !== null && payload.participants !== void 0 ? payload.participants.map((payload2) => new ConversationsV2Participant(payload2)) : null;
         this.actionId = payload.actionId;
+        this.statusUrl = payload.statusUrl;
+        this.related = payload.related;
         this._solution = { id };
       }
       get _proxy() {
@@ -97168,8 +97514,6 @@ var require_conversation3 = __commonJS({
        */
       toJSON() {
         return {
-          statusUrl: this.statusUrl,
-          related: this.related,
           id: this.id,
           accountId: this.accountId,
           configurationId: this.configurationId,
@@ -97180,7 +97524,9 @@ var require_conversation3 = __commonJS({
           configuration: this.configuration,
           metadata: this.metadata,
           participants: this.participants,
-          actionId: this.actionId
+          actionId: this.actionId,
+          statusUrl: this.statusUrl,
+          related: this.related
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -97367,9 +97713,9 @@ var require_conversation3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/operation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/operation.js
 var require_operation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/operation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/operation.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OperationInstance = exports2.OperationContextImpl = exports2.FetchOperationStatus200ResponseError = void 0;
@@ -97516,9 +97862,9 @@ var require_operation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/participant.js
 var require_participant4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/v2/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -97914,9 +98260,9 @@ var require_participant4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V2.js
 var require_V23 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/conversations/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -97982,9 +98328,9 @@ var require_V23 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ConversationsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ConversationsBase.js
 var require_ConversationsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ConversationsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ConversationsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -98014,9 +98360,9 @@ var require_ConversationsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Conversations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Conversations.js
 var require_Conversations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Conversations.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Conversations.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -98084,9 +98430,9 @@ var require_Conversations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/eventType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/eventType.js
 var require_eventType = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/eventType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/eventType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -98162,7 +98508,7 @@ var require_eventType = __commonJS({
         this.documentationUrl = payload.documentation_url;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { type };
+        this._solution = { type: type || this.type };
       }
       get _proxy() {
         this._context = this._context || new EventTypeContextImpl(this._version, this._solution.type);
@@ -98337,9 +98683,9 @@ var require_eventType = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema/schemaVersion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema/schemaVersion.js
 var require_schemaVersion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema/schemaVersion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema/schemaVersion.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -98414,7 +98760,7 @@ var require_schemaVersion = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.raw = payload.raw;
-        this._solution = { id, schemaVersion };
+        this._solution = { id, schemaVersion: schemaVersion || this.schemaVersion };
       }
       get _proxy() {
         this._context = this._context || new SchemaVersionContextImpl(this._version, this._solution.id, this._solution.schemaVersion);
@@ -98584,9 +98930,9 @@ var require_schemaVersion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema.js
 var require_schema = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/schema.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SchemaInstance = exports2.SchemaContextImpl = void 0;
@@ -98659,7 +99005,7 @@ var require_schema = __commonJS({
         this.links = payload.links;
         this.latestVersionDateCreated = deserialize.iso8601DateTime(payload.latest_version_date_created);
         this.latestVersion = deserialize.integer(payload.latest_version);
-        this._solution = { id };
+        this._solution = { id: id || this.id };
       }
       get _proxy() {
         this._context = this._context || new SchemaContextImpl(this._version, this._solution.id);
@@ -98729,9 +99075,9 @@ var require_schema = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkTest.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkTest.js
 var require_sinkTest = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkTest.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkTest.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SinkTestInstance = void 0;
@@ -98806,9 +99152,9 @@ var require_sinkTest = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkValidate.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkValidate.js
 var require_sinkValidate = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkValidate.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink/sinkValidate.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SinkValidateInstance = void 0;
@@ -98903,9 +99249,9 @@ var require_sinkValidate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink.js
 var require_sink = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/sink.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -99062,7 +99408,7 @@ var require_sink = __commonJS({
         this.status = payload.status;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SinkContextImpl(this._version, this._solution.sid);
@@ -99342,9 +99688,9 @@ var require_sink = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription/subscribedEvent.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription/subscribedEvent.js
 var require_subscribedEvent = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription/subscribedEvent.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription/subscribedEvent.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -99492,7 +99838,7 @@ var require_subscribedEvent = __commonJS({
         this.schemaVersion = deserialize.integer(payload.schema_version);
         this.subscriptionSid = payload.subscription_sid;
         this.url = payload.url;
-        this._solution = { subscriptionSid, type };
+        this._solution = { subscriptionSid, type: type || this.type };
       }
       get _proxy() {
         this._context = this._context || new SubscribedEventContextImpl(this._version, this._solution.subscriptionSid, this._solution.type);
@@ -99739,9 +100085,9 @@ var require_subscribedEvent = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription.js
 var require_subscription = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/v1/subscription.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -99894,7 +100240,7 @@ var require_subscription = __commonJS({
         this.sinkSid = payload.sink_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SubscriptionContextImpl(this._version, this._solution.sid);
@@ -100163,9 +100509,9 @@ var require_subscription = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/V1.js
 var require_V16 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/events/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/events/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -100210,9 +100556,9 @@ var require_V16 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/EventsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/EventsBase.js
 var require_EventsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/EventsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/EventsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -100237,9 +100583,9 @@ var require_EventsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Events.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Events.js
 var require_Events = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Events.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Events.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -100279,9 +100625,9 @@ var require_Events = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/assessments.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/assessments.js
 var require_assessments = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/assessments.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/assessments.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -100402,7 +100748,7 @@ var require_assessments = __commonJS({
         this.assessment = payload.assessment;
         this.timestamp = payload.timestamp;
         this.url = payload.url;
-        this._solution = { assessmentSid };
+        this._solution = { assessmentSid: assessmentSid || this.assessmentSid };
       }
       get _proxy() {
         this._context = this._context || new AssessmentsContextImpl(this._version, this._solution.assessmentSid);
@@ -100695,9 +101041,9 @@ var require_assessments = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/channel.js
 var require_channel4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/channel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -100794,7 +101140,7 @@ var require_channel4 = __commonJS({
         this.url = payload.url;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.sid);
@@ -101079,9 +101425,9 @@ var require_channel4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/configuration.js
 var require_configuration4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/configuration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = void 0;
@@ -101362,9 +101708,9 @@ var require_configuration4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/flexFlow.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/flexFlow.js
 var require_flexFlow = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/flexFlow.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/flexFlow.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -101582,7 +101928,7 @@ var require_flexFlow = __commonJS({
         this.longLived = payload.long_lived;
         this.janitorEnabled = payload.janitor_enabled;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FlexFlowContextImpl(this._version, this._solution.sid);
@@ -101907,9 +102253,9 @@ var require_flexFlow = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsAssessmentsComment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsAssessmentsComment.js
 var require_insightsAssessmentsComment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsAssessmentsComment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsAssessmentsComment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -102185,9 +102531,9 @@ var require_insightsAssessmentsComment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsConversations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsConversations.js
 var require_insightsConversations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsConversations.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsConversations.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -102352,9 +102698,9 @@ var require_insightsConversations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnaires.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnaires.js
 var require_insightsQuestionnaires = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnaires.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnaires.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -102559,7 +102905,9 @@ var require_insightsQuestionnaires = __commonJS({
         this.active = payload.active;
         this.questions = payload.questions;
         this.url = payload.url;
-        this._solution = { questionnaireSid };
+        this._solution = {
+          questionnaireSid: questionnaireSid || this.questionnaireSid
+        };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesContextImpl(this._version, this._solution.questionnaireSid);
@@ -102797,9 +103145,9 @@ var require_insightsQuestionnaires = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesCategory.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesCategory.js
 var require_insightsQuestionnairesCategory = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesCategory.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesCategory.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -102940,7 +103288,7 @@ var require_insightsQuestionnairesCategory = __commonJS({
         this.categorySid = payload.category_sid;
         this.name = payload.name;
         this.url = payload.url;
-        this._solution = { categorySid };
+        this._solution = { categorySid: categorySid || this.categorySid };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesCategoryContextImpl(this._version, this._solution.categorySid);
@@ -103153,9 +103501,9 @@ var require_insightsQuestionnairesCategory = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesQuestion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesQuestion.js
 var require_insightsQuestionnairesQuestion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesQuestion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsQuestionnairesQuestion.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -103318,7 +103666,7 @@ var require_insightsQuestionnairesQuestion = __commonJS({
         this.usage = deserialize.integer(payload.usage);
         this.answerSet = payload.answer_set;
         this.url = payload.url;
-        this._solution = { questionSid };
+        this._solution = { questionSid: questionSid || this.questionSid };
       }
       get _proxy() {
         this._context = this._context || new InsightsQuestionnairesQuestionContextImpl(this._version, this._solution.questionSid);
@@ -103569,9 +103917,9 @@ var require_insightsQuestionnairesQuestion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSegments.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSegments.js
 var require_insightsSegments = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSegments.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSegments.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -103776,9 +104124,9 @@ var require_insightsSegments = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSession.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSession.js
 var require_insightsSession = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSession.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSession.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InsightsSessionInstance = exports2.InsightsSessionContextImpl = void 0;
@@ -103912,9 +104260,9 @@ var require_insightsSession = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsAnswerSets.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsAnswerSets.js
 var require_insightsSettingsAnswerSets = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsAnswerSets.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsAnswerSets.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InsightsSettingsAnswerSetsInstance = void 0;
@@ -104013,9 +104361,9 @@ var require_insightsSettingsAnswerSets = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsComment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsComment.js
 var require_insightsSettingsComment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsComment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsSettingsComment.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InsightsSettingsCommentInstance = void 0;
@@ -104110,9 +104458,9 @@ var require_insightsSettingsComment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsUserRoles.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsUserRoles.js
 var require_insightsUserRoles = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsUserRoles.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/insightsUserRoles.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InsightsUserRolesInstance = exports2.InsightsUserRolesContextImpl = void 0;
@@ -104240,9 +104588,9 @@ var require_insightsUserRoles = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelInvite.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelInvite.js
 var require_interactionChannelInvite = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelInvite.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelInvite.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -104455,9 +104803,9 @@ var require_interactionChannelInvite = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant.js
 var require_interactionChannelParticipant = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -104556,7 +104904,7 @@ var require_interactionChannelParticipant = __commonJS({
         this.channelSid = payload.channel_sid;
         this.url = payload.url;
         this.routingProperties = payload.routing_properties;
-        this._solution = { interactionSid, channelSid, sid };
+        this._solution = { interactionSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionChannelParticipantContextImpl(this._version, this._solution.interactionSid, this._solution.channelSid, this._solution.sid);
@@ -104775,9 +105123,9 @@ var require_interactionChannelParticipant = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionTransfer.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionTransfer.js
 var require_interactionTransfer = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionTransfer.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionTransfer.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InteractionTransferInstance = exports2.InteractionTransferContextImpl = void 0;
@@ -104914,7 +105262,7 @@ var require_interactionTransfer = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { interactionSid, channelSid, sid };
+        this._solution = { interactionSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionTransferContextImpl(this._version, this._solution.interactionSid, this._solution.channelSid, this._solution.sid);
@@ -105051,9 +105399,9 @@ var require_interactionTransfer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel.js
 var require_interactionChannel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction/interactionChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -105199,7 +105547,7 @@ var require_interactionChannel = __commonJS({
         this.errorMessage = payload.error_message;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { interactionSid, sid };
+        this._solution = { interactionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionChannelContextImpl(this._version, this._solution.interactionSid, this._solution.sid);
@@ -105396,9 +105744,9 @@ var require_interactionChannel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction.js
 var require_interaction = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/interaction.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InteractionInstance = exports2.InteractionContextImpl = void 0;
@@ -105524,7 +105872,7 @@ var require_interaction = __commonJS({
         this.links = payload.links;
         this.interactionContextSid = payload.interaction_context_sid;
         this.webhookTtid = payload.webhook_ttid;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionContextImpl(this._version, this._solution.sid);
@@ -105661,9 +106009,9 @@ var require_interaction = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin/pluginVersions.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin/pluginVersions.js
 var require_pluginVersions = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin/pluginVersions.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin/pluginVersions.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -105764,7 +106112,7 @@ var require_pluginVersions = __commonJS({
         this.validated = payload.validated;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { pluginSid, sid };
+        this._solution = { pluginSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginVersionsContextImpl(this._version, this._solution.pluginSid, this._solution.sid);
@@ -106005,9 +106353,9 @@ var require_pluginVersions = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin.js
 var require_plugin = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/plugin.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -106168,7 +106516,7 @@ var require_plugin = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginContextImpl(this._version, this._solution.sid);
@@ -106401,9 +106749,9 @@ var require_plugin = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginArchive.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginArchive.js
 var require_pluginArchive = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginArchive.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginArchive.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PluginArchiveInstance = exports2.PluginArchiveContextImpl = void 0;
@@ -106495,7 +106843,7 @@ var require_pluginArchive = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginArchiveContextImpl(this._version, this._solution.sid);
@@ -106549,9 +106897,9 @@ var require_pluginArchive = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration/configuredPlugin.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration/configuredPlugin.js
 var require_configuredPlugin = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration/configuredPlugin.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration/configuredPlugin.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -106657,7 +107005,10 @@ var require_configuredPlugin = __commonJS({
         this._private = payload.private;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { configurationSid, pluginSid };
+        this._solution = {
+          configurationSid,
+          pluginSid: pluginSid || this.pluginSid
+        };
       }
       get _proxy() {
         this._context = this._context || new ConfiguredPluginContextImpl(this._version, this._solution.configurationSid, this._solution.pluginSid);
@@ -106828,9 +107179,9 @@ var require_configuredPlugin = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration.js
 var require_pluginConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfiguration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -106930,7 +107281,7 @@ var require_pluginConfiguration = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginConfigurationContextImpl(this._version, this._solution.sid);
@@ -107155,9 +107506,9 @@ var require_pluginConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfigurationArchive.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfigurationArchive.js
 var require_pluginConfigurationArchive = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfigurationArchive.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginConfigurationArchive.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PluginConfigurationArchiveInstance = exports2.PluginConfigurationArchiveContextImpl = void 0;
@@ -107247,7 +107598,7 @@ var require_pluginConfigurationArchive = __commonJS({
         this.archived = payload.archived;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginConfigurationArchiveContextImpl(this._version, this._solution.sid);
@@ -107299,9 +107650,9 @@ var require_pluginConfigurationArchive = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginRelease.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginRelease.js
 var require_pluginRelease = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginRelease.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginRelease.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -107393,7 +107744,7 @@ var require_pluginRelease = __commonJS({
         this.configurationSid = payload.configuration_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PluginReleaseContextImpl(this._version, this._solution.sid);
@@ -107601,9 +107952,9 @@ var require_pluginRelease = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginVersionArchive.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginVersionArchive.js
 var require_pluginVersionArchive = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginVersionArchive.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/pluginVersionArchive.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PluginVersionArchiveInstance = exports2.PluginVersionArchiveContextImpl = void 0;
@@ -107699,7 +108050,10 @@ var require_pluginVersionArchive = __commonJS({
         this.archived = payload.archived;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { pluginSid, sid };
+        this._solution = {
+          pluginSid: pluginSid || this.pluginSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new PluginVersionArchiveContextImpl(this._version, this._solution.pluginSid, this._solution.sid);
@@ -107754,9 +108108,9 @@ var require_pluginVersionArchive = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/provisioningStatus.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/provisioningStatus.js
 var require_provisioningStatus = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/provisioningStatus.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/provisioningStatus.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ProvisioningStatusInstance = exports2.ProvisioningStatusContextImpl = void 0;
@@ -107878,9 +108232,9 @@ var require_provisioningStatus = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/webChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/webChannel.js
 var require_webChannel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/webChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v1/webChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -108030,7 +108384,7 @@ var require_webChannel = __commonJS({
         this.url = payload.url;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebChannelContextImpl(this._version, this._solution.sid);
@@ -108303,9 +108657,9 @@ var require_webChannel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V1.js
 var require_V17 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -108464,9 +108818,9 @@ var require_V17 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/flexUser.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/flexUser.js
 var require_flexUser = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/flexUser.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/flexUser.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FlexUserInstance = exports2.FlexUserContextImpl = void 0;
@@ -108606,7 +108960,10 @@ var require_flexUser = __commonJS({
         this.updatedDate = deserialize.iso8601DateTime(payload.updated_date);
         this.version = deserialize.integer(payload.version);
         this.url = payload.url;
-        this._solution = { instanceSid, flexUserSid };
+        this._solution = {
+          instanceSid: instanceSid || this.instanceSid,
+          flexUserSid: flexUserSid || this.flexUserSid
+        };
       }
       get _proxy() {
         this._context = this._context || new FlexUserContextImpl(this._version, this._solution.instanceSid, this._solution.flexUserSid);
@@ -108686,9 +109043,9 @@ var require_flexUser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/webChannels.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/webChannels.js
 var require_webChannels = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/webChannels.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/v2/webChannels.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WebChannelsInstance = void 0;
@@ -108801,9 +109158,9 @@ var require_webChannels = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V2.js
 var require_V24 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/flexApi/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -108836,9 +109193,9 @@ var require_V24 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApiBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApiBase.js
 var require_FlexApiBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApiBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApiBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -108868,9 +109225,9 @@ var require_FlexApiBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApi.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApi.js
 var require_FlexApi = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApi.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FlexApi.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -108931,9 +109288,9 @@ var require_FlexApi = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/v1/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/v1/user.js
 var require_user5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/v1/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/v1/user.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UserInstance = exports2.UserContextImpl = void 0;
@@ -109066,7 +109423,7 @@ var require_user5 = __commonJS({
         this.state = payload.state;
         this.isAvailable = payload.is_available;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.sid);
@@ -109138,9 +109495,9 @@ var require_user5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/V1.js
 var require_V18 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/frontlineApi/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109167,9 +109524,9 @@ var require_V18 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApiBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApiBase.js
 var require_FrontlineApiBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApiBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApiBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109194,9 +109551,9 @@ var require_FrontlineApiBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApi.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApi.js
 var require_FrontlineApi = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApi.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/FrontlineApi.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109215,9 +109572,9 @@ var require_FrontlineApi = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/authorize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/authorize.js
 var require_authorize = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/authorize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/authorize.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthorizeInstance = void 0;
@@ -109323,9 +109680,9 @@ var require_authorize = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/token.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/token.js
 var require_token2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/token.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/v1/token.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TokenInstance = void 0;
@@ -109456,9 +109813,9 @@ var require_token2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/V1.js
 var require_V19 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109491,9 +109848,9 @@ var require_V19 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIamBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIamBase.js
 var require_PreviewIamBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIamBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIamBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109518,9 +109875,9 @@ var require_PreviewIamBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/account.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/account.js
 var require_account2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/account.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/account.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109595,7 +109952,10 @@ var require_account2 = __commonJS({
         this.status = payload.status;
         this.ownerSid = payload.owner_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this._solution = { organizationSid, accountSid };
+        this._solution = {
+          organizationSid,
+          accountSid: accountSid || this.accountSid
+        };
       }
       get _proxy() {
         this._context = this._context || new AccountContextImpl(this._version, this._solution.organizationSid, this._solution.accountSid);
@@ -109765,9 +110125,9 @@ var require_account2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/roleAssignment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/roleAssignment.js
 var require_roleAssignment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/roleAssignment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/roleAssignment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -109850,7 +110210,7 @@ var require_roleAssignment = __commonJS({
         this.message = payload.message;
         this.moreInfo = payload.moreInfo;
         this.status = payload.status;
-        this._solution = { organizationSid, sid };
+        this._solution = { organizationSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleAssignmentContextImpl(this._version, this._solution.organizationSid, this._solution.sid);
@@ -110086,9 +110446,9 @@ var require_roleAssignment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/user.js
 var require_user6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -110350,7 +110710,7 @@ var require_user6 = __commonJS({
         this.status = payload.status;
         this.code = payload.code;
         this.moreInfo = payload.moreInfo;
-        this._solution = { organizationSid, id };
+        this._solution = { organizationSid, id: id || this.id };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.organizationSid, this._solution.id);
@@ -110608,9 +110968,9 @@ var require_user6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization.js
 var require_organization = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/versionless/organization.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OrganizationContextImpl = void 0;
@@ -110675,9 +111035,9 @@ var require_organization = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/Versionless.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/Versionless.js
 var require_Versionless = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/Versionless.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/previewIam/Versionless.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -110704,9 +111064,9 @@ var require_Versionless = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIam.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIam.js
 var require_PreviewIam = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIam.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewIam.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -110738,9 +111098,9 @@ var require_PreviewIam = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/apiKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/apiKey.js
 var require_apiKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/apiKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/apiKey.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ApiKeyInstance = exports2.ApiKeyContextImpl = void 0;
@@ -110885,7 +111245,7 @@ var require_apiKey = __commonJS({
         this.dateCreated = deserialize.rfc2822DateTime(payload.date_created);
         this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated);
         this.policy = payload.policy;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ApiKeyContextImpl(this._version, this._solution.sid);
@@ -110975,9 +111335,9 @@ var require_apiKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/getApiKeys.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/getApiKeys.js
 var require_getApiKeys = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/getApiKeys.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/getApiKeys.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -111138,9 +111498,9 @@ var require_getApiKeys = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/newApiKey.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/newApiKey.js
 var require_newApiKey = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/newApiKey.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/newApiKey.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewApiKeyInstance = void 0;
@@ -111253,9 +111613,9 @@ var require_newApiKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/oAuthApp.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/oAuthApp.js
 var require_oAuthApp = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/oAuthApp.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/oAuthApp.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OAuthAppInstance = exports2.OAuthAppContextImpl = exports2.IamV1OrganizationVendoroauthappPolicy = exports2.IamV1OrganizationVendorOauthAppUpdateRequestPolicy = exports2.IamV1AccountVendorOauthAppUpdateRequest = exports2.IamV1AccountVendorOauthAppCreateRequest = void 0;
@@ -111409,7 +111769,7 @@ var require_oAuthApp = __commonJS({
         this.code = payload.code;
         this.message = payload.message;
         this.moreInfo = payload.more_info;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new OAuthAppContextImpl(this._version, this._solution.sid);
@@ -111533,9 +111893,9 @@ var require_oAuthApp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/rolePermission.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/rolePermission.js
 var require_rolePermission = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/rolePermission.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/rolePermission.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -111700,9 +112060,9 @@ var require_rolePermission = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/token.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/token.js
 var require_token3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/token.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/v1/token.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TokenInstance = void 0;
@@ -111833,9 +112193,9 @@ var require_token3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/V1.js
 var require_V110 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/iam/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -111891,9 +112251,9 @@ var require_V110 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IamBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IamBase.js
 var require_IamBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IamBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IamBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -111918,9 +112278,9 @@ var require_IamBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Iam.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Iam.js
 var require_Iam = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Iam.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Iam.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -111932,9 +112292,9 @@ var require_Iam = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/annotation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/annotation.js
 var require_annotation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/annotation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/annotation.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AnnotationInstance = exports2.AnnotationContextImpl = void 0;
@@ -112160,9 +112520,9 @@ var require_annotation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/callSummary.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/callSummary.js
 var require_callSummary = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/callSummary.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/callSummary.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CallSummaryInstance = exports2.CallSummaryContextImpl = exports2.CallSummaryCrelayWordStats = exports2.CallSummaryCrelayTokenStats = exports2.CallSummaryCrelayRateStats = exports2.CallSummaryCrelayInterruptions = exports2.CallSummaryAgentSessionSummary = void 0;
@@ -112386,9 +112746,9 @@ var require_callSummary = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/event.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/event.js
 var require_event2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/event.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -112640,9 +113000,9 @@ var require_event2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/metric.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/metric.js
 var require_metric = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/metric.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call/metric.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -112821,9 +113181,9 @@ var require_metric = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call.js
 var require_call2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/call.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CallInstance = exports2.CallContextImpl = void 0;
@@ -112909,7 +113269,7 @@ var require_call2 = __commonJS({
         this.sid = payload.sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CallContextImpl(this._version, this._solution.sid);
@@ -112995,9 +113355,9 @@ var require_call2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/callSummaries.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/callSummaries.js
 var require_callSummaries = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/callSummaries.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/callSummaries.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -113383,9 +113743,9 @@ var require_callSummaries = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference/conferenceParticipant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference/conferenceParticipant.js
 var require_conferenceParticipant = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference/conferenceParticipant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference/conferenceParticipant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -113506,7 +113866,10 @@ var require_conferenceParticipant = __commonJS({
         this.events = payload.events;
         this.metrics = payload.metrics;
         this.url = payload.url;
-        this._solution = { conferenceSid, participantSid };
+        this._solution = {
+          conferenceSid,
+          participantSid: participantSid || this.participantSid
+        };
       }
       get _proxy() {
         this._context = this._context || new ConferenceParticipantContextImpl(this._version, this._solution.conferenceSid, this._solution.participantSid);
@@ -113696,9 +114059,9 @@ var require_conferenceParticipant = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference.js
 var require_conference2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/conference.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -113793,7 +114156,7 @@ var require_conference2 = __commonJS({
         this.processingState = payload.processing_state;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { conferenceSid };
+        this._solution = { conferenceSid: conferenceSid || this.conferenceSid };
       }
       get _proxy() {
         this._context = this._context || new ConferenceContextImpl(this._version, this._solution.conferenceSid);
@@ -114024,9 +114387,9 @@ var require_conference2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room/participant.js
 var require_participant5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -114113,7 +114476,10 @@ var require_participant5 = __commonJS({
         this.edgeLocation = payload.edge_location;
         this.publisherInfo = payload.publisher_info;
         this.url = payload.url;
-        this._solution = { roomSid, participantSid };
+        this._solution = {
+          roomSid,
+          participantSid: participantSid || this.participantSid
+        };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.roomSid, this._solution.participantSid);
@@ -114295,9 +114661,9 @@ var require_participant5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room.js
 var require_room = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/room.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -114395,7 +114761,7 @@ var require_room = __commonJS({
         this.edgeLocation = payload.edge_location;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { roomSid };
+        this._solution = { roomSid: roomSid || this.roomSid };
       }
       get _proxy() {
         this._context = this._context || new RoomContextImpl(this._version, this._solution.roomSid);
@@ -114609,9 +114975,9 @@ var require_room = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/setting.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/setting.js
 var require_setting = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/setting.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v1/setting.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SettingInstance = exports2.SettingContextImpl = void 0;
@@ -114808,9 +115174,9 @@ var require_setting = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V1.js
 var require_V111 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -114861,9 +115227,9 @@ var require_V111 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inbound.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inbound.js
 var require_inbound = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inbound.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inbound.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -115036,9 +115402,9 @@ var require_inbound = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inboundReport.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inboundReport.js
 var require_inboundReport = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inboundReport.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/inboundReport.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InboundReportInstance = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = void 0;
@@ -115178,9 +115544,9 @@ var require_inboundReport = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outbound.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outbound.js
 var require_outbound = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outbound.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outbound.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -115391,9 +115757,9 @@ var require_outbound = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outboundReport.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outboundReport.js
 var require_outboundReport = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outboundReport.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/outboundReport.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OutboundReportInstance = exports2.ReportMetadata = exports2.ReportFilter = exports2.PhoneNumberReportFilter = exports2.InsightsV2CreatePhoneNumbersReportRequestTimeRange = exports2.InsightsV2CreatePhoneNumbersReportRequest = void 0;
@@ -115533,9 +115899,9 @@ var require_outboundReport = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/report.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/report.js
 var require_report = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/report.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v2/report.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReportInstance = exports2.ReportContextImpl = exports2.VoiceIntegrityCallsPerBundle = exports2.VoiceIntegrity = exports2.StirShakenPercentage = exports2.StirShakenCallCount = exports2.StirShakenAnswerRate = exports2.StirShaken = exports2.ReportMetadata = exports2.ReportFilter = exports2.InsightsV2CreateAccountReportRequestTimeRange = exports2.InsightsV2CreateAccountReportRequest = exports2.CountyCarrierValueCarriers = exports2.CountyCarrierValue = exports2.BrandedUseCaseDetail = exports2.BrandedCalling = exports2.AccountReportNetworkIssuesTwilioGateway = exports2.AccountReportNetworkIssuesSdk = exports2.AccountReportNetworkIssues = exports2.AccountReportKYTOutboundCarrierCalling = exports2.AccountReportKYT = exports2.AccountReportCallType = exports2.AccountReportCallState = exports2.AccountReportCallDirection = exports2.AccountReportAnsweringMachineDetection = exports2.AccountReport = void 0;
@@ -115820,7 +116186,7 @@ var require_report = __commonJS({
         this.requestMeta = payload.request_meta !== null && payload.request_meta !== void 0 ? new ReportMetadata(payload.request_meta) : null;
         this.url = payload.url;
         this.report = payload.report !== null && payload.report !== void 0 ? new AccountReport(payload.report) : null;
-        this._solution = { reportId };
+        this._solution = { reportId: reportId || this.reportId };
       }
       get _proxy() {
         this._context = this._context || new ReportContextImpl(this._version, this._solution.reportId);
@@ -115936,9 +116302,9 @@ var require_report = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V2.js
 var require_V25 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -115987,9 +116353,9 @@ var require_V25 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js
 var require_customFieldMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -116372,9 +116738,9 @@ var require_customFieldMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMappingsCapacity.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMappingsCapacity.js
 var require_customFieldMappingsCapacity = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMappingsCapacity.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/customFieldMappingsCapacity.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CustomFieldMappingsCapacityInstance = exports2.CategoryCapacity = void 0;
@@ -116453,9 +116819,9 @@ var require_customFieldMappingsCapacity = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/metadata.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/metadata.js
 var require_metadata = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/metadata.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/metadata.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.MetadataInstance = exports2.InsightsMetadataResponseCubesMeasures = exports2.InsightsMetadataResponseCubesDimensions = exports2.InsightsMetadataResponseCubes = void 0;
@@ -116555,9 +116921,9 @@ var require_metadata = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/query.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/query.js
 var require_query = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/query.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/query.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.QueryInstance = exports2.QueryDefinitionOrderBy = exports2.QueryDefinitionFiltersExpressions = exports2.QueryDefinitionFilters = exports2.QueryDefinition = exports2.PaginationMeta = exports2.InsightsQueryRequest = void 0;
@@ -116747,9 +117113,9 @@ var require_query = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/queryJob.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/queryJob.js
 var require_queryJob = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/queryJob.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/v3/queryJob.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117091,9 +117457,9 @@ var require_queryJob = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V3.js
 var require_V32 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/insights/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117144,9 +117510,9 @@ var require_V32 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/InsightsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/InsightsBase.js
 var require_InsightsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/InsightsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/InsightsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117181,9 +117547,9 @@ var require_InsightsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Insights.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Insights.js
 var require_Insights = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Insights.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Insights.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117230,9 +117596,9 @@ var require_Insights = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/customOperator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/customOperator.js
 var require_customOperator = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/customOperator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/customOperator.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117394,7 +117760,7 @@ var require_customOperator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CustomOperatorContextImpl(this._version, this._solution.sid);
@@ -117665,9 +118031,9 @@ var require_customOperator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operator.js
 var require_operator = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operator.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -117746,7 +118112,7 @@ var require_operator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new OperatorContextImpl(this._version, this._solution.sid);
@@ -117928,9 +118294,9 @@ var require_operator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachment.js
 var require_operatorAttachment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachment.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OperatorAttachmentInstance = exports2.OperatorAttachmentContextImpl = void 0;
@@ -118021,7 +118387,10 @@ var require_operatorAttachment = __commonJS({
         this.serviceSid = payload.service_sid;
         this.operatorSid = payload.operator_sid;
         this.url = payload.url;
-        this._solution = { serviceSid, operatorSid };
+        this._solution = {
+          serviceSid: serviceSid || this.serviceSid,
+          operatorSid: operatorSid || this.operatorSid
+        };
       }
       get _proxy() {
         this._context = this._context || new OperatorAttachmentContextImpl(this._version, this._solution.serviceSid, this._solution.operatorSid);
@@ -118103,9 +118472,9 @@ var require_operatorAttachment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachments.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachments.js
 var require_operatorAttachments = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachments.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorAttachments.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OperatorAttachmentsInstance = exports2.OperatorAttachmentsContextImpl = void 0;
@@ -118171,7 +118540,7 @@ var require_operatorAttachments = __commonJS({
         this.serviceSid = payload.service_sid;
         this.operatorSids = payload.operator_sids;
         this.url = payload.url;
-        this._solution = { serviceSid };
+        this._solution = { serviceSid: serviceSid || this.serviceSid };
       }
       get _proxy() {
         this._context = this._context || new OperatorAttachmentsContextImpl(this._version, this._solution.serviceSid);
@@ -118233,9 +118602,9 @@ var require_operatorAttachments = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorType.js
 var require_operatorType = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/operatorType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -118316,7 +118685,7 @@ var require_operatorType = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new OperatorTypeContextImpl(this._version, this._solution.sid);
@@ -118496,9 +118865,9 @@ var require_operatorType = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/prebuiltOperator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/prebuiltOperator.js
 var require_prebuiltOperator = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/prebuiltOperator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/prebuiltOperator.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -118577,7 +118946,7 @@ var require_prebuiltOperator = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PrebuiltOperatorContextImpl(this._version, this._solution.sid);
@@ -118759,9 +119128,9 @@ var require_prebuiltOperator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/service.js
 var require_service4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -118954,7 +119323,7 @@ var require_service4 = __commonJS({
         this.readOnlyAttachedOperatorSids = payload.read_only_attached_operator_sids;
         this.version = deserialize.integer(payload.version);
         this.encryptionCredentialSid = payload.encryption_credential_sid;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -119242,9 +119611,9 @@ var require_service4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedOperatorResults.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedOperatorResults.js
 var require_encryptedOperatorResults = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedOperatorResults.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedOperatorResults.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EncryptedOperatorResultsInstance = exports2.EncryptedOperatorResultsContextImpl = void 0;
@@ -119381,9 +119750,9 @@ var require_encryptedOperatorResults = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedSentences.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedSentences.js
 var require_encryptedSentences = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedSentences.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/encryptedSentences.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EncryptedSentencesInstance = exports2.EncryptedSentencesContextImpl = void 0;
@@ -119520,9 +119889,9 @@ var require_encryptedSentences = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/media.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/media.js
 var require_media2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/media.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/media.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.MediaInstance = exports2.MediaContextImpl = void 0;
@@ -119663,9 +120032,9 @@ var require_media2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/operatorResult.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/operatorResult.js
 var require_operatorResult = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/operatorResult.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/operatorResult.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -119771,7 +120140,10 @@ var require_operatorResult = __commonJS({
         this.jsonResults = payload.json_results;
         this.transcriptSid = payload.transcript_sid;
         this.url = payload.url;
-        this._solution = { transcriptSid, operatorSid };
+        this._solution = {
+          transcriptSid,
+          operatorSid: operatorSid || this.operatorSid
+        };
       }
       get _proxy() {
         this._context = this._context || new OperatorResultContextImpl(this._version, this._solution.transcriptSid, this._solution.operatorSid);
@@ -119942,9 +120314,9 @@ var require_operatorResult = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/sentence.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/sentence.js
 var require_sentence = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/sentence.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript/sentence.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -120121,9 +120493,9 @@ var require_sentence = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript.js
 var require_transcript = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v2/transcript.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -120253,7 +120625,7 @@ var require_transcript = __commonJS({
         this.redaction = payload.redaction;
         this.encryptionCredentialSid = payload.encryption_credential_sid;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptContextImpl(this._version, this._solution.sid);
@@ -120576,9 +120948,9 @@ var require_transcript = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V2.js
 var require_V26 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -120647,9 +121019,9 @@ var require_V26 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/configuration.js
 var require_configuration5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/configuration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -121126,9 +121498,9 @@ var require_configuration5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/conversation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/conversation.js
 var require_conversation4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/conversation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/conversation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -121438,9 +121810,9 @@ var require_conversation4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operator.js
 var require_operator2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operator.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -121881,9 +122253,9 @@ var require_operator2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operatorResult.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operatorResult.js
 var require_operatorResult2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operatorResult.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/operatorResult.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122291,9 +122663,9 @@ var require_operatorResult2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js
 var require_ruleExecution = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/ruleExecution.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RuleOverride = exports2.OperatorOverride = exports2.CreateRuleExecutionRequest = void 0;
@@ -122383,9 +122755,9 @@ var require_ruleExecution = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/version.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/version.js
 var require_version = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/version.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/v3/version.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122686,9 +123058,9 @@ var require_version = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V3.js
 var require_V33 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/intelligence/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122748,9 +123120,9 @@ var require_V33 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IntelligenceBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IntelligenceBase.js
 var require_IntelligenceBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IntelligenceBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IntelligenceBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122780,9 +123152,9 @@ var require_IntelligenceBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Intelligence.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Intelligence.js
 var require_Intelligence = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Intelligence.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Intelligence.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122794,9 +123166,9 @@ var require_Intelligence = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/credential.js
 var require_credential6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -122964,7 +123336,7 @@ var require_credential6 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -123231,9 +123603,9 @@ var require_credential6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/invite.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/invite.js
 var require_invite3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/invite.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/invite.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -123338,7 +123710,7 @@ var require_invite3 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -123591,9 +123963,9 @@ var require_invite3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/member.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/member.js
 var require_member4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/member.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/member.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -123754,7 +124126,7 @@ var require_member4 = __commonJS({
         this.lastConsumedMessageIndex = deserialize.integer(payload.last_consumed_message_index);
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -124014,9 +124386,9 @@ var require_member4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js
 var require_message6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -124179,7 +124551,7 @@ var require_message6 = __commonJS({
         this.body = payload.body;
         this.index = deserialize.integer(payload.index);
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -124445,9 +124817,9 @@ var require_message6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel.js
 var require_channel5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/channel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -124627,7 +124999,7 @@ var require_channel5 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -124915,9 +125287,9 @@ var require_channel5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/role.js
 var require_role5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -125067,7 +125439,7 @@ var require_role5 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -125330,9 +125702,9 @@ var require_role5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user/userChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user/userChannel.js
 var require_userChannel3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user/userChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user/userChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -125504,9 +125876,9 @@ var require_userChannel3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user.js
 var require_user7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -125676,7 +126048,7 @@ var require_user7 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -125946,9 +126318,9 @@ var require_user7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service.js
 var require_service5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -126336,7 +126708,7 @@ var require_service5 = __commonJS({
         this.notifications = payload.notifications;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -126610,9 +126982,9 @@ var require_service5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V1.js
 var require_V112 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -126645,9 +127017,9 @@ var require_V112 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/credential.js
 var require_credential7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -126815,7 +127187,7 @@ var require_credential7 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -127082,9 +127454,9 @@ var require_credential7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/binding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/binding.js
 var require_binding3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/binding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/binding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -127188,7 +127560,7 @@ var require_binding3 = __commonJS({
         this.messageTypes = payload.message_types;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -127393,9 +127765,9 @@ var require_binding3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/invite.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/invite.js
 var require_invite4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/invite.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/invite.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -127500,7 +127872,7 @@ var require_invite4 = __commonJS({
         this.roleSid = payload.role_sid;
         this.createdBy = payload.created_by;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InviteContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -127753,9 +128125,9 @@ var require_invite4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/member.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/member.js
 var require_member5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/member.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/member.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -127961,7 +128333,7 @@ var require_member5 = __commonJS({
         this.lastConsumptionTimestamp = deserialize.iso8601DateTime(payload.last_consumption_timestamp);
         this.url = payload.url;
         this.attributes = payload.attributes;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MemberContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -128232,9 +128604,9 @@ var require_member5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js
 var require_message7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/message.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -128444,7 +128816,7 @@ var require_message7 = __commonJS({
         this.type = payload.type;
         this.media = payload.media;
         this.url = payload.url;
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new MessageContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -128721,9 +129093,9 @@ var require_message7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/webhook.js
 var require_webhook6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel/webhook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -128898,7 +129270,7 @@ var require_webhook6 = __commonJS({
         this.configuration = payload.configuration;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { serviceSid, channelSid, sid };
+        this._solution = { serviceSid, channelSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.channelSid, this._solution.sid);
@@ -129172,9 +129544,9 @@ var require_webhook6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel.js
 var require_channel6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/channel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -129399,7 +129771,7 @@ var require_channel6 = __commonJS({
         this.messagesCount = deserialize.integer(payload.messages_count);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -129695,9 +130067,9 @@ var require_channel6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/role.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/role.js
 var require_role6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/role.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/role.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -129847,7 +130219,7 @@ var require_role6 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoleContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -130110,9 +130482,9 @@ var require_role6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userBinding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userBinding.js
 var require_userBinding2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userBinding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userBinding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -130219,7 +130591,7 @@ var require_userBinding2 = __commonJS({
         this.bindingType = payload.binding_type;
         this.messageTypes = payload.message_types;
         this.url = payload.url;
-        this._solution = { serviceSid, userSid, sid };
+        this._solution = { serviceSid, userSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserBindingContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.sid);
@@ -130423,9 +130795,9 @@ var require_userBinding2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userChannel.js
 var require_userChannel4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user/userChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -130590,7 +130962,11 @@ var require_userChannel4 = __commonJS({
         this.links = payload.links;
         this.url = payload.url;
         this.notificationLevel = payload.notification_level;
-        this._solution = { serviceSid, userSid, channelSid };
+        this._solution = {
+          serviceSid,
+          userSid,
+          channelSid: channelSid || this.channelSid
+        };
       }
       get _proxy() {
         this._context = this._context || new UserChannelContextImpl(this._version, this._solution.serviceSid, this._solution.userSid, this._solution.channelSid);
@@ -130795,9 +131171,9 @@ var require_userChannel4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user.js
 var require_user8 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service/user.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -130976,7 +131352,7 @@ var require_user8 = __commonJS({
         this.joinedChannelsCount = deserialize.integer(payload.joined_channels_count);
         this.links = payload.links;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UserContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -131256,9 +131632,9 @@ var require_user8 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service.js
 var require_service6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/v2/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -131561,7 +131937,7 @@ var require_service6 = __commonJS({
         this.media = payload.media;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -131843,9 +132219,9 @@ var require_service6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V2.js
 var require_V27 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ipMessaging/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -131878,9 +132254,9 @@ var require_V27 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessagingBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessagingBase.js
 var require_IpMessagingBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessagingBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessagingBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -131910,9 +132286,9 @@ var require_IpMessagingBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessaging.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessaging.js
 var require_IpMessaging = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessaging.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/IpMessaging.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -131938,9 +132314,9 @@ var require_IpMessaging = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js
 var require_chunk = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/chunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -132103,9 +132479,9 @@ var require_chunk = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js
 var require_knowledgeStatus = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge/knowledgeStatus.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.KnowledgeStatusInstance = exports2.KnowledgeStatusContextImpl = void 0;
@@ -132238,9 +132614,9 @@ var require_knowledgeStatus = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge.js
 var require_knowledge = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v1/knowledge.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -132435,7 +132811,7 @@ var require_knowledge = __commonJS({
         this.embeddingModel = payload.embedding_model;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { id };
+        this._solution = { id: id || this.id };
       }
       get _proxy() {
         this._context = this._context || new KnowledgeContextImpl(this._version, this._solution.id);
@@ -132695,9 +133071,9 @@ var require_knowledge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V1.js
 var require_V113 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -132724,9 +133100,9 @@ var require_V113 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/chunk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/chunk.js
 var require_chunk2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/chunk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/chunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -132893,9 +133269,9 @@ var require_chunk2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledge.js
 var require_knowledge2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledge.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledge.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -133337,9 +133713,9 @@ var require_knowledge2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledgeBasis.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledgeBasis.js
 var require_knowledgeBasis = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledgeBasis.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/knowledgeBasis.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -133750,9 +134126,9 @@ var require_knowledgeBasis = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/operation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/operation.js
 var require_operation2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/operation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/operation.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OperationInstance = exports2.OperationContextImpl = exports2.OperationStatusError = exports2.OperationResultResourceId = void 0;
@@ -133907,9 +134283,9 @@ var require_operation2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/search.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/search.js
 var require_search = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/search.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/v2/search.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SearchInstance = exports2.KnowledgeSearch = exports2.KnowledgeChunkResult = void 0;
@@ -134030,9 +134406,9 @@ var require_search = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V2.js
 var require_V28 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/knowledge/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -134084,9 +134460,9 @@ var require_V28 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/KnowledgeBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/KnowledgeBase.js
 var require_KnowledgeBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/KnowledgeBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/KnowledgeBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -134116,9 +134492,9 @@ var require_KnowledgeBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Knowledge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Knowledge.js
 var require_Knowledge = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Knowledge.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Knowledge.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -134130,9 +134506,9 @@ var require_Knowledge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v1/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v1/phoneNumber.js
 var require_phoneNumber = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v1/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v1/phoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PhoneNumberInstance = exports2.PhoneNumberContextImpl = void 0;
@@ -134240,7 +134616,7 @@ var require_phoneNumber = __commonJS({
         this.carrier = payload.carrier;
         this.addOns = payload.add_ons;
         this.url = payload.url;
-        this._solution = { phoneNumber };
+        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -134292,9 +134668,9 @@ var require_phoneNumber = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V1.js
 var require_V114 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -134321,9 +134697,9 @@ var require_V114 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/bucket.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/bucket.js
 var require_bucket = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/bucket.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/bucket.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BucketInstance = exports2.BucketContextImpl = exports2.RateLimitRequest = void 0;
@@ -134480,7 +134856,10 @@ var require_bucket = __commonJS({
         this.bucket = payload.bucket;
         this.owner = payload.owner;
         this.ttl = payload.ttl;
-        this._solution = { field, bucket };
+        this._solution = {
+          field: field || this.field,
+          bucket: bucket || this.bucket
+        };
       }
       get _proxy() {
         this._context = this._context || new BucketContextImpl(this._version, this._solution.field, this._solution.bucket);
@@ -134574,9 +134953,9 @@ var require_bucket = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/lookupOverride.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/lookupOverride.js
 var require_lookupOverride = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/lookupOverride.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/lookupOverride.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.LookupOverrideInstance = exports2.LookupOverrideContextImpl = exports2.OverridesRequest = void 0;
@@ -134792,7 +135171,10 @@ var require_lookupOverride = __commonJS({
         this.bucket = payload.bucket;
         this.owner = payload.owner;
         this.ttl = payload.ttl;
-        this._solution = { field, phoneNumber };
+        this._solution = {
+          field: field || this.field,
+          phoneNumber: phoneNumber || this.phoneNumber
+        };
       }
       get _proxy() {
         this._context = this._context || new LookupOverrideContextImpl(this._version, this._solution.field, this._solution.phoneNumber);
@@ -134898,9 +135280,9 @@ var require_lookupOverride = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/phoneNumber.js
 var require_phoneNumber2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/phoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PhoneNumberInstance = exports2.PhoneNumberContextImpl = exports2.SmsPumpingRiskInfo = exports2.SimSwapInfo = exports2.ReassignedNumberInfo = exports2.LineTypeIntelligenceInfo = exports2.LineStatusInfo = exports2.LastSimSwapInfo = exports2.IdentityMatchInfo = exports2.CallerNameInfo = exports2.CallForwardingInfo = void 0;
@@ -135142,7 +135524,7 @@ var require_phoneNumber2 = __commonJS({
         this.phoneNumberQualityScore = payload.phone_number_quality_score;
         this.preFill = payload.pre_fill;
         this.url = payload.url;
-        this._solution = { phoneNumber };
+        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -135204,9 +135586,9 @@ var require_phoneNumber2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/query.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/query.js
 var require_query2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/query.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/query.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.QueryInstance = exports2.SmsPumpingRiskInfo = exports2.SimSwapInfo = exports2.RiskParameters = exports2.ReassignedNumberParameters = exports2.ReassignedNumberInfo = exports2.LookupRequest = exports2.LookupBatchResponse = exports2.LookupBatchRequest = exports2.LineTypeIntelligenceInfo = exports2.LineStatusInfo = exports2.LastSimSwapInfo = exports2.IdentityMatchParameters = exports2.IdentityMatchInfo = exports2.CallerNameInfo = exports2.CallForwardingInfo = void 0;
@@ -135455,9 +135837,9 @@ var require_query2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/rateLimit.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/rateLimit.js
 var require_rateLimit = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/rateLimit.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/v2/rateLimit.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RateLimitInstance = exports2.RateLimitResponse = void 0;
@@ -135558,9 +135940,9 @@ var require_rateLimit = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V2.js
 var require_V29 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/lookups/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -135611,9 +135993,9 @@ var require_V29 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/LookupsBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/LookupsBase.js
 var require_LookupsBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/LookupsBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/LookupsBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -135643,9 +136025,9 @@ var require_LookupsBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Lookups.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Lookups.js
 var require_Lookups = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Lookups.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Lookups.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -135664,9 +136046,9 @@ var require_Lookups = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn/availableAddOnExtension.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn/availableAddOnExtension.js
 var require_availableAddOnExtension = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn/availableAddOnExtension.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn/availableAddOnExtension.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -135742,7 +136124,7 @@ var require_availableAddOnExtension = __commonJS({
         this.productName = payload.product_name;
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
-        this._solution = { availableAddOnSid, sid };
+        this._solution = { availableAddOnSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnExtensionContextImpl(this._version, this._solution.availableAddOnSid, this._solution.sid);
@@ -135913,9 +136295,9 @@ var require_availableAddOnExtension = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn.js
 var require_availableAddOn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/availableAddOn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -135994,7 +136376,7 @@ var require_availableAddOn = __commonJS({
         this.configurationSchema = payload.configuration_schema;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnContextImpl(this._version, this._solution.sid);
@@ -136169,9 +136551,9 @@ var require_availableAddOn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnExtension.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnExtension.js
 var require_installedAddOnExtension = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnExtension.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnExtension.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -136297,7 +136679,7 @@ var require_installedAddOnExtension = __commonJS({
         this.uniqueName = payload.unique_name;
         this.enabled = payload.enabled;
         this.url = payload.url;
-        this._solution = { installedAddOnSid, sid };
+        this._solution = { installedAddOnSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnExtensionContextImpl(this._version, this._solution.installedAddOnSid, this._solution.sid);
@@ -136475,9 +136857,9 @@ var require_installedAddOnExtension = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnUsage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnUsage.js
 var require_installedAddOnUsage = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnUsage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn/installedAddOnUsage.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.InstalledAddOnUsageInstance = exports2.MarketplaceV1InstalledAddOnInstalledAddOnUsageBillableItems = exports2.MarketplaceV1InstalledAddOnInstalledAddOnUsage = void 0;
@@ -136587,9 +136969,9 @@ var require_installedAddOnUsage = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn.js
 var require_installedAddOn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/installedAddOn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -136753,7 +137135,7 @@ var require_installedAddOn = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnContextImpl(this._version, this._solution.sid);
@@ -137026,9 +137408,9 @@ var require_installedAddOn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleData.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleData.js
 var require_moduleData = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleData.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleData.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ModuleDataInstance = void 0;
@@ -137170,9 +137552,9 @@ var require_moduleData = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleDataManagement.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleDataManagement.js
 var require_moduleDataManagement = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleDataManagement.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/moduleDataManagement.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ModuleDataManagementInstance = exports2.ModuleDataManagementContextImpl = void 0;
@@ -137320,7 +137702,7 @@ var require_moduleDataManagement = __commonJS({
         this.configuration = payload.configuration;
         this.pricing = payload.pricing;
         this.listings = payload.listings;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ModuleDataManagementContextImpl(this._version, this._solution.sid);
@@ -137395,9 +137777,9 @@ var require_moduleDataManagement = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/referralConversion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/referralConversion.js
 var require_referralConversion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/referralConversion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/v1/referralConversion.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReferralConversionInstance = exports2.CreateReferralConversionRequest = void 0;
@@ -137492,9 +137874,9 @@ var require_referralConversion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/V1.js
 var require_V115 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/marketplace/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -137545,9 +137927,9 @@ var require_V115 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MarketplaceBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MarketplaceBase.js
 var require_MarketplaceBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MarketplaceBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MarketplaceBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -137572,9 +137954,9 @@ var require_MarketplaceBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Marketplace.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Marketplace.js
 var require_Marketplace = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Marketplace.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Marketplace.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -137586,9 +137968,9 @@ var require_Marketplace = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/bulk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/bulk.js
 var require_bulk = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/bulk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/bulk.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkInstance = exports2.UpdateProfilesBulkRequest = exports2.ProfileData = void 0;
@@ -137675,6 +138057,9 @@ var require_bulk = __commonJS({
         this._version = _version;
         const payload = _payload;
         this.message = payload.message;
+        this.operationId = payload.operationId;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.statusUrl = payload.statusUrl;
       }
       /**
        * Provide a user-friendly representation
@@ -137683,7 +138068,10 @@ var require_bulk = __commonJS({
        */
       toJSON() {
         return {
-          message: this.message
+          message: this.message,
+          operationId: this.operationId,
+          createdAt: this.createdAt,
+          statusUrl: this.statusUrl
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -137694,9 +138082,9 @@ var require_bulk = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/conversationSummary.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/conversationSummary.js
 var require_conversationSummary = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/conversationSummary.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/conversationSummary.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -138131,9 +138519,9 @@ var require_conversationSummary = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/dataMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/dataMapping.js
 var require_dataMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/dataMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/dataMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -138586,9 +138974,9 @@ var require_dataMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identifier.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identifier.js
 var require_identifier = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identifier.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identifier.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.IdentifierInstance = exports2.IdentifierContextImpl = exports2.IdentifierUpdate = exports2.Identifier = void 0;
@@ -138927,9 +139315,9 @@ var require_identifier = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identityResolutionSetting.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identityResolutionSetting.js
 var require_identityResolutionSetting = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identityResolutionSetting.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/identityResolutionSetting.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.IdentityResolutionSettingInstance = exports2.IdentityResolutionSettingsCore = exports2.IdentifierConfig = void 0;
@@ -139077,9 +139465,9 @@ var require_identityResolutionSetting = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/import.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/import.js
 var require_import = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/import.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/import.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -139182,17 +139570,19 @@ var require_import = __commonJS({
       constructor(_version, _payload, storeId, importId) {
         this._version = _version;
         const payload = _payload;
+        this.importId = payload.importId;
+        this.url = payload.url;
+        this.operationId = payload.operationId;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.statusUrl = payload.statusUrl;
         this.status = payload.status;
         this.filename = payload.filename;
-        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
         this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
         this.fileSize = deserialize.integer(payload.fileSize);
         this.columnMappings = payload.columnMappings !== null && payload.columnMappings !== void 0 ? payload.columnMappings.map((payload2) => new ColumnMappingItem(payload2)) : null;
         this.summary = payload.summary !== null && payload.summary !== void 0 ? new FetchProfileImportV2200ResponseSummary(payload.summary) : null;
         this.imports = payload.imports;
         this.meta = payload.meta !== null && payload.meta !== void 0 ? new ListProfileImportsV2200ResponseMeta(payload.meta) : null;
-        this.importId = payload.importId;
-        this.url = payload.url;
         this._solution = { storeId, importId };
       }
       get _proxy() {
@@ -139226,17 +139616,19 @@ var require_import = __commonJS({
        */
       toJSON() {
         return {
+          importId: this.importId,
+          url: this.url,
+          operationId: this.operationId,
+          createdAt: this.createdAt,
+          statusUrl: this.statusUrl,
           status: this.status,
           filename: this.filename,
-          createdAt: this.createdAt,
           updatedAt: this.updatedAt,
           fileSize: this.fileSize,
           columnMappings: this.columnMappings,
           summary: this.summary,
           imports: this.imports,
-          meta: this.meta,
-          importId: this.importId,
-          url: this.url
+          meta: this.meta
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -139476,9 +139868,9 @@ var require_import = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/lookup.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/lookup.js
 var require_lookup = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/lookup.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/lookup.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.LookupInstance = exports2.Identifier = void 0;
@@ -139581,9 +139973,9 @@ var require_lookup = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/observation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/observation.js
 var require_observation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/observation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/observation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -140034,9 +140426,9 @@ var require_observation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/operation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/operation.js
 var require_operation3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/operation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/operation.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OperationInstance = exports2.OperationContextImpl = exports2.OperationStatusError = exports2.OperationResultResourceId = void 0;
@@ -140191,9 +140583,9 @@ var require_operation3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/profile.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/profile.js
 var require_profile = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/profile.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/profile.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -140677,9 +141069,9 @@ var require_profile = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/recall.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/recall.js
 var require_recall = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/recall.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/recall.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecallInstance = exports2.RecallSummaryInfo = exports2.RecallObservationInfo = exports2.Participant = exports2.MemoryRetrievalResponseMeta = exports2.MemoryRetrievalRequest = exports2.CommunicationRecipients = exports2.CommunicationContent = exports2.Communication = void 0;
@@ -140868,9 +141260,9 @@ var require_recall = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/revision.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/revision.js
 var require_revision = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/revision.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/revision.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -141046,9 +141438,9 @@ var require_revision = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/store.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/store.js
 var require_store = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/store.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/store.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -141225,6 +141617,7 @@ var require_store = __commonJS({
         this.status = payload.status;
         this.intelligenceServiceId = payload.intelligenceServiceId;
         this.version = deserialize.integer(payload.version);
+        this.dataAsOf = deserialize.iso8601DateTime(payload.dataAsOf);
         this._solution = { storeId };
       }
       get _proxy() {
@@ -141293,7 +141686,8 @@ var require_store = __commonJS({
           id: this.id,
           status: this.status,
           intelligenceServiceId: this.intelligenceServiceId,
-          version: this.version
+          version: this.version,
+          dataAsOf: this.dataAsOf
         };
       }
       [util_1.inspect.custom](_depth, options) {
@@ -141530,9 +141924,9 @@ var require_store = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/trait.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/trait.js
 var require_trait = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/trait.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/trait.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -141703,9 +142097,9 @@ var require_trait = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/traitGroup.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/traitGroup.js
 var require_traitGroup = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/traitGroup.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/v1/traitGroup.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142207,9 +142601,9 @@ var require_traitGroup = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/V1.js
 var require_V116 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/memory/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142335,9 +142729,9 @@ var require_V116 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MemoryBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MemoryBase.js
 var require_MemoryBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MemoryBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MemoryBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142362,9 +142756,9 @@ var require_MemoryBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Memory.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Memory.js
 var require_Memory = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Memory.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Memory.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142376,9 +142770,9 @@ var require_Memory = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandRegistrationOtp.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandRegistrationOtp.js
 var require_brandRegistrationOtp = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandRegistrationOtp.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandRegistrationOtp.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BrandRegistrationOtpInstance = void 0;
@@ -142455,9 +142849,9 @@ var require_brandRegistrationOtp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandVetting.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandVetting.js
 var require_brandVetting = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandVetting.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration/brandVetting.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142537,7 +142931,10 @@ var require_brandVetting = __commonJS({
         this.vettingStatus = payload.vetting_status;
         this.vettingProvider = payload.vetting_provider;
         this.url = payload.url;
-        this._solution = { brandSid, brandVettingSid };
+        this._solution = {
+          brandSid,
+          brandVettingSid: brandVettingSid || this.brandVettingSid
+        };
       }
       get _proxy() {
         this._context = this._context || new BrandVettingContextImpl(this._version, this._solution.brandSid, this._solution.brandVettingSid);
@@ -142763,9 +143160,9 @@ var require_brandVetting = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration.js
 var require_brandRegistration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/brandRegistration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -142892,7 +143289,7 @@ var require_brandRegistration = __commonJS({
         this.skipAutomaticSecVet = payload.skip_automatic_sec_vet;
         this.mock = payload.mock;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BrandRegistrationContextImpl(this._version, this._solution.sid);
@@ -143174,9 +143571,9 @@ var require_brandRegistration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/deactivations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/deactivations.js
 var require_deactivations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/deactivations.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/deactivations.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DeactivationsInstance = exports2.DeactivationsContextImpl = void 0;
@@ -143301,9 +143698,9 @@ var require_deactivations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainCerts.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainCerts.js
 var require_domainCerts = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainCerts.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainCerts.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DomainCertsInstance = exports2.DomainCertsContextImpl = void 0;
@@ -143445,7 +143842,7 @@ var require_domainCerts = __commonJS({
         this.certificateSid = payload.certificate_sid;
         this.url = payload.url;
         this.certInValidation = payload.cert_in_validation;
-        this._solution = { domainSid };
+        this._solution = { domainSid: domainSid || this.domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainCertsContextImpl(this._version, this._solution.domainSid);
@@ -143538,9 +143935,9 @@ var require_domainCerts = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfig.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfig.js
 var require_domainConfig = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfig.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfig.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DomainConfigInstance = exports2.DomainConfigContextImpl = void 0;
@@ -143675,7 +144072,7 @@ var require_domainConfig = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.disableHttps = payload.disable_https;
-        this._solution = { domainSid };
+        this._solution = { domainSid: domainSid || this.domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainConfigContextImpl(this._version, this._solution.domainSid);
@@ -143749,9 +144146,9 @@ var require_domainConfig = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfigMessagingService.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfigMessagingService.js
 var require_domainConfigMessagingService = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfigMessagingService.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainConfigMessagingService.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DomainConfigMessagingServiceInstance = exports2.DomainConfigMessagingServiceContextImpl = void 0;
@@ -143823,7 +144220,9 @@ var require_domainConfigMessagingService = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { messagingServiceSid };
+        this._solution = {
+          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
+        };
       }
       get _proxy() {
         this._context = this._context || new DomainConfigMessagingServiceContextImpl(this._version, this._solution.messagingServiceSid);
@@ -143891,9 +144290,9 @@ var require_domainConfigMessagingService = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainValidateDn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainValidateDn.js
 var require_domainValidateDn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainValidateDn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/domainValidateDn.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DomainValidateDnInstance = exports2.DomainValidateDnContextImpl = void 0;
@@ -143960,7 +144359,7 @@ var require_domainValidateDn = __commonJS({
         this.isValid = payload.is_valid;
         this.reason = payload.reason;
         this.url = payload.url;
-        this._solution = { domainSid };
+        this._solution = { domainSid: domainSid || this.domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainValidateDnContextImpl(this._version, this._solution.domainSid);
@@ -144023,9 +144422,9 @@ var require_domainValidateDn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/externalCampaign.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/externalCampaign.js
 var require_externalCampaign = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/externalCampaign.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/externalCampaign.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExternalCampaignInstance = void 0;
@@ -144136,9 +144535,9 @@ var require_externalCampaign = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingService.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingService.js
 var require_linkshorteningMessagingService = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingService.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingService.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.LinkshorteningMessagingServiceInstance = exports2.LinkshorteningMessagingServiceContextImpl = void 0;
@@ -144230,8 +144629,8 @@ var require_linkshorteningMessagingService = __commonJS({
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
         this._solution = {
-          domainSid,
-          messagingServiceSid
+          domainSid: domainSid || this.domainSid,
+          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
         };
       }
       get _proxy() {
@@ -144314,9 +144713,9 @@ var require_linkshorteningMessagingService = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingServiceDomainAssociation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingServiceDomainAssociation.js
 var require_linkshorteningMessagingServiceDomainAssociation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingServiceDomainAssociation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/linkshorteningMessagingServiceDomainAssociation.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.LinkshorteningMessagingServiceDomainAssociationInstance = exports2.LinkshorteningMessagingServiceDomainAssociationContextImpl = void 0;
@@ -144378,7 +144777,9 @@ var require_linkshorteningMessagingServiceDomainAssociation = __commonJS({
         this.domainSid = payload.domain_sid;
         this.messagingServiceSid = payload.messaging_service_sid;
         this.url = payload.url;
-        this._solution = { messagingServiceSid };
+        this._solution = {
+          messagingServiceSid: messagingServiceSid || this.messagingServiceSid
+        };
       }
       get _proxy() {
         this._context = this._context || new LinkshorteningMessagingServiceDomainAssociationContextImpl(this._version, this._solution.messagingServiceSid);
@@ -144440,9 +144841,9 @@ var require_linkshorteningMessagingServiceDomainAssociation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/requestManagedCert.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/requestManagedCert.js
 var require_requestManagedCert = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/requestManagedCert.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/requestManagedCert.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RequestManagedCertInstance = exports2.RequestManagedCertContextImpl = void 0;
@@ -144514,7 +144915,7 @@ var require_requestManagedCert = __commonJS({
         this.url = payload.url;
         this.managed = payload.managed;
         this.requesting = payload.requesting;
-        this._solution = { domainSid };
+        this._solution = { domainSid: domainSid || this.domainSid };
       }
       get _proxy() {
         this._context = this._context || new RequestManagedCertContextImpl(this._version, this._solution.domainSid);
@@ -144582,9 +144983,9 @@ var require_requestManagedCert = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/alphaSender.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/alphaSender.js
 var require_alphaSender = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/alphaSender.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/alphaSender.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -144684,7 +145085,7 @@ var require_alphaSender = __commonJS({
         this.alphaSender = payload.alpha_sender;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AlphaSenderContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -144924,9 +145325,9 @@ var require_alphaSender = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/channelSender.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/channelSender.js
 var require_channelSender = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/channelSender.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/channelSender.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -145027,7 +145428,7 @@ var require_channelSender = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { messagingServiceSid, sid };
+        this._solution = { messagingServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelSenderContextImpl(this._version, this._solution.messagingServiceSid, this._solution.sid);
@@ -145268,9 +145669,9 @@ var require_channelSender = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/destinationAlphaSender.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/destinationAlphaSender.js
 var require_destinationAlphaSender = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/destinationAlphaSender.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/destinationAlphaSender.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -145371,7 +145772,7 @@ var require_destinationAlphaSender = __commonJS({
         this.capabilities = payload.capabilities;
         this.url = payload.url;
         this.isoCountryCode = payload.iso_country_code;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new DestinationAlphaSenderContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -145620,9 +146021,9 @@ var require_destinationAlphaSender = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/phoneNumber.js
 var require_phoneNumber3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/phoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -145723,7 +146124,7 @@ var require_phoneNumber3 = __commonJS({
         this.countryCode = payload.country_code;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -145964,9 +146365,9 @@ var require_phoneNumber3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/shortCode.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/shortCode.js
 var require_shortCode2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/shortCode.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/shortCode.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -146067,7 +146468,7 @@ var require_shortCode2 = __commonJS({
         this.countryCode = payload.country_code;
         this.capabilities = payload.capabilities;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ShortCodeContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -146308,9 +146709,9 @@ var require_shortCode2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPerson.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPerson.js
 var require_usAppToPerson = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPerson.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPerson.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -146561,7 +146962,7 @@ var require_usAppToPerson = __commonJS({
         this.errors = payload.errors;
         this.privacyPolicyUrl = payload.privacy_policy_url;
         this.termsAndConditionsUrl = payload.terms_and_conditions_url;
-        this._solution = { messagingServiceSid, sid };
+        this._solution = { messagingServiceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new UsAppToPersonContextImpl(this._version, this._solution.messagingServiceSid, this._solution.sid);
@@ -146915,9 +147316,9 @@ var require_usAppToPerson = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPersonUsecase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPersonUsecase.js
 var require_usAppToPersonUsecase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPersonUsecase.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service/usAppToPersonUsecase.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UsAppToPersonUsecaseInstance = void 0;
@@ -147012,9 +147413,9 @@ var require_usAppToPersonUsecase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service.js
 var require_service7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -147272,7 +147673,7 @@ var require_service7 = __commonJS({
         this.usecase = payload.usecase;
         this.usAppToPersonRegistered = payload.us_app_to_person_registered;
         this.useInboundWebhookOnNumber = payload.use_inbound_webhook_on_number;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -147632,9 +148033,9 @@ var require_service7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/tollfreeVerification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/tollfreeVerification.js
 var require_tollfreeVerification = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/tollfreeVerification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/tollfreeVerification.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -147963,7 +148364,7 @@ var require_tollfreeVerification = __commonJS({
         this.vettingId = payload.vetting_id;
         this.vettingProvider = payload.vetting_provider;
         this.vettingIdExpiration = deserialize.iso8601DateTime(payload.vetting_id_expiration);
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TollfreeVerificationContextImpl(this._version, this._solution.sid);
@@ -148451,9 +148852,9 @@ var require_tollfreeVerification = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/usecase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/usecase.js
 var require_usecase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/usecase.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v1/usecase.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UsecaseInstance = void 0;
@@ -148524,9 +148925,9 @@ var require_usecase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V1.js
 var require_V117 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -148625,9 +149026,9 @@ var require_V117 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/channelsSender.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/channelsSender.js
 var require_channelsSender = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/channelsSender.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/channelsSender.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -148921,7 +149322,7 @@ var require_channelsSender = __commonJS({
         this.compliance = payload.compliance !== null && payload.compliance !== void 0 ? new MessagingV2RcsComplianceResponse(payload.compliance) : null;
         this.url = payload.url;
         this.displayNameStatus = payload.display_name_status;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChannelsSenderContextImpl(this._version, this._solution.sid);
@@ -149171,9 +149572,9 @@ var require_channelsSender = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/domainCerts.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/domainCerts.js
 var require_domainCerts2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/domainCerts.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/domainCerts.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DomainCertsInstance = exports2.DomainCertsContextImpl = void 0;
@@ -149246,7 +149647,7 @@ var require_domainCerts2 = __commonJS({
         this.requesting = payload.requesting;
         this.url = payload.url;
         this.certInValidation = payload.cert_in_validation;
-        this._solution = { domainSid };
+        this._solution = { domainSid: domainSid || this.domainSid };
       }
       get _proxy() {
         this._context = this._context || new DomainCertsContextImpl(this._version, this._solution.domainSid);
@@ -149315,9 +149716,9 @@ var require_domainCerts2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/typingIndicator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/typingIndicator.js
 var require_typingIndicator = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/typingIndicator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v2/typingIndicator.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TypingIndicatorInstance = void 0;
@@ -149416,9 +149817,9 @@ var require_typingIndicator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V2.js
 var require_V210 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -149457,9 +149858,9 @@ var require_V210 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v3/typingIndicator.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v3/typingIndicator.js
 var require_typingIndicator2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v3/typingIndicator.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/v3/typingIndicator.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TypingIndicatorInstance = exports2.TypingIndicatorRequest = void 0;
@@ -149558,9 +149959,9 @@ var require_typingIndicator2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V3.js
 var require_V34 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/messaging/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -149587,9 +149988,9 @@ var require_V34 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MessagingBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MessagingBase.js
 var require_MessagingBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MessagingBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MessagingBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -149624,9 +150025,9 @@ var require_MessagingBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Messaging.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Messaging.js
 var require_Messaging = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Messaging.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Messaging.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -149687,9 +150088,9 @@ var require_Messaging = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/alert.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/alert.js
 var require_alert = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/alert.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/alert.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -149775,7 +150176,7 @@ var require_alert = __commonJS({
         this.url = payload.url;
         this.requestHeaders = payload.request_headers;
         this.serviceSid = payload.service_sid;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AlertContextImpl(this._version, this._solution.sid);
@@ -149968,9 +150369,9 @@ var require_alert = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/event.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/event.js
 var require_event3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/event.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/v1/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150051,7 +150452,7 @@ var require_event3 = __commonJS({
         this.sourceIpAddress = payload.source_ip_address;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EventContextImpl(this._version, this._solution.sid);
@@ -150251,9 +150652,9 @@ var require_event3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/V1.js
 var require_V118 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/monitor/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150286,9 +150687,9 @@ var require_V118 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MonitorBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MonitorBase.js
 var require_MonitorBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/MonitorBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/MonitorBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150313,9 +150714,9 @@ var require_MonitorBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Monitor.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Monitor.js
 var require_Monitor = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Monitor.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Monitor.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150341,9 +150742,9 @@ var require_Monitor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/credential.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/credential.js
 var require_credential8 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/credential.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/credential.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150511,7 +150912,7 @@ var require_credential8 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialContextImpl(this._version, this._solution.sid);
@@ -150778,9 +151179,9 @@ var require_credential8 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/binding.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/binding.js
 var require_binding4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/binding.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/binding.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -150886,7 +151287,7 @@ var require_binding4 = __commonJS({
         this.tags = payload.tags;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BindingContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -151180,9 +151581,9 @@ var require_binding4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/notification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/notification.js
 var require_notification4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/notification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service/notification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NotificationInstance = void 0;
@@ -151385,9 +151786,9 @@ var require_notification4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service.js
 var require_service8 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -151609,7 +152010,7 @@ var require_service8 = __commonJS({
         this.defaultAlexaNotificationProtocolVersion = payload.default_alexa_notification_protocol_version;
         this.deliveryCallbackUrl = payload.delivery_callback_url;
         this.deliveryCallbackEnabled = payload.delivery_callback_enabled;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -151934,9 +152335,9 @@ var require_service8 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/V1.js
 var require_V119 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/notify/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -151969,9 +152370,9 @@ var require_V119 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/NotifyBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/NotifyBase.js
 var require_NotifyBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/NotifyBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/NotifyBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -151996,9 +152397,9 @@ var require_NotifyBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Notify.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Notify.js
 var require_Notify = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Notify.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Notify.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -152024,9 +152425,9 @@ var require_Notify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/bulkEligibility.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/bulkEligibility.js
 var require_bulkEligibility = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/bulkEligibility.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/bulkEligibility.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkEligibilityInstance = exports2.BulkEligibilityContextImpl = void 0;
@@ -152096,7 +152497,7 @@ var require_bulkEligibility = __commonJS({
         this.status = payload.status;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateCompleted = deserialize.iso8601DateTime(payload.date_completed);
-        this._solution = { requestId };
+        this._solution = { requestId: requestId || this.requestId };
       }
       get _proxy() {
         this._context = this._context || new BulkEligibilityContextImpl(this._version, this._solution.requestId);
@@ -152213,9 +152614,9 @@ var require_bulkEligibility = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/eligibility.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/eligibility.js
 var require_eligibility = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/eligibility.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/eligibility.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EligibilityInstance = void 0;
@@ -152310,9 +152711,9 @@ var require_eligibility = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/embeddedSession.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/embeddedSession.js
 var require_embeddedSession = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/embeddedSession.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/embeddedSession.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EmbeddedSessionInstance = exports2.NumbersV1CreateEmbeddedSessionRequest = void 0;
@@ -152415,9 +152816,9 @@ var require_embeddedSession = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingAllPortIn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingAllPortIn.js
 var require_portingAllPortIn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingAllPortIn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingAllPortIn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -152598,9 +152999,9 @@ var require_portingAllPortIn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortIn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortIn.js
 var require_portingPortIn = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortIn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortIn.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PortingPortInInstance = exports2.PortingPortInContextImpl = exports2.NumbersV1PortingPortInPhoneNumberResult = exports2.NumbersV1PortingPortInCreatePhoneNumbers = exports2.NumbersV1PortingPortInCreate = exports2.NumbersV1PortingLosingCarrierInformation = exports2.NumbersV1PortingAddress = void 0;
@@ -152771,7 +153172,9 @@ var require_portingPortIn = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.supportTicketId = deserialize.integer(payload.support_ticket_id);
         this.signatureRequestUrl = payload.signature_request_url;
-        this._solution = { portInRequestSid };
+        this._solution = {
+          portInRequestSid: portInRequestSid || this.portInRequestSid
+        };
       }
       get _proxy() {
         this._context = this._context || new PortingPortInContextImpl(this._version, this._solution.portInRequestSid);
@@ -152913,9 +153316,9 @@ var require_portingPortIn = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortInPhoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortInPhoneNumber.js
 var require_portingPortInPhoneNumber = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortInPhoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortInPhoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PortingPortInPhoneNumberInstance = exports2.PortingPortInPhoneNumberContextImpl = void 0;
@@ -153022,8 +153425,8 @@ var require_portingPortInPhoneNumber = __commonJS({
         this.rejectionReasonCode = deserialize.integer(payload.rejection_reason_code);
         this.portDate = deserialize.iso8601DateTime(payload.port_date);
         this._solution = {
-          portInRequestSid,
-          phoneNumberSid
+          portInRequestSid: portInRequestSid || this.portInRequestSid,
+          phoneNumberSid: phoneNumberSid || this.phoneNumberSid
         };
       }
       get _proxy() {
@@ -153121,9 +153524,9 @@ var require_portingPortInPhoneNumber = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortability.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortability.js
 var require_portingPortability = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortability.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingPortability.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PortingPortabilityInstance = exports2.PortingPortabilityContextImpl = void 0;
@@ -153219,7 +153622,7 @@ var require_portingPortability = __commonJS({
         this.numberType = payload.number_type;
         this.country = payload.country;
         this.url = payload.url;
-        this._solution = { phoneNumber };
+        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PortingPortabilityContextImpl(this._version, this._solution.phoneNumber);
@@ -153273,9 +153676,9 @@ var require_portingPortability = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfiguration.js
 var require_portingWebhookConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfiguration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PortingWebhookConfigurationInstance = void 0;
@@ -153376,9 +153779,9 @@ var require_portingWebhookConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfigurationDelete.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfigurationDelete.js
 var require_portingWebhookConfigurationDelete = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfigurationDelete.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/portingWebhookConfigurationDelete.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PortingWebhookConfigurationDeleteContextImpl = void 0;
@@ -153450,9 +153853,9 @@ var require_portingWebhookConfigurationDelete = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/senderIdRegistration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/senderIdRegistration.js
 var require_senderIdRegistration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/senderIdRegistration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/senderIdRegistration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SenderIdRegistrationInstance = exports2.NumbersV1EmbeddedSession = exports2.NumbersV1CreateEmbeddedRegistrationRequest = void 0;
@@ -153583,9 +153986,9 @@ var require_senderIdRegistration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/signingRequestConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/signingRequestConfiguration.js
 var require_signingRequestConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/signingRequestConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/signingRequestConfiguration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -153809,9 +154212,9 @@ var require_signingRequestConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerification.js
 var require_smsVerification = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SmsVerificationInstance = exports2.NumbersV1SmsVerificationSendCodeAttempts = exports2.NumbersV1SmsVerificationRequest = void 0;
@@ -153919,9 +154322,9 @@ var require_smsVerification = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js
 var require_smsVerificationCheck = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/smsVerificationCheck.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SmsVerificationCheckInstance = exports2.NumbersV1SmsVerificationCheckRequest = void 0;
@@ -154024,9 +154427,9 @@ var require_smsVerificationCheck = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js
 var require_voiceVerification = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/voiceVerification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VoiceVerificationInstance = exports2.NumbersV1VoiceVerificationRequest = void 0;
@@ -154136,9 +154539,9 @@ var require_voiceVerification = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/webhook.js
 var require_webhook7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v1/webhook.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WebhookInstance = void 0;
@@ -154219,9 +154622,9 @@ var require_webhook7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V1.js
 var require_V120 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -154331,9 +154734,9 @@ var require_V120 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/application.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/application.js
 var require_application2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/application.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/application.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -154521,7 +154924,7 @@ var require_application2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
         this.updatedBy = payload.updated_by;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ApplicationContextImpl(this._version, this._solution.sid);
@@ -154769,9 +155172,9 @@ var require_application2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument/dependentHostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument/dependentHostedNumberOrder.js
 var require_dependentHostedNumberOrder = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument/dependentHostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument/dependentHostedNumberOrder.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -154976,9 +155379,9 @@ var require_dependentHostedNumberOrder = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument.js
 var require_authorizationDocument = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/authorizationDocument.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -155081,7 +155484,7 @@ var require_authorizationDocument = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AuthorizationDocumentContextImpl(this._version, this._solution.sid);
@@ -155365,9 +155768,9 @@ var require_authorizationDocument = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bulkHostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bulkHostedNumberOrder.js
 var require_bulkHostedNumberOrder = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bulkHostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bulkHostedNumberOrder.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkHostedNumberOrderInstance = exports2.BulkHostedNumberOrderContextImpl = void 0;
@@ -155459,7 +155862,7 @@ var require_bulkHostedNumberOrder = __commonJS({
         this.url = payload.url;
         this.totalCount = deserialize.integer(payload.total_count);
         this.results = payload.results;
-        this._solution = { bulkHostingSid };
+        this._solution = { bulkHostingSid: bulkHostingSid || this.bulkHostingSid };
       }
       get _proxy() {
         this._context = this._context || new BulkHostedNumberOrderContextImpl(this._version, this._solution.bulkHostingSid);
@@ -155564,9 +155967,9 @@ var require_bulkHostedNumberOrder = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bundleClone.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bundleClone.js
 var require_bundleClone = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bundleClone.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/bundleClone.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BundleCloneInstance = exports2.BundleCloneContextImpl = void 0;
@@ -155668,7 +156071,7 @@ var require_bundleClone = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { bundleSid };
+        this._solution = { bundleSid: bundleSid || this.bundleSid };
       }
       get _proxy() {
         this._context = this._context || new BundleCloneContextImpl(this._version, this._solution.bundleSid);
@@ -155724,9 +156127,9 @@ var require_bundleClone = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/hostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/hostedNumberOrder.js
 var require_hostedNumberOrder = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/hostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/hostedNumberOrder.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -155897,7 +156300,7 @@ var require_hostedNumberOrder = __commonJS({
         this.verificationCallExtension = payload.verification_call_extension;
         this.verificationCode = payload.verification_code;
         this.verificationType = payload.verification_type;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new HostedNumberOrderContextImpl(this._version, this._solution.sid);
@@ -156249,9 +156652,9 @@ var require_hostedNumberOrder = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/bundleCopy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/bundleCopy.js
 var require_bundleCopy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/bundleCopy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/bundleCopy.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -156473,9 +156876,9 @@ var require_bundleCopy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/evaluation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/evaluation.js
 var require_evaluation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/evaluation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/evaluation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -156553,7 +156956,7 @@ var require_evaluation = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { bundleSid, sid };
+        this._solution = { bundleSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EvaluationContextImpl(this._version, this._solution.bundleSid, this._solution.sid);
@@ -156753,9 +157156,9 @@ var require_evaluation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/itemAssignment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/itemAssignment.js
 var require_itemAssignment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/itemAssignment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/itemAssignment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -156853,7 +157256,7 @@ var require_itemAssignment = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { bundleSid, sid };
+        this._solution = { bundleSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ItemAssignmentContextImpl(this._version, this._solution.bundleSid, this._solution.sid);
@@ -157091,9 +157494,9 @@ var require_itemAssignment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/replaceItems.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/replaceItems.js
 var require_replaceItems = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/replaceItems.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle/replaceItems.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReplaceItemsInstance = void 0;
@@ -157206,9 +157609,9 @@ var require_replaceItems = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle.js
 var require_bundle = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/bundle.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -157392,7 +157795,7 @@ var require_bundle = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BundleContextImpl(this._version, this._solution.sid);
@@ -157747,9 +158150,9 @@ var require_bundle = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUser.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUser.js
 var require_endUser = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUser.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUser.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -157901,7 +158304,7 @@ var require_endUser = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserContextImpl(this._version, this._solution.sid);
@@ -158156,9 +158559,9 @@ var require_endUser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUserType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUserType.js
 var require_endUserType = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUserType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/endUserType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -158230,7 +158633,7 @@ var require_endUserType = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserTypeContextImpl(this._version, this._solution.sid);
@@ -158397,9 +158800,9 @@ var require_endUserType = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/regulation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/regulation.js
 var require_regulation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/regulation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/regulation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -158493,7 +158896,7 @@ var require_regulation = __commonJS({
         this.endUserType = payload.end_user_type;
         this.requirements = payload.requirements;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RegulationContextImpl(this._version, this._solution.sid);
@@ -158664,9 +159067,9 @@ var require_regulation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocument.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocument.js
 var require_supportingDocument = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocument.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocument.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -158822,7 +159225,7 @@ var require_supportingDocument = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentContextImpl(this._version, this._solution.sid);
@@ -159081,9 +159484,9 @@ var require_supportingDocument = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocumentType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocumentType.js
 var require_supportingDocumentType = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocumentType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance/supportingDocumentType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -159155,7 +159558,7 @@ var require_supportingDocumentType = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentTypeContextImpl(this._version, this._solution.sid);
@@ -159322,9 +159725,9 @@ var require_supportingDocumentType = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance.js
 var require_regulatoryCompliance = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v2/regulatoryCompliance.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RegulatoryComplianceListInstance = RegulatoryComplianceListInstance;
@@ -159401,9 +159804,9 @@ var require_regulatoryCompliance = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V2.js
 var require_V211 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -159460,9 +159863,9 @@ var require_V211 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v3/hostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v3/hostedNumberOrder.js
 var require_hostedNumberOrder2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v3/hostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/v3/hostedNumberOrder.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.HostedNumberOrderInstance = void 0;
@@ -159666,9 +160069,9 @@ var require_hostedNumberOrder2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V3.js
 var require_V35 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/numbers/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -159695,9 +160098,9 @@ var require_V35 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/NumbersBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/NumbersBase.js
 var require_NumbersBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/NumbersBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/NumbersBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -159732,9 +160135,9 @@ var require_NumbersBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Numbers.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Numbers.js
 var require_Numbers = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Numbers.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Numbers.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -159753,9 +160156,9 @@ var require_Numbers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/authorize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/authorize.js
 var require_authorize2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/authorize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/authorize.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthorizeInstance = void 0;
@@ -159861,9 +160264,9 @@ var require_authorize2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/token.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/token.js
 var require_token4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/token.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v1/token.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TokenInstance = void 0;
@@ -159994,9 +160397,9 @@ var require_token4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V1.js
 var require_V121 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160029,9 +160432,9 @@ var require_V121 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/authorize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/authorize.js
 var require_authorize3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/authorize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/authorize.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthorizeInstance = void 0;
@@ -160145,9 +160548,9 @@ var require_authorize3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/token.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/token.js
 var require_token5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/token.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/v2/token.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TokenInstance = void 0;
@@ -160282,9 +160685,9 @@ var require_token5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V2.js
 var require_V212 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/oauth/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160317,9 +160720,9 @@ var require_V212 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/OauthBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/OauthBase.js
 var require_OauthBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/OauthBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/OauthBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160349,9 +160752,9 @@ var require_OauthBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Oauth.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Oauth.js
 var require_Oauth = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Oauth.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Oauth.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160363,9 +160766,9 @@ var require_Oauth = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument/dependentHostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument/dependentHostedNumberOrder.js
 var require_dependentHostedNumberOrder2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument/dependentHostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument/dependentHostedNumberOrder.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160582,9 +160985,9 @@ var require_dependentHostedNumberOrder2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument.js
 var require_authorizationDocument2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/authorizationDocument.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -160762,7 +161165,7 @@ var require_authorizationDocument2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AuthorizationDocumentContextImpl(this._version, this._solution.sid);
@@ -161056,9 +161459,9 @@ var require_authorizationDocument2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/hostedNumberOrder.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/hostedNumberOrder.js
 var require_hostedNumberOrder3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/hostedNumberOrder.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/hosted_numbers/hostedNumberOrder.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -161257,7 +161660,7 @@ var require_hostedNumberOrder3 = __commonJS({
         this.callDelay = deserialize.integer(payload.call_delay);
         this.verificationCode = payload.verification_code;
         this.verificationCallSids = payload.verification_call_sids;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new HostedNumberOrderContextImpl(this._version, this._solution.sid);
@@ -161603,9 +162006,9 @@ var require_hostedNumberOrder3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/HostedNumbers.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/HostedNumbers.js
 var require_HostedNumbers = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/HostedNumbers.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/HostedNumbers.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -161638,9 +162041,9 @@ var require_HostedNumbers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn/availableAddOnExtension.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn/availableAddOnExtension.js
 var require_availableAddOnExtension2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn/availableAddOnExtension.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn/availableAddOnExtension.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -161716,7 +162119,7 @@ var require_availableAddOnExtension2 = __commonJS({
         this.productName = payload.product_name;
         this.uniqueName = payload.unique_name;
         this.url = payload.url;
-        this._solution = { availableAddOnSid, sid };
+        this._solution = { availableAddOnSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnExtensionContextImpl(this._version, this._solution.availableAddOnSid, this._solution.sid);
@@ -161887,9 +162290,9 @@ var require_availableAddOnExtension2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn.js
 var require_availableAddOn2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/availableAddOn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -161968,7 +162371,7 @@ var require_availableAddOn2 = __commonJS({
         this.configurationSchema = payload.configuration_schema;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AvailableAddOnContextImpl(this._version, this._solution.sid);
@@ -162143,9 +162546,9 @@ var require_availableAddOn2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn/installedAddOnExtension.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn/installedAddOnExtension.js
 var require_installedAddOnExtension2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn/installedAddOnExtension.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn/installedAddOnExtension.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -162271,7 +162674,7 @@ var require_installedAddOnExtension2 = __commonJS({
         this.uniqueName = payload.unique_name;
         this.enabled = payload.enabled;
         this.url = payload.url;
-        this._solution = { installedAddOnSid, sid };
+        this._solution = { installedAddOnSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnExtensionContextImpl(this._version, this._solution.installedAddOnSid, this._solution.sid);
@@ -162449,9 +162852,9 @@ var require_installedAddOnExtension2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn.js
 var require_installedAddOn2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/marketplace/installedAddOn.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -162610,7 +163013,7 @@ var require_installedAddOn2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InstalledAddOnContextImpl(this._version, this._solution.sid);
@@ -162877,9 +163280,9 @@ var require_installedAddOn2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Marketplace.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Marketplace.js
 var require_Marketplace2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Marketplace.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Marketplace.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -162912,9 +163315,9 @@ var require_Marketplace2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/command.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/command.js
 var require_command = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/command.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/command.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -162992,7 +163395,7 @@ var require_command = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CommandContextImpl(this._version, this._solution.sid);
@@ -163252,9 +163655,9 @@ var require_command = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/ratePlan.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/ratePlan.js
 var require_ratePlan = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/ratePlan.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/ratePlan.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -163412,7 +163815,7 @@ var require_ratePlan = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RatePlanContextImpl(this._version, this._solution.sid);
@@ -163699,9 +164102,9 @@ var require_ratePlan = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim/usage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim/usage.js
 var require_usage2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim/usage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim/usage.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UsageInstance = exports2.UsageContextImpl = void 0;
@@ -163854,9 +164257,9 @@ var require_usage2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim.js
 var require_sim = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/wireless/sim.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164061,7 +164464,7 @@ var require_sim = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -164277,9 +164680,9 @@ var require_sim = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Wireless.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Wireless.js
 var require_Wireless = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Wireless.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/preview/Wireless.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164318,9 +164721,9 @@ var require_Wireless = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewBase.js
 var require_PreviewBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PreviewBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164355,9 +164758,9 @@ var require_PreviewBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Preview.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Preview.js
 var require_Preview = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Preview.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Preview.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164418,9 +164821,9 @@ var require_Preview = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging/country.js
 var require_country = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164518,7 +164921,7 @@ var require_country = __commonJS({
         this.inboundSmsPrices = payload.inbound_sms_prices !== null && payload.inbound_sms_prices !== void 0 ? payload.inbound_sms_prices.map((payload2) => new PricingV1MessagingMessagingCountryInstanceInboundSmsPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry };
+        this._solution = { isoCountry: isoCountry || this.isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -164686,9 +165089,9 @@ var require_country = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging.js
 var require_messaging = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/messaging.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.MessagingListInstance = MessagingListInstance;
@@ -164720,9 +165123,9 @@ var require_messaging = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber/country.js
 var require_country2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -164802,7 +165205,7 @@ var require_country2 = __commonJS({
         this.phoneNumberPrices = payload.phone_number_prices !== null && payload.phone_number_prices !== void 0 ? payload.phone_number_prices.map((payload2) => new PricingV1PhoneNumberPhoneNumberCountryInstancePhoneNumberPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry };
+        this._solution = { isoCountry: isoCountry || this.isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -164969,9 +165372,9 @@ var require_country2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber.js
 var require_phoneNumber4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/phoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PhoneNumberListInstance = PhoneNumberListInstance;
@@ -165003,9 +165406,9 @@ var require_phoneNumber4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/country.js
 var require_country3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -165095,7 +165498,7 @@ var require_country3 = __commonJS({
         this.inboundCallPrices = payload.inbound_call_prices !== null && payload.inbound_call_prices !== void 0 ? payload.inbound_call_prices.map((payload2) => new PricingV1VoiceVoiceCountryInstanceInboundCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry };
+        this._solution = { isoCountry: isoCountry || this.isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -165263,9 +165666,9 @@ var require_country3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/number.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/number.js
 var require_number = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/number.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice/number.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NumberInstance = exports2.NumberContextImpl = exports2.PricingV1VoiceVoiceNumberOutboundCallPrice = exports2.PricingV1VoiceVoiceNumberInboundCallPrice = void 0;
@@ -165350,7 +165753,7 @@ var require_number = __commonJS({
         this.inboundCallPrice = payload.inbound_call_price !== null && payload.inbound_call_price !== void 0 ? new PricingV1VoiceVoiceNumberInboundCallPrice(payload.inbound_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { number };
+        this._solution = { number: number || this.number };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.number);
@@ -165416,9 +165819,9 @@ var require_number = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice.js
 var require_voice = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v1/voice.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VoiceListInstance = VoiceListInstance;
@@ -165459,9 +165862,9 @@ var require_voice = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V1.js
 var require_V122 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -165500,9 +165903,9 @@ var require_V122 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/country.js
 var require_country4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -165593,7 +165996,7 @@ var require_country4 = __commonJS({
         this.originatingCallPrices = payload.originating_call_prices !== null && payload.originating_call_prices !== void 0 ? payload.originating_call_prices.map((payload2) => new PricingV2TrunkingCountryInstanceOriginatingCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry };
+        this._solution = { isoCountry: isoCountry || this.isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -165761,9 +166164,9 @@ var require_country4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/number.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/number.js
 var require_number2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/number.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/number.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NumberInstance = exports2.NumberContextImpl = exports2.PricingV2TrunkingNumberOriginatingCallPrice = exports2.PricingV2TrunkingCountryInstanceTerminatingPrefixPrices = void 0;
@@ -165872,7 +166275,9 @@ var require_number2 = __commonJS({
         this.originatingCallPrice = payload.originating_call_price !== null && payload.originating_call_price !== void 0 ? new PricingV2TrunkingNumberOriginatingCallPrice(payload.originating_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { destinationNumber };
+        this._solution = {
+          destinationNumber: destinationNumber || this.destinationNumber
+        };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.destinationNumber);
@@ -165925,9 +166330,9 @@ var require_number2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/country.js
 var require_country5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -166018,7 +166423,7 @@ var require_country5 = __commonJS({
         this.inboundCallPrices = payload.inbound_call_prices !== null && payload.inbound_call_prices !== void 0 ? payload.inbound_call_prices.map((payload2) => new PricingV2TrunkingCountryInstanceOriginatingCallPrices(payload2)) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { isoCountry };
+        this._solution = { isoCountry: isoCountry || this.isoCountry };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCountry);
@@ -166186,9 +166591,9 @@ var require_country5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/number.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/number.js
 var require_number3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/number.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice/number.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NumberInstance = exports2.NumberContextImpl = exports2.PricingV2VoiceVoiceNumberOutboundCallPrices = exports2.PricingV2VoiceVoiceNumberInboundCallPrice = void 0;
@@ -166295,7 +166700,9 @@ var require_number3 = __commonJS({
         this.inboundCallPrice = payload.inbound_call_price !== null && payload.inbound_call_price !== void 0 ? new PricingV2VoiceVoiceNumberInboundCallPrice(payload.inbound_call_price) : null;
         this.priceUnit = payload.price_unit;
         this.url = payload.url;
-        this._solution = { destinationNumber };
+        this._solution = {
+          destinationNumber: destinationNumber || this.destinationNumber
+        };
       }
       get _proxy() {
         this._context = this._context || new NumberContextImpl(this._version, this._solution.destinationNumber);
@@ -166348,9 +166755,9 @@ var require_number3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice.js
 var require_voice2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/v2/voice.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VoiceListInstance = VoiceListInstance;
@@ -166391,9 +166798,9 @@ var require_voice2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V2.js
 var require_V213 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/pricing/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -166432,9 +166839,9 @@ var require_V213 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PricingBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PricingBase.js
 var require_PricingBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/PricingBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/PricingBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -166464,9 +166871,9 @@ var require_PricingBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Pricing.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Pricing.js
 var require_Pricing = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Pricing.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Pricing.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -166513,9 +166920,9 @@ var require_Pricing = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/phoneNumber.js
 var require_phoneNumber5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/phoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -166670,7 +167077,7 @@ var require_phoneNumber5 = __commonJS({
         this.url = payload.url;
         this.isReserved = payload.is_reserved;
         this.inUse = deserialize.integer(payload.in_use);
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -166930,9 +167337,9 @@ var require_phoneNumber5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/interaction.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/interaction.js
 var require_interaction2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/interaction.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/interaction.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -167046,7 +167453,7 @@ var require_interaction2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sessionSid, sid };
+        this._solution = { serviceSid, sessionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new InteractionContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.sid);
@@ -167253,9 +167660,9 @@ var require_interaction2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant/messageInteraction.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant/messageInteraction.js
 var require_messageInteraction = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant/messageInteraction.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant/messageInteraction.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -167351,7 +167758,12 @@ var require_messageInteraction = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sessionSid, participantSid, sid };
+        this._solution = {
+          serviceSid,
+          sessionSid,
+          participantSid,
+          sid: sid || this.sid
+        };
       }
       get _proxy() {
         this._context = this._context || new MessageInteractionContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.participantSid, this._solution.sid);
@@ -167595,9 +168007,9 @@ var require_messageInteraction = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant.js
 var require_participant6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -167710,7 +168122,7 @@ var require_participant6 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sessionSid, sid };
+        this._solution = { serviceSid, sessionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.serviceSid, this._solution.sessionSid, this._solution.sid);
@@ -167976,9 +168388,9 @@ var require_participant6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session.js
 var require_session = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service/session.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -168155,7 +168567,7 @@ var require_session = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SessionContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -168443,9 +168855,9 @@ var require_session = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service.js
 var require_service9 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -168637,7 +169049,7 @@ var require_service9 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -168926,9 +169338,9 @@ var require_service9 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/V1.js
 var require_V123 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/proxy/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -168955,9 +169367,9 @@ var require_V123 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ProxyBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ProxyBase.js
 var require_ProxyBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ProxyBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ProxyBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -168982,9 +169394,9 @@ var require_ProxyBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Proxy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Proxy.js
 var require_Proxy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Proxy.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Proxy.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -169003,9 +169415,9 @@ var require_Proxy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/phoneNumber.js
 var require_phoneNumber6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/phoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PhoneNumberInstance = exports2.PhoneNumberContextImpl = void 0;
@@ -169131,7 +169543,7 @@ var require_phoneNumber6 = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { phoneNumber };
+        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.phoneNumber);
@@ -169204,9 +169616,9 @@ var require_phoneNumber6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/sipDomain.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/sipDomain.js
 var require_sipDomain = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/sipDomain.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/sipDomain.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SipDomainInstance = exports2.SipDomainContextImpl = void 0;
@@ -169332,7 +169744,7 @@ var require_sipDomain = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sipDomain };
+        this._solution = { sipDomain: sipDomain || this.sipDomain };
       }
       get _proxy() {
         this._context = this._context || new SipDomainContextImpl(this._version, this._solution.sipDomain);
@@ -169405,9 +169817,9 @@ var require_sipDomain = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/trunk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/trunk.js
 var require_trunk = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/trunk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v2/trunk.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TrunkInstance = exports2.TrunkContextImpl = void 0;
@@ -169533,7 +169945,7 @@ var require_trunk = __commonJS({
         this.voiceRegion = payload.voice_region;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
-        this._solution = { sipTrunkDomain };
+        this._solution = { sipTrunkDomain: sipTrunkDomain || this.sipTrunkDomain };
       }
       get _proxy() {
         this._context = this._context || new TrunkContextImpl(this._version, this._solution.sipTrunkDomain);
@@ -169606,9 +170018,9 @@ var require_trunk = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V2.js
 var require_V214 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -169647,9 +170059,9 @@ var require_V214 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/isoCountryCode.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/isoCountryCode.js
 var require_isoCountryCode = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/isoCountryCode.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/isoCountryCode.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.IsoCountryCodeInstance = exports2.IsoCountryCodeContextImpl = void 0;
@@ -169852,9 +170264,9 @@ var require_isoCountryCode = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/phoneNumber.js
 var require_phoneNumber7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/v3/phoneNumber.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PhoneNumberInstance = exports2.PhoneNumberContextImpl = void 0;
@@ -170058,9 +170470,9 @@ var require_phoneNumber7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V3.js
 var require_V36 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/routes/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -170092,9 +170504,9 @@ var require_V36 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/RoutesBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/RoutesBase.js
 var require_RoutesBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/RoutesBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/RoutesBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -170124,9 +170536,9 @@ var require_RoutesBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Routes.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Routes.js
 var require_Routes = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Routes.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Routes.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -170159,9 +170571,9 @@ var require_Routes = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset/assetVersion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset/assetVersion.js
 var require_assetVersion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset/assetVersion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset/assetVersion.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -170242,7 +170654,7 @@ var require_assetVersion = __commonJS({
         this.visibility = payload.visibility;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { serviceSid, assetSid, sid };
+        this._solution = { serviceSid, assetSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AssetVersionContextImpl(this._version, this._solution.serviceSid, this._solution.assetSid, this._solution.sid);
@@ -170418,9 +170830,9 @@ var require_assetVersion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset.js
 var require_asset = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/asset.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -170574,7 +170986,7 @@ var require_asset = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AssetContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -170826,9 +171238,9 @@ var require_asset = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build/buildStatus.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build/buildStatus.js
 var require_buildStatus = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build/buildStatus.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build/buildStatus.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BuildStatusInstance = exports2.BuildStatusContextImpl = void 0;
@@ -170969,9 +171381,9 @@ var require_buildStatus = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build.js
 var require_build = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/build.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -171080,7 +171492,7 @@ var require_build = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BuildContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -171344,9 +171756,9 @@ var require_build = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/deployment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/deployment.js
 var require_deployment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/deployment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/deployment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -171427,7 +171839,7 @@ var require_deployment = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid };
+        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new DeploymentContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -171656,9 +172068,9 @@ var require_deployment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/log.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/log.js
 var require_log = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/log.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/log.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -171743,7 +172155,7 @@ var require_log = __commonJS({
         this.message = payload.message;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid };
+        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new LogContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -171935,9 +172347,9 @@ var require_log = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/variable.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/variable.js
 var require_variable = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/variable.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment/variable.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -172096,7 +172508,7 @@ var require_variable = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, environmentSid, sid };
+        this._solution = { serviceSid, environmentSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new VariableContextImpl(this._version, this._solution.serviceSid, this._solution.environmentSid, this._solution.sid);
@@ -172354,9 +172766,9 @@ var require_variable = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment.js
 var require_environment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/environment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -172474,7 +172886,7 @@ var require_environment = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EnvironmentContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -172739,9 +173151,9 @@ var require_environment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion/functionVersionContent.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion/functionVersionContent.js
 var require_functionVersionContent = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion/functionVersionContent.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion/functionVersionContent.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FunctionVersionContentInstance = exports2.FunctionVersionContentContextImpl = void 0;
@@ -172890,9 +173302,9 @@ var require_functionVersionContent = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion.js
 var require_functionVersion = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function/functionVersion.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -172979,7 +173391,7 @@ var require_functionVersion = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, functionSid, sid };
+        this._solution = { serviceSid, functionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FunctionVersionContextImpl(this._version, this._solution.serviceSid, this._solution.functionSid, this._solution.sid);
@@ -173162,9 +173574,9 @@ var require_functionVersion = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function.js
 var require_function = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service/function.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -173318,7 +173730,7 @@ var require_function = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FunctionContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -173570,9 +173982,9 @@ var require_function = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service.js
 var require_service10 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -173751,7 +174163,7 @@ var require_service10 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -174037,9 +174449,9 @@ var require_service10 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/V1.js
 var require_V124 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/serverless/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -174066,9 +174478,9 @@ var require_V124 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ServerlessBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ServerlessBase.js
 var require_ServerlessBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/ServerlessBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/ServerlessBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -174093,9 +174505,9 @@ var require_ServerlessBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Serverless.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Serverless.js
 var require_Serverless = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Serverless.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Serverless.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -174114,9 +174526,9 @@ var require_Serverless = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/engagementContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/engagementContext.js
 var require_engagementContext = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/engagementContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/engagementContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EngagementContextInstance = exports2.EngagementContextContextImpl = void 0;
@@ -174257,9 +174669,9 @@ var require_engagementContext = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step/stepContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step/stepContext.js
 var require_stepContext = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step/stepContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step/stepContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.StepContextInstance = exports2.StepContextContextImpl = void 0;
@@ -174408,9 +174820,9 @@ var require_stepContext = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step.js
 var require_step = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement/step.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -174502,7 +174914,7 @@ var require_step = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, engagementSid, sid };
+        this._solution = { flowSid, engagementSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new StepContextImpl(this._version, this._solution.flowSid, this._solution.engagementSid, this._solution.sid);
@@ -174690,9 +175102,9 @@ var require_step = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement.js
 var require_engagement = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/engagement.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -174805,7 +175217,7 @@ var require_engagement = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid };
+        this._solution = { flowSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EngagementContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -175072,9 +175484,9 @@ var require_engagement = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionContext.js
 var require_executionContext = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExecutionContextInstance = exports2.ExecutionContextContextImpl = void 0;
@@ -175215,9 +175627,9 @@ var require_executionContext = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep/executionStepContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep/executionStepContext.js
 var require_executionStepContext = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep/executionStepContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep/executionStepContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExecutionStepContextInstance = exports2.ExecutionStepContextContextImpl = void 0;
@@ -175366,9 +175778,9 @@ var require_executionStepContext = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep.js
 var require_executionStep = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution/executionStep.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -175460,7 +175872,7 @@ var require_executionStep = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, executionSid, sid };
+        this._solution = { flowSid, executionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionStepContextImpl(this._version, this._solution.flowSid, this._solution.executionSid, this._solution.sid);
@@ -175648,9 +176060,9 @@ var require_executionStep = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution.js
 var require_execution = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow/execution.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -175812,7 +176224,7 @@ var require_execution = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid };
+        this._solution = { flowSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -176093,9 +176505,9 @@ var require_execution = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow.js
 var require_flow = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v1/flow.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -176203,7 +176615,7 @@ var require_flow = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FlowContextImpl(this._version, this._solution.sid);
@@ -176406,9 +176818,9 @@ var require_flow = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V1.js
 var require_V125 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -176435,9 +176847,9 @@ var require_V125 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionContext.js
 var require_executionContext2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExecutionContextInstance = exports2.ExecutionContextContextImpl = void 0;
@@ -176578,9 +176990,9 @@ var require_executionContext2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep/executionStepContext.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep/executionStepContext.js
 var require_executionStepContext2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep/executionStepContext.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep/executionStepContext.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ExecutionStepContextInstance = exports2.ExecutionStepContextContextImpl = void 0;
@@ -176729,9 +177141,9 @@ var require_executionStepContext2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep.js
 var require_executionStep2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution/executionStep.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -176823,7 +177235,7 @@ var require_executionStep2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, executionSid, sid };
+        this._solution = { flowSid, executionSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionStepContextImpl(this._version, this._solution.flowSid, this._solution.executionSid, this._solution.sid);
@@ -177011,9 +177423,9 @@ var require_executionStep2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution.js
 var require_execution2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/execution.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -177177,7 +177589,7 @@ var require_execution2 = __commonJS({
         this.initiatedBy = payload.initiated_by;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { flowSid, sid };
+        this._solution = { flowSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ExecutionContextImpl(this._version, this._solution.flowSid, this._solution.sid);
@@ -177464,9 +177876,9 @@ var require_execution2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowRevision.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowRevision.js
 var require_flowRevision = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowRevision.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowRevision.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -177549,7 +177961,7 @@ var require_flowRevision = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid, revision: revision.toString() };
+        this._solution = { sid, revision: revision || this.revision.toString() };
       }
       get _proxy() {
         this._context = this._context || new FlowRevisionContextImpl(this._version, this._solution.sid, this._solution.revision);
@@ -177727,9 +178139,9 @@ var require_flowRevision = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowTestUser.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowTestUser.js
 var require_flowTestUser = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowTestUser.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow/flowTestUser.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FlowTestUserInstance = exports2.FlowTestUserContextImpl = void 0;
@@ -177915,9 +178327,9 @@ var require_flowTestUser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow.js
 var require_flow2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flow.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -178102,7 +178514,7 @@ var require_flow2 = __commonJS({
         this.webhookUrl = payload.webhook_url;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FlowContextImpl(this._version, this._solution.sid);
@@ -178395,9 +178807,9 @@ var require_flow2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flowValidate.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flowValidate.js
 var require_flowValidate = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flowValidate.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/v2/flowValidate.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FlowValidateInstance = void 0;
@@ -178508,9 +178920,9 @@ var require_flowValidate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V2.js
 var require_V215 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/studio/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -178543,9 +178955,9 @@ var require_V215 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/StudioBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/StudioBase.js
 var require_StudioBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/StudioBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/StudioBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -178575,9 +178987,9 @@ var require_StudioBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Studio.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Studio.js
 var require_Studio = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Studio.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Studio.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -178603,9 +179015,9 @@ var require_Studio = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/esimProfile.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/esimProfile.js
 var require_esimProfile = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/esimProfile.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/esimProfile.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -178686,7 +179098,7 @@ var require_esimProfile = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EsimProfileContextImpl(this._version, this._solution.sid);
@@ -178935,9 +179347,9 @@ var require_esimProfile = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/fleet.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/fleet.js
 var require_fleet = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/fleet.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/fleet.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -179094,7 +179506,7 @@ var require_fleet = __commonJS({
         this.networkAccessProfileSid = payload.network_access_profile_sid;
         this.ipCommandsUrl = payload.ip_commands_url;
         this.ipCommandsMethod = payload.ip_commands_method;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FleetContextImpl(this._version, this._solution.sid);
@@ -179360,9 +179772,9 @@ var require_fleet = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/ipCommand.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/ipCommand.js
 var require_ipCommand = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/ipCommand.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/ipCommand.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -179442,7 +179854,7 @@ var require_ipCommand = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IpCommandContextImpl(this._version, this._solution.sid);
@@ -179708,9 +180120,9 @@ var require_ipCommand = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/network.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/network.js
 var require_network = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/network.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/network.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -179782,7 +180194,7 @@ var require_network = __commonJS({
         this.url = payload.url;
         this.isoCountry = payload.iso_country;
         this.identifiers = payload.identifiers;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkContextImpl(this._version, this._solution.sid);
@@ -179961,9 +180373,9 @@ var require_network = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile/networkAccessProfileNetwork.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile/networkAccessProfileNetwork.js
 var require_networkAccessProfileNetwork = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile/networkAccessProfileNetwork.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile/networkAccessProfileNetwork.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -180061,7 +180473,7 @@ var require_networkAccessProfileNetwork = __commonJS({
         this.isoCountry = payload.iso_country;
         this.identifiers = payload.identifiers;
         this.url = payload.url;
-        this._solution = { networkAccessProfileSid, sid };
+        this._solution = { networkAccessProfileSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkAccessProfileNetworkContextImpl(this._version, this._solution.networkAccessProfileSid, this._solution.sid);
@@ -180299,9 +180711,9 @@ var require_networkAccessProfileNetwork = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile.js
 var require_networkAccessProfile = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/networkAccessProfile.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -180431,7 +180843,7 @@ var require_networkAccessProfile = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new NetworkAccessProfileContextImpl(this._version, this._solution.sid);
@@ -180665,9 +181077,9 @@ var require_networkAccessProfile = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/settingsUpdate.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/settingsUpdate.js
 var require_settingsUpdate = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/settingsUpdate.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/settingsUpdate.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -180840,9 +181252,9 @@ var require_settingsUpdate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/billingPeriod.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/billingPeriod.js
 var require_billingPeriod = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/billingPeriod.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/billingPeriod.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -181011,9 +181423,9 @@ var require_billingPeriod = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/simIpAddress.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/simIpAddress.js
 var require_simIpAddress = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/simIpAddress.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim/simIpAddress.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -181170,9 +181582,9 @@ var require_simIpAddress = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim.js
 var require_sim2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/sim.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -181330,7 +181742,7 @@ var require_sim2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -181587,9 +181999,9 @@ var require_sim2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/smsCommand.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/smsCommand.js
 var require_smsCommand = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/smsCommand.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/smsCommand.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -181665,7 +182077,7 @@ var require_smsCommand = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SmsCommandContextImpl(this._version, this._solution.sid);
@@ -181911,9 +182323,9 @@ var require_smsCommand = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/usageRecord.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/usageRecord.js
 var require_usageRecord = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/usageRecord.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/v1/usageRecord.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182116,9 +182528,9 @@ var require_usageRecord = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/V1.js
 var require_V126 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/supersim/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182193,9 +182605,9 @@ var require_V126 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/SupersimBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/SupersimBase.js
 var require_SupersimBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/SupersimBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/SupersimBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182220,9 +182632,9 @@ var require_SupersimBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Supersim.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Supersim.js
 var require_Supersim = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Supersim.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Supersim.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182297,9 +182709,9 @@ var require_Supersim = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document/documentPermission.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document/documentPermission.js
 var require_documentPermission = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document/documentPermission.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document/documentPermission.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182467,7 +182879,11 @@ var require_documentPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = { serviceSid, documentSid, identity };
+        this._solution = {
+          serviceSid,
+          documentSid,
+          identity: identity || this.identity
+        };
       }
       get _proxy() {
         this._context = this._context || new DocumentPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.documentSid, this._solution.identity);
@@ -182669,9 +183085,9 @@ var require_documentPermission = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document.js
 var require_document = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/document.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -182839,7 +183255,7 @@ var require_document = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new DocumentContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -183105,9 +183521,9 @@ var require_document = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListItem.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListItem.js
 var require_syncListItem = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListItem.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListItem.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -183304,7 +183720,7 @@ var require_syncListItem = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, listSid, index };
+        this._solution = { serviceSid, listSid, index: index || this.index };
       }
       get _proxy() {
         this._context = this._context || new SyncListItemContextImpl(this._version, this._solution.serviceSid, this._solution.listSid, this._solution.index);
@@ -183566,9 +183982,9 @@ var require_syncListItem = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListPermission.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListPermission.js
 var require_syncListPermission = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListPermission.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList/syncListPermission.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -183736,7 +184152,11 @@ var require_syncListPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = { serviceSid, listSid, identity };
+        this._solution = {
+          serviceSid,
+          listSid,
+          identity: identity || this.identity
+        };
       }
       get _proxy() {
         this._context = this._context || new SyncListPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.listSid, this._solution.identity);
@@ -183938,9 +184358,9 @@ var require_syncListPermission = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList.js
 var require_syncList = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncList.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -184108,7 +184528,7 @@ var require_syncList = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SyncListContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -184379,9 +184799,9 @@ var require_syncList = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapItem.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapItem.js
 var require_syncMapItem = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapItem.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapItem.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -184578,7 +184998,7 @@ var require_syncMapItem = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, mapSid, key };
+        this._solution = { serviceSid, mapSid, key: key || this.key };
       }
       get _proxy() {
         this._context = this._context || new SyncMapItemContextImpl(this._version, this._solution.serviceSid, this._solution.mapSid, this._solution.key);
@@ -184848,9 +185268,9 @@ var require_syncMapItem = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapPermission.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapPermission.js
 var require_syncMapPermission = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapPermission.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap/syncMapPermission.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -185018,7 +185438,11 @@ var require_syncMapPermission = __commonJS({
         this.write = payload.write;
         this.manage = payload.manage;
         this.url = payload.url;
-        this._solution = { serviceSid, mapSid, identity };
+        this._solution = {
+          serviceSid,
+          mapSid,
+          identity: identity || this.identity
+        };
       }
       get _proxy() {
         this._context = this._context || new SyncMapPermissionContextImpl(this._version, this._solution.serviceSid, this._solution.mapSid, this._solution.identity);
@@ -185220,9 +185644,9 @@ var require_syncMapPermission = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap.js
 var require_syncMap = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncMap.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -185390,7 +185814,7 @@ var require_syncMap = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SyncMapContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -185661,9 +186085,9 @@ var require_syncMap = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream/streamMessage.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream/streamMessage.js
 var require_streamMessage = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream/streamMessage.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream/streamMessage.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.StreamMessageInstance = void 0;
@@ -185763,9 +186187,9 @@ var require_streamMessage = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream.js
 var require_syncStream = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service/syncStream.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -185923,7 +186347,7 @@ var require_syncStream = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.createdBy = payload.created_by;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SyncStreamContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -186183,9 +186607,9 @@ var require_syncStream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service.js
 var require_service11 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/v1/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -186383,7 +186807,7 @@ var require_service11 = __commonJS({
         this.reachabilityDebouncingEnabled = payload.reachability_debouncing_enabled;
         this.reachabilityDebouncingWindow = deserialize.integer(payload.reachability_debouncing_window);
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -186682,9 +187106,9 @@ var require_service11 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/V1.js
 var require_V127 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/sync/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -186711,9 +187135,9 @@ var require_V127 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/SyncBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/SyncBase.js
 var require_SyncBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/SyncBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/SyncBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -186738,9 +187162,9 @@ var require_SyncBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Sync.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Sync.js
 var require_Sync = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Sync.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Sync.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -186759,9 +187183,9 @@ var require_Sync = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/activity.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/activity.js
 var require_activity = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/activity.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/activity.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -186913,7 +187337,7 @@ var require_activity = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ActivityContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -187172,9 +187596,9 @@ var require_activity = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js
 var require_event4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/event.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -187261,7 +187685,7 @@ var require_event4 = __commonJS({
         this.sourceIpAddress = payload.source_ip_address;
         this.url = payload.url;
         this.workspaceSid = payload.workspace_sid;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EventContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -187487,9 +187911,9 @@ var require_event4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task/reservation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task/reservation.js
 var require_reservation = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task/reservation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task/reservation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -187840,7 +188264,7 @@ var require_reservation = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, taskSid, sid };
+        this._solution = { workspaceSid, taskSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ReservationContextImpl(this._version, this._solution.workspaceSid, this._solution.taskSid, this._solution.sid);
@@ -188033,9 +188457,9 @@ var require_reservation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task.js
 var require_task = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/task.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -188255,7 +188679,7 @@ var require_task = __commonJS({
         this.virtualStartTime = deserialize.iso8601DateTime(payload.virtual_start_time);
         this.ignoreCapacity = payload.ignore_capacity;
         this.routingTarget = payload.routing_target;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TaskContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -188583,9 +189007,9 @@ var require_task = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskChannel.js
 var require_taskChannel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -188742,7 +189166,7 @@ var require_taskChannel = __commonJS({
         this.channelOptimizedRouting = payload.channel_optimized_routing;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TaskChannelContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -189002,9 +189426,9 @@ var require_taskChannel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueBulkRealTimeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueBulkRealTimeStatistics.js
 var require_taskQueueBulkRealTimeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueBulkRealTimeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueBulkRealTimeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TaskQueueBulkRealTimeStatisticsInstance = void 0;
@@ -189111,9 +189535,9 @@ var require_taskQueueBulkRealTimeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueCumulativeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueCumulativeStatistics.js
 var require_taskQueueCumulativeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueCumulativeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueCumulativeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TaskQueueCumulativeStatisticsInstance = exports2.TaskQueueCumulativeStatisticsContextImpl = void 0;
@@ -189310,9 +189734,9 @@ var require_taskQueueCumulativeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueRealTimeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueRealTimeStatistics.js
 var require_taskQueueRealTimeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueRealTimeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueRealTimeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TaskQueueRealTimeStatisticsInstance = exports2.TaskQueueRealTimeStatisticsContextImpl = void 0;
@@ -189477,9 +189901,9 @@ var require_taskQueueRealTimeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueStatistics.js
 var require_taskQueueStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueueStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TaskQueueStatisticsInstance = exports2.TaskQueueStatisticsContextImpl = void 0;
@@ -189644,9 +190068,9 @@ var require_taskQueueStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueuesStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueuesStatistics.js
 var require_taskQueuesStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueuesStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue/taskQueuesStatistics.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -189833,9 +190257,9 @@ var require_taskQueuesStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue.js
 var require_taskQueue = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/taskQueue.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -190030,7 +190454,7 @@ var require_taskQueue = __commonJS({
         this.url = payload.url;
         this.workspaceSid = payload.workspace_sid;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TaskQueueContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -190353,9 +190777,9 @@ var require_taskQueue = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/reservation.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/reservation.js
 var require_reservation2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/reservation.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/reservation.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -190698,7 +191122,7 @@ var require_reservation2 = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, workerSid, sid };
+        this._solution = { workspaceSid, workerSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ReservationContextImpl(this._version, this._solution.workspaceSid, this._solution.workerSid, this._solution.sid);
@@ -190887,9 +191311,9 @@ var require_reservation2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerChannel.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerChannel.js
 var require_workerChannel = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerChannel.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerChannel.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -191030,7 +191454,7 @@ var require_workerChannel = __commonJS({
         this.workerSid = payload.worker_sid;
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
-        this._solution = { workspaceSid, workerSid, sid };
+        this._solution = { workspaceSid, workerSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WorkerChannelContextImpl(this._version, this._solution.workspaceSid, this._solution.workerSid, this._solution.sid);
@@ -191217,9 +191641,9 @@ var require_workerChannel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerStatistics.js
 var require_workerStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workerStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkerStatisticsInstance = exports2.WorkerStatisticsContextImpl = void 0;
@@ -191378,9 +191802,9 @@ var require_workerStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersCumulativeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersCumulativeStatistics.js
 var require_workersCumulativeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersCumulativeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersCumulativeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkersCumulativeStatisticsInstance = exports2.WorkersCumulativeStatisticsContextImpl = void 0;
@@ -191547,9 +191971,9 @@ var require_workersCumulativeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersRealTimeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersRealTimeStatistics.js
 var require_workersRealTimeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersRealTimeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersRealTimeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkersRealTimeStatisticsInstance = exports2.WorkersRealTimeStatisticsContextImpl = void 0;
@@ -191690,9 +192114,9 @@ var require_workersRealTimeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersStatistics.js
 var require_workersStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker/workersStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkersStatisticsInstance = exports2.WorkersStatisticsContextImpl = void 0;
@@ -191857,9 +192281,9 @@ var require_workersStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker.js
 var require_worker = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/worker.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -192073,7 +192497,7 @@ var require_worker = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WorkerContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -192392,9 +192816,9 @@ var require_worker = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowCumulativeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowCumulativeStatistics.js
 var require_workflowCumulativeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowCumulativeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowCumulativeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkflowCumulativeStatisticsInstance = exports2.WorkflowCumulativeStatisticsContextImpl = void 0;
@@ -192591,9 +193015,9 @@ var require_workflowCumulativeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowRealTimeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowRealTimeStatistics.js
 var require_workflowRealTimeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowRealTimeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowRealTimeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkflowRealTimeStatisticsInstance = exports2.WorkflowRealTimeStatisticsContextImpl = void 0;
@@ -192748,9 +193172,9 @@ var require_workflowRealTimeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowStatistics.js
 var require_workflowStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow/workflowStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkflowStatisticsInstance = exports2.WorkflowStatisticsContextImpl = void 0;
@@ -192915,9 +193339,9 @@ var require_workflowStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow.js
 var require_workflow = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workflow.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -193108,7 +193532,7 @@ var require_workflow = __commonJS({
         this.workspaceSid = payload.workspace_sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { workspaceSid, sid };
+        this._solution = { workspaceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WorkflowContextImpl(this._version, this._solution.workspaceSid, this._solution.sid);
@@ -193401,9 +193825,9 @@ var require_workflow = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceCumulativeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceCumulativeStatistics.js
 var require_workspaceCumulativeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceCumulativeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceCumulativeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkspaceCumulativeStatisticsInstance = exports2.WorkspaceCumulativeStatisticsContextImpl = void 0;
@@ -193592,9 +194016,9 @@ var require_workspaceCumulativeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceRealTimeStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceRealTimeStatistics.js
 var require_workspaceRealTimeStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceRealTimeStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceRealTimeStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkspaceRealTimeStatisticsInstance = exports2.WorkspaceRealTimeStatisticsContextImpl = void 0;
@@ -193745,9 +194169,9 @@ var require_workspaceRealTimeStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceStatistics.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceStatistics.js
 var require_workspaceStatistics = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceStatistics.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace/workspaceStatistics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WorkspaceStatisticsInstance = exports2.WorkspaceStatisticsContextImpl = void 0;
@@ -193904,9 +194328,9 @@ var require_workspaceStatistics = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace.js
 var require_workspace = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/v1/workspace.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194135,7 +194559,7 @@ var require_workspace = __commonJS({
         this.prioritizeQueueOrder = payload.prioritize_queue_order;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WorkspaceContextImpl(this._version, this._solution.sid);
@@ -194469,9 +194893,9 @@ var require_workspace = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/V1.js
 var require_V128 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/taskrouter/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194498,9 +194922,9 @@ var require_V128 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TaskrouterBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TaskrouterBase.js
 var require_TaskrouterBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TaskrouterBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TaskrouterBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194525,9 +194949,9 @@ var require_TaskrouterBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Taskrouter.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Taskrouter.js
 var require_Taskrouter = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Taskrouter.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Taskrouter.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194546,9 +194970,9 @@ var require_Taskrouter = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/credentialList.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/credentialList.js
 var require_credentialList2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/credentialList.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/credentialList.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194647,7 +195071,7 @@ var require_credentialList2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid };
+        this._solution = { trunkSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CredentialListContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -194886,9 +195310,9 @@ var require_credentialList2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/ipAccessControlList.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/ipAccessControlList.js
 var require_ipAccessControlList2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/ipAccessControlList.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/ipAccessControlList.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -194987,7 +195411,7 @@ var require_ipAccessControlList2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid };
+        this._solution = { trunkSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IpAccessControlListContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -195226,9 +195650,9 @@ var require_ipAccessControlList2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/originationUrl.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/originationUrl.js
 var require_originationUrl = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/originationUrl.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/originationUrl.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -195398,7 +195822,7 @@ var require_originationUrl = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trunkSid, sid };
+        this._solution = { trunkSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new OriginationUrlContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -195679,9 +196103,9 @@ var require_originationUrl = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js
 var require_phoneNumber8 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/phoneNumber.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -195799,7 +196223,7 @@ var require_phoneNumber8 = __commonJS({
         this.voiceFallbackUrl = payload.voice_fallback_url;
         this.voiceMethod = payload.voice_method;
         this.voiceUrl = payload.voice_url;
-        this._solution = { trunkSid, sid };
+        this._solution = { trunkSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PhoneNumberContextImpl(this._version, this._solution.trunkSid, this._solution.sid);
@@ -196057,9 +196481,9 @@ var require_phoneNumber8 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/recording.js
 var require_recording4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk/recording.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecordingInstance = exports2.RecordingContextImpl = void 0;
@@ -196249,9 +196673,9 @@ var require_recording4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk.js
 var require_trunk2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/v1/trunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -196462,7 +196886,7 @@ var require_trunk2 = __commonJS({
         this.sid = payload.sid;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TrunkContextImpl(this._version, this._solution.sid);
@@ -196775,9 +197199,9 @@ var require_trunk2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/V1.js
 var require_V129 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trunking/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -196804,9 +197228,9 @@ var require_V129 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TrunkingBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TrunkingBase.js
 var require_TrunkingBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TrunkingBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TrunkingBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -196831,9 +197255,9 @@ var require_TrunkingBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Trunking.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Trunking.js
 var require_Trunking = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Trunking.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Trunking.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -196852,9 +197276,9 @@ var require_Trunking = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js
 var require_a2PBrandRegistration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.A2PBrandRegistrationInstance = exports2.TrusthubV1A2pBrandRegistrationRequest = void 0;
@@ -196980,9 +197404,9 @@ var require_a2PBrandRegistration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js
 var require_a2PBrandRegistrationEmbeddedSession = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PBrandRegistrationEmbeddedSession.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.A2PBrandRegistrationEmbeddedSessionInstance = void 0;
@@ -197061,9 +197485,9 @@ var require_a2PBrandRegistrationEmbeddedSession = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js
 var require_a2PCampaignRegistration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.A2PCampaignRegistrationInstance = exports2.TrusthubV1A2pCampaignRegistrationRequest = void 0;
@@ -197186,9 +197610,9 @@ var require_a2PCampaignRegistration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js
 var require_a2PCampaignRegistrationEmbeddedSession = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/a2PCampaignRegistrationEmbeddedSession.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.A2PCampaignRegistrationEmbeddedSessionInstance = void 0;
@@ -197267,9 +197691,9 @@ var require_a2PCampaignRegistrationEmbeddedSession = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceInquiries.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceInquiries.js
 var require_complianceInquiries = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceInquiries.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceInquiries.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ComplianceInquiriesInstance = exports2.ComplianceInquiriesContextImpl = void 0;
@@ -197360,7 +197784,7 @@ var require_complianceInquiries = __commonJS({
         this.inquirySessionToken = payload.inquiry_session_token;
         this.customerId = payload.customer_id;
         this.url = payload.url;
-        this._solution = { customerId };
+        this._solution = { customerId: customerId || this.customerId };
       }
       get _proxy() {
         this._context = this._context || new ComplianceInquiriesContextImpl(this._version, this._solution.customerId);
@@ -197466,9 +197890,9 @@ var require_complianceInquiries = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceRegistrationInquiries.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceRegistrationInquiries.js
 var require_complianceRegistrationInquiries = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceRegistrationInquiries.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceRegistrationInquiries.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ComplianceRegistrationInquiriesInstance = exports2.ComplianceRegistrationInquiriesContextImpl = void 0;
@@ -197561,7 +197985,7 @@ var require_complianceRegistrationInquiries = __commonJS({
         this.inquirySessionToken = payload.inquiry_session_token;
         this.registrationId = payload.registration_id;
         this.url = payload.url;
-        this._solution = { registrationId };
+        this._solution = { registrationId: registrationId || this.registrationId };
       }
       get _proxy() {
         this._context = this._context || new ComplianceRegistrationInquiriesContextImpl(this._version, this._solution.registrationId);
@@ -197813,9 +198237,9 @@ var require_complianceRegistrationInquiries = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceTollfreeInquiries.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceTollfreeInquiries.js
 var require_complianceTollfreeInquiries = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceTollfreeInquiries.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/complianceTollfreeInquiries.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ComplianceTollfreeInquiriesInstance = void 0;
@@ -198064,9 +198488,9 @@ var require_complianceTollfreeInquiries = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesChannelEndpointAssignment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesChannelEndpointAssignment.js
 var require_customerProfilesChannelEndpointAssignment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesChannelEndpointAssignment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesChannelEndpointAssignment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -198161,7 +198585,7 @@ var require_customerProfilesChannelEndpointAssignment = __commonJS({
         this.channelEndpointSid = payload.channel_endpoint_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid };
+        this._solution = { customerProfileSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesChannelEndpointAssignmentContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -198411,9 +198835,9 @@ var require_customerProfilesChannelEndpointAssignment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments.js
 var require_customerProfilesEntityAssignments = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -198511,7 +198935,7 @@ var require_customerProfilesEntityAssignments = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid };
+        this._solution = { customerProfileSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesEntityAssignmentsContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -198753,9 +199177,9 @@ var require_customerProfilesEntityAssignments = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEvaluations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEvaluations.js
 var require_customerProfilesEvaluations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEvaluations.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEvaluations.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -198833,7 +199257,7 @@ var require_customerProfilesEvaluations = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { customerProfileSid, sid };
+        this._solution = { customerProfileSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesEvaluationsContextImpl(this._version, this._solution.customerProfileSid, this._solution.sid);
@@ -199053,9 +199477,9 @@ var require_customerProfilesEvaluations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles.js
 var require_customerProfiles = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfiles.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -199235,7 +199659,7 @@ var require_customerProfiles = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.errors = payload.errors;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesContextImpl(this._version, this._solution.sid);
@@ -199533,9 +199957,9 @@ var require_customerProfiles = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js
 var require_customerProfilesProvisionalCopy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/customerProfilesProvisionalCopy.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CustomerProfilesProvisionalCopyInstance = exports2.CustomerProfilesProvisionalCopyContextImpl = void 0;
@@ -199638,7 +200062,9 @@ var require_customerProfilesProvisionalCopy = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { customerProfileSid };
+        this._solution = {
+          customerProfileSid: customerProfileSid || this.customerProfileSid
+        };
       }
       get _proxy() {
         this._context = this._context || new CustomerProfilesProvisionalCopyContextImpl(this._version, this._solution.customerProfileSid);
@@ -199728,9 +200154,9 @@ var require_customerProfilesProvisionalCopy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUser.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUser.js
 var require_endUser2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUser.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUser.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -199882,7 +200308,7 @@ var require_endUser2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserContextImpl(this._version, this._solution.sid);
@@ -200137,9 +200563,9 @@ var require_endUser2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUserType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUserType.js
 var require_endUserType2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUserType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/endUserType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -200211,7 +200637,7 @@ var require_endUserType2 = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new EndUserTypeContextImpl(this._version, this._solution.sid);
@@ -200378,9 +200804,9 @@ var require_endUserType2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/policies.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/policies.js
 var require_policies = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/policies.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/policies.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -200451,7 +200877,7 @@ var require_policies = __commonJS({
         this.friendlyName = payload.friendly_name;
         this.requirements = payload.requirements;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PoliciesContextImpl(this._version, this._solution.sid);
@@ -200617,9 +201043,9 @@ var require_policies = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocument.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocument.js
 var require_supportingDocument2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocument.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocument.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -200773,7 +201199,7 @@ var require_supportingDocument2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentContextImpl(this._version, this._solution.sid);
@@ -201030,9 +201456,9 @@ var require_supportingDocument2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocumentType.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocumentType.js
 var require_supportingDocumentType2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocumentType.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/supportingDocumentType.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -201104,7 +201530,7 @@ var require_supportingDocumentType2 = __commonJS({
         this.machineName = payload.machine_name;
         this.fields = payload.fields;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SupportingDocumentTypeContextImpl(this._version, this._solution.sid);
@@ -201271,9 +201697,9 @@ var require_supportingDocumentType2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsChannelEndpointAssignment.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsChannelEndpointAssignment.js
 var require_trustProductsChannelEndpointAssignment = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsChannelEndpointAssignment.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsChannelEndpointAssignment.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -201372,7 +201798,7 @@ var require_trustProductsChannelEndpointAssignment = __commonJS({
         this.channelEndpointSid = payload.channel_endpoint_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid };
+        this._solution = { trustProductSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsChannelEndpointAssignmentContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -201627,9 +202053,9 @@ var require_trustProductsChannelEndpointAssignment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments.js
 var require_trustProductsEntityAssignments = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -201727,7 +202153,7 @@ var require_trustProductsEntityAssignments = __commonJS({
         this.objectSid = payload.object_sid;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid };
+        this._solution = { trustProductSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsEntityAssignmentsContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -201969,9 +202395,9 @@ var require_trustProductsEntityAssignments = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations.js
 var require_trustProductsEvaluations = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -202049,7 +202475,7 @@ var require_trustProductsEvaluations = __commonJS({
         this.results = payload.results;
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.url = payload.url;
-        this._solution = { trustProductSid, sid };
+        this._solution = { trustProductSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsEvaluationsContextImpl(this._version, this._solution.trustProductSid, this._solution.sid);
@@ -202269,9 +202695,9 @@ var require_trustProductsEvaluations = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts.js
 var require_trustProducts = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProducts.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -202451,7 +202877,7 @@ var require_trustProducts = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.errors = payload.errors;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsContextImpl(this._version, this._solution.sid);
@@ -202749,9 +203175,9 @@ var require_trustProducts = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js
 var require_trustProductsProvisionalCopy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/v1/trustProductsProvisionalCopy.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TrustProductsProvisionalCopyInstance = exports2.TrustProductsProvisionalCopyContextImpl = void 0;
@@ -202854,7 +203280,9 @@ var require_trustProductsProvisionalCopy = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { trustProductSid };
+        this._solution = {
+          trustProductSid: trustProductSid || this.trustProductSid
+        };
       }
       get _proxy() {
         this._context = this._context || new TrustProductsProvisionalCopyContextImpl(this._version, this._solution.trustProductSid);
@@ -202944,9 +203372,9 @@ var require_trustProductsProvisionalCopy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/V1.js
 var require_V130 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/trusthub/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -203061,9 +203489,9 @@ var require_V130 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TrusthubBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TrusthubBase.js
 var require_TrusthubBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/TrusthubBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/TrusthubBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -203088,9 +203516,9 @@ var require_TrusthubBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Trusthub.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Trusthub.js
 var require_Trusthub = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Trusthub.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Trusthub.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -203151,9 +203579,9 @@ var require_Trusthub = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/form.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/form.js
 var require_form = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/form.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/form.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FormInstance = exports2.FormContextImpl = void 0;
@@ -203220,7 +203648,7 @@ var require_form = __commonJS({
         this.forms = payload.forms;
         this.formMeta = payload.form_meta;
         this.url = payload.url;
-        this._solution = { formType };
+        this._solution = { formType: formType || this.formType };
       }
       get _proxy() {
         this._context = this._context || new FormContextImpl(this._version, this._solution.formType);
@@ -203283,9 +203711,9 @@ var require_form = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/safelist.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/safelist.js
 var require_safelist2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/safelist.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/safelist.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SafelistInstance = exports2.SafelistContextImpl = void 0;
@@ -203373,7 +203801,7 @@ var require_safelist2 = __commonJS({
         this.sid = payload.sid;
         this.phoneNumber = payload.phone_number;
         this.url = payload.url;
-        this._solution = { phoneNumber };
+        this._solution = { phoneNumber: phoneNumber || this.phoneNumber };
       }
       get _proxy() {
         this._context = this._context || new SafelistContextImpl(this._version, this._solution.phoneNumber);
@@ -203502,9 +203930,9 @@ var require_safelist2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/accessToken.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/accessToken.js
 var require_accessToken = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/accessToken.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/accessToken.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AccessTokenInstance = exports2.AccessTokenContextImpl = void 0;
@@ -203580,7 +204008,7 @@ var require_accessToken = __commonJS({
         this.url = payload.url;
         this.ttl = deserialize.integer(payload.ttl);
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new AccessTokenContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -203715,9 +204143,9 @@ var require_accessToken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/approveChallenge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/approveChallenge.js
 var require_approveChallenge = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/approveChallenge.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/approveChallenge.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ApproveChallengeInstance = exports2.ApprovePasskeysChallengeRequestResponse = exports2.ApprovePasskeysChallengeRequest = void 0;
@@ -203865,9 +204293,9 @@ var require_approveChallenge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge/notification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge/notification.js
 var require_notification5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge/notification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge/notification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NotificationInstance = void 0;
@@ -203986,9 +204414,9 @@ var require_notification5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge.js
 var require_challenge = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/challenge.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -204139,7 +204567,7 @@ var require_challenge = __commonJS({
         this.factorType = payload.factor_type;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, identity, sid };
+        this._solution = { serviceSid, identity, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ChallengeContextImpl(this._version, this._solution.serviceSid, this._solution.identity, this._solution.sid);
@@ -204416,9 +204844,9 @@ var require_challenge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/factor.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/factor.js
 var require_factor = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/factor.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/factor.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -204609,7 +205037,7 @@ var require_factor = __commonJS({
         this.config = payload.config;
         this.metadata = payload.metadata;
         this.url = payload.url;
-        this._solution = { serviceSid, identity, sid };
+        this._solution = { serviceSid, identity, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new FactorContextImpl(this._version, this._solution.serviceSid, this._solution.identity, this._solution.sid);
@@ -204816,9 +205244,9 @@ var require_factor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/newFactor.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/newFactor.js
 var require_newFactor = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/newFactor.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity/newFactor.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewFactorInstance = void 0;
@@ -205000,9 +205428,9 @@ var require_newFactor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity.js
 var require_entity = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/entity.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -205117,7 +205545,7 @@ var require_entity = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, identity };
+        this._solution = { serviceSid, identity: identity || this.identity };
       }
       get _proxy() {
         this._context = this._context || new EntityContextImpl(this._version, this._solution.serviceSid, this._solution.identity);
@@ -205375,9 +205803,9 @@ var require_entity = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/messagingConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/messagingConfiguration.js
 var require_messagingConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/messagingConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/messagingConfiguration.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -205525,7 +205953,7 @@ var require_messagingConfiguration = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, country };
+        this._solution = { serviceSid, country: country || this.country };
       }
       get _proxy() {
         this._context = this._context || new MessagingConfigurationContextImpl(this._version, this._solution.serviceSid, this._solution.country);
@@ -205778,9 +206206,9 @@ var require_messagingConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newChallenge.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newChallenge.js
 var require_newChallenge = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newChallenge.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newChallenge.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewChallengeInstance = exports2.NewChallengeContextImpl = exports2.CreatePasskeysChallengeRequest = void 0;
@@ -205960,9 +206388,9 @@ var require_newChallenge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newFactor.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newFactor.js
 var require_newFactor2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newFactor.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newFactor.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewFactorInstance = exports2.CreateNewPasskeysFactorRequestConfigRelyingParty = exports2.CreateNewPasskeysFactorRequestConfig = exports2.CreateNewPasskeysFactorRequest = void 0;
@@ -206108,9 +206536,9 @@ var require_newFactor2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newVerifyFactor.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newVerifyFactor.js
 var require_newVerifyFactor = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newVerifyFactor.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/newVerifyFactor.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.NewVerifyFactorInstance = exports2.VerifyPasskeysFactorRequestResponse = exports2.VerifyPasskeysFactorRequest = void 0;
@@ -206245,9 +206673,9 @@ var require_newVerifyFactor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit/bucket.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit/bucket.js
 var require_bucket2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit/bucket.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit/bucket.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -206406,7 +206834,7 @@ var require_bucket2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, rateLimitSid, sid };
+        this._solution = { serviceSid, rateLimitSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new BucketContextImpl(this._version, this._solution.serviceSid, this._solution.rateLimitSid, this._solution.sid);
@@ -206664,9 +207092,9 @@ var require_bucket2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit.js
 var require_rateLimit2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/rateLimit.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -206823,7 +207251,7 @@ var require_rateLimit2 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RateLimitContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -207080,9 +207508,9 @@ var require_rateLimit2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verification.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verification.js
 var require_verification = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verification.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verification.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VerificationInstance = exports2.VerificationContextImpl = void 0;
@@ -207212,7 +207640,7 @@ var require_verification = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.sna = payload.sna;
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new VerificationContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -207418,9 +207846,9 @@ var require_verification = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verificationCheck.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verificationCheck.js
 var require_verificationCheck = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verificationCheck.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/verificationCheck.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VerificationCheckInstance = void 0;
@@ -207559,9 +207987,9 @@ var require_verificationCheck = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/webhook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/webhook.js
 var require_webhook8 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/webhook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service/webhook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -207732,7 +208160,7 @@ var require_webhook8 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { serviceSid, sid };
+        this._solution = { serviceSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new WebhookContextImpl(this._version, this._solution.serviceSid, this._solution.sid);
@@ -208006,9 +208434,9 @@ var require_webhook8 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service.js
 var require_service12 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/service.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -208324,7 +208752,7 @@ var require_service12 = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ServiceContextImpl(this._version, this._solution.sid);
@@ -208746,9 +209174,9 @@ var require_service12 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/template.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/template.js
 var require_template = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/template.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/template.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -208911,9 +209339,9 @@ var require_template = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttempt.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttempt.js
 var require_verificationAttempt = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttempt.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttempt.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -208991,7 +209419,7 @@ var require_verificationAttempt = __commonJS({
         this.price = payload.price;
         this.channelData = payload.channel_data;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new VerificationAttemptContextImpl(this._version, this._solution.sid);
@@ -209196,9 +209624,9 @@ var require_verificationAttempt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttemptsSummary.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttemptsSummary.js
 var require_verificationAttemptsSummary = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttemptsSummary.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/v2/verificationAttemptsSummary.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.VerificationAttemptsSummaryInstance = exports2.VerificationAttemptsSummaryContextImpl = void 0;
@@ -209352,9 +209780,9 @@ var require_verificationAttemptsSummary = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/V2.js
 var require_V216 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/verify/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -209411,9 +209839,9 @@ var require_V216 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VerifyBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VerifyBase.js
 var require_VerifyBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VerifyBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VerifyBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -209438,9 +209866,9 @@ var require_VerifyBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Verify.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Verify.js
 var require_Verify = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Verify.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Verify.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -209487,9 +209915,9 @@ var require_Verify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/composition.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/composition.js
 var require_composition = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/composition.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/composition.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -209599,7 +210027,7 @@ var require_composition = __commonJS({
         this.statusCallbackMethod = payload.status_callback_method;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CompositionContextImpl(this._version, this._solution.sid);
@@ -209897,9 +210325,9 @@ var require_composition = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionHook.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionHook.js
 var require_compositionHook = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionHook.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionHook.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -210088,7 +210516,7 @@ var require_compositionHook = __commonJS({
         this.statusCallback = payload.status_callback;
         this.statusCallbackMethod = payload.status_callback_method;
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CompositionHookContextImpl(this._version, this._solution.sid);
@@ -210390,9 +210818,9 @@ var require_compositionHook = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionSettings.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionSettings.js
 var require_compositionSettings = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionSettings.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/compositionSettings.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CompositionSettingsInstance = exports2.CompositionSettingsContextImpl = void 0;
@@ -210601,9 +211029,9 @@ var require_compositionSettings = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recording.js
 var require_recording5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recording.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -210710,7 +211138,7 @@ var require_recording5 = __commonJS({
         this.statusCallback = payload.status_callback;
         this.statusCallbackMethod = payload.status_callback_method;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RecordingContextImpl(this._version, this._solution.sid);
@@ -210934,9 +211362,9 @@ var require_recording5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recordingSettings.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recordingSettings.js
 var require_recordingSettings = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recordingSettings.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/recordingSettings.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecordingSettingsInstance = exports2.RecordingSettingsContextImpl = void 0;
@@ -211145,9 +211573,9 @@ var require_recordingSettings = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/anonymize.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/anonymize.js
 var require_anonymize = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/anonymize.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/anonymize.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AnonymizeInstance = exports2.AnonymizeContextImpl = void 0;
@@ -211300,9 +211728,9 @@ var require_anonymize = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/publishedTrack.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/publishedTrack.js
 var require_publishedTrack = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/publishedTrack.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/publishedTrack.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -211384,7 +211812,7 @@ var require_publishedTrack = __commonJS({
         this.enabled = payload.enabled;
         this.kind = payload.kind;
         this.url = payload.url;
-        this._solution = { roomSid, participantSid, sid };
+        this._solution = { roomSid, participantSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new PublishedTrackContextImpl(this._version, this._solution.roomSid, this._solution.participantSid, this._solution.sid);
@@ -211561,9 +211989,9 @@ var require_publishedTrack = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribeRules.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribeRules.js
 var require_subscribeRules = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribeRules.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribeRules.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SubscribeRulesInstance = exports2.VideoV1RoomRoomParticipantRoomParticipantSubscribeRuleRules = void 0;
@@ -211709,9 +212137,9 @@ var require_subscribeRules = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribedTrack.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribedTrack.js
 var require_subscribedTrack = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribedTrack.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant/subscribedTrack.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -211794,7 +212222,7 @@ var require_subscribedTrack = __commonJS({
         this.enabled = payload.enabled;
         this.kind = payload.kind;
         this.url = payload.url;
-        this._solution = { roomSid, participantSid, sid };
+        this._solution = { roomSid, participantSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SubscribedTrackContextImpl(this._version, this._solution.roomSid, this._solution.participantSid, this._solution.sid);
@@ -211972,9 +212400,9 @@ var require_subscribedTrack = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant.js
 var require_participant7 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/participant.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -212127,7 +212555,7 @@ var require_participant7 = __commonJS({
         this.duration = deserialize.integer(payload.duration);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { roomSid, sid };
+        this._solution = { roomSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ParticipantContextImpl(this._version, this._solution.roomSid, this._solution.sid);
@@ -212350,9 +212778,9 @@ var require_participant7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/recordingRules.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/recordingRules.js
 var require_recordingRules = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/recordingRules.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/recordingRules.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecordingRulesInstance = exports2.VideoV1RoomRoomRecordingRuleRules = void 0;
@@ -212492,9 +212920,9 @@ var require_recordingRules = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/roomRecording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/roomRecording.js
 var require_roomRecording = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/roomRecording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/roomRecording.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -212603,7 +213031,7 @@ var require_roomRecording = __commonJS({
         this.mediaExternalLocation = payload.media_external_location;
         this.roomSid = payload.room_sid;
         this.links = payload.links;
-        this._solution = { roomSid, sid };
+        this._solution = { roomSid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoomRecordingContextImpl(this._version, this._solution.roomSid, this._solution.sid);
@@ -212821,9 +213249,9 @@ var require_roomRecording = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/transcriptions.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/transcriptions.js
 var require_transcriptions = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/transcriptions.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room/transcriptions.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -212960,7 +213388,7 @@ var require_transcriptions = __commonJS({
         this.duration = deserialize.integer(payload.duration);
         this.url = payload.url;
         this.configuration = payload.configuration;
-        this._solution = { roomSid, ttid };
+        this._solution = { roomSid, ttid: ttid || this.ttid };
       }
       get _proxy() {
         this._context = this._context || new TranscriptionsContextImpl(this._version, this._solution.roomSid, this._solution.ttid);
@@ -213192,9 +213620,9 @@ var require_transcriptions = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room.js
 var require_room2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/v1/room.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -213354,7 +213782,7 @@ var require_room2 = __commonJS({
         this.largeRoom = payload.large_room;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RoomContextImpl(this._version, this._solution.sid);
@@ -213699,9 +214127,9 @@ var require_room2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/V1.js
 var require_V131 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/video/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/video/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -213758,9 +214186,9 @@ var require_V131 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VideoBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VideoBase.js
 var require_VideoBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VideoBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VideoBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -213785,9 +214213,9 @@ var require_VideoBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Video.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Video.js
 var require_Video = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Video.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Video.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -213841,9 +214269,9 @@ var require_Video = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/archivedCall.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/archivedCall.js
 var require_archivedCall = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/archivedCall.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/archivedCall.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ArchivedCallContextImpl = void 0;
@@ -213918,9 +214346,9 @@ var require_archivedCall = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/byocTrunk.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/byocTrunk.js
 var require_byocTrunk = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/byocTrunk.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/byocTrunk.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -214111,7 +214539,7 @@ var require_byocTrunk = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ByocTrunkContextImpl(this._version, this._solution.sid);
@@ -214399,9 +214827,9 @@ var require_byocTrunk = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy/connectionPolicyTarget.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy/connectionPolicyTarget.js
 var require_connectionPolicyTarget = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy/connectionPolicyTarget.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy/connectionPolicyTarget.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -214571,7 +214999,7 @@ var require_connectionPolicyTarget = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { connectionPolicySid, sid };
+        this._solution = { connectionPolicySid, sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectionPolicyTargetContextImpl(this._version, this._solution.connectionPolicySid, this._solution.sid);
@@ -214836,9 +215264,9 @@ var require_connectionPolicyTarget = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy.js
 var require_connectionPolicy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/connectionPolicy.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -214990,7 +215418,7 @@ var require_connectionPolicy = __commonJS({
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new ConnectionPolicyContextImpl(this._version, this._solution.sid);
@@ -215240,9 +215668,9 @@ var require_connectionPolicy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate.js
 var require_bulkCountryUpdate = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.BulkCountryUpdateInstance = void 0;
@@ -215335,9 +215763,9 @@ var require_bulkCountryUpdate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country/highriskSpecialPrefix.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country/highriskSpecialPrefix.js
 var require_highriskSpecialPrefix = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country/highriskSpecialPrefix.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country/highriskSpecialPrefix.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -215492,9 +215920,9 @@ var require_highriskSpecialPrefix = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country.js
 var require_country6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/country.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -215575,7 +216003,7 @@ var require_country6 = __commonJS({
         this.highRiskTollfraudNumbersEnabled = payload.high_risk_tollfraud_numbers_enabled;
         this.url = payload.url;
         this.links = payload.links;
-        this._solution = { isoCode };
+        this._solution = { isoCode: isoCode || this.isoCode };
       }
       get _proxy() {
         this._context = this._context || new CountryContextImpl(this._version, this._solution.isoCode);
@@ -215776,9 +216204,9 @@ var require_country6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/settings.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/settings.js
 var require_settings = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/settings.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions/settings.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SettingsInstance = exports2.SettingsContextImpl = void 0;
@@ -215957,9 +216385,9 @@ var require_settings = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions.js
 var require_dialingPermissions = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/dialingPermissions.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DialingPermissionsListInstance = DialingPermissionsListInstance;
@@ -216009,9 +216437,9 @@ var require_dialingPermissions = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/ipRecord.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/ipRecord.js
 var require_ipRecord = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/ipRecord.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/ipRecord.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -216159,7 +216587,7 @@ var require_ipRecord = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new IpRecordContextImpl(this._version, this._solution.sid);
@@ -216410,9 +216838,9 @@ var require_ipRecord = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/sourceIpMapping.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/sourceIpMapping.js
 var require_sourceIpMapping = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/sourceIpMapping.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v1/sourceIpMapping.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -216556,7 +216984,7 @@ var require_sourceIpMapping = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SourceIpMappingContextImpl(this._version, this._solution.sid);
@@ -216805,9 +217233,9 @@ var require_sourceIpMapping = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V1.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V1.js
 var require_V132 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V1.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -216864,9 +217292,9 @@ var require_V132 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js
 var require_accountDefaultConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/accountDefaultConfiguration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AccountDefaultConfigurationInstance = exports2.AccountDefaultConfigurationContextImpl = exports2.VoiceV2AccountDefaultConfigurationRequest = void 0;
@@ -217173,9 +217601,9 @@ var require_accountDefaultConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration/default.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration/default.js
 var require_default = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration/default.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration/default.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DefaultInstance = exports2.DefaultConfigurationRequest = void 0;
@@ -217326,9 +217754,9 @@ var require_default = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration.js
 var require_configuration6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/configuration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ConfigurationInstance = exports2.ConfigurationContextImpl = exports2.VoiceV2ConfigurationRequest = void 0;
@@ -217493,9 +217921,9 @@ var require_configuration6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recording.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recording.js
 var require_recording6 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recording.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recording.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecordingInstance = exports2.RecordingContextImpl = exports2.VoiceV2ConfigurationRecordingStatusCallback = exports2.VoiceV2ConfigurationRecordingRequest = exports2.VoiceV2ConfigurationRecordingFeature = exports2.VoiceV2ConfigurationRecordingConfiguration = exports2.VoiceV2ConfigurationRecordingCompositionPolicy = void 0;
@@ -217833,9 +218261,9 @@ var require_recording6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js
 var require_recordingAccountDefaultConfiguration = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/recordingAccountDefaultConfiguration.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.RecordingAccountDefaultConfigurationInstance = exports2.RecordingAccountDefaultConfigurationContextImpl = exports2.VoiceV2ConfigurationRecordingStatusCallback = exports2.VoiceV2ConfigurationRecordingFeature = exports2.VoiceV2ConfigurationRecordingConfiguration = exports2.VoiceV2ConfigurationRecordingCompositionPolicy = exports2.VoiceV2AccountDefaultConfigurationRecordingRequest = void 0;
@@ -218172,9 +218600,9 @@ var require_recordingAccountDefaultConfiguration = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/transcription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/transcription.js
 var require_transcription4 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/transcription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/transcription.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TranscriptionInstance = exports2.TranscriptionContextImpl = exports2.VoiceV2ConfigurationTranscriptionStatusCallback = exports2.VoiceV2ConfigurationTranscriptionRequest = exports2.VoiceV2ConfigurationTranscriptionParticipantDefault = exports2.VoiceV2ConfigurationTranscriptionConfiguration = void 0;
@@ -218504,9 +218932,9 @@ var require_transcription4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/type.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/type.js
 var require_type2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/type.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v2/type.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TypeInstance = exports2.TypeContextImpl = exports2.VoiceV2ConfigurationRequest = void 0;
@@ -218762,9 +219190,9 @@ var require_type2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V2.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V2.js
 var require_V217 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V2.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V2.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -218821,9 +219249,9 @@ var require_V217 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v3/transcription.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v3/transcription.js
 var require_transcription5 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v3/transcription.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/v3/transcription.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219218,9 +219646,9 @@ var require_transcription5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V3.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V3.js
 var require_V37 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V3.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/voice/V3.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219247,9 +219675,9 @@ var require_V37 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VoiceBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VoiceBase.js
 var require_VoiceBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/VoiceBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/VoiceBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219284,9 +219712,9 @@ var require_VoiceBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Voice.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Voice.js
 var require_Voice = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Voice.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Voice.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219340,9 +219768,2448 @@ var require_Voice = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/command.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/authProfile.js
+var require_authProfile = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/authProfile.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.AuthProfilePage = exports2.AuthProfileInstance = exports2.AuthProfileContextImpl = exports2.PostAuthProfile = exports2.PatchAuthProfile = void 0;
+    exports2.AuthProfileListInstance = AuthProfileListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var PatchAuthProfile = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+      }
+    };
+    exports2.PatchAuthProfile = PatchAuthProfile;
+    var PostAuthProfile = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.friendlyName = payload["friendlyName"];
+        this.tokenUrl = payload["tokenUrl"];
+        this.clientId = payload["clientId"];
+        this.clientSecret = payload["clientSecret"];
+        this.scope = payload["scope"];
+        this.audience = payload["audience"];
+        this.clientCredentialsAuthMethod = payload["clientCredentialsAuthMethod"];
+        this.username = payload["username"];
+        this.password = payload["password"];
+      }
+    };
+    exports2.PostAuthProfile = PostAuthProfile;
+    var AuthProfileContextImpl = class {
+      constructor(_version, authProfileId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(authProfileId)) {
+          throw new Error("Parameter 'authProfileId' is not valid.");
+        }
+        this._solution = { authProfileId };
+        this._uri = `/Webhooks/AuthProfiles/${authProfileId}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AuthProfileInstance(operationVersion, payload, instance._solution.authProfileId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AuthProfileInstance(operationVersion, response.body, instance._solution.authProfileId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patch(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.patch({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AuthProfileInstance(operationVersion, payload, instance._solution.authProfileId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patchWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.patchWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AuthProfileInstance(operationVersion, response.body, instance._solution.authProfileId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.AuthProfileContextImpl = AuthProfileContextImpl;
+    var AuthProfileInstance = class {
+      constructor(_version, _payload, authProfileId) {
+        this._version = _version;
+        const payload = _payload;
+        this.id = payload.id;
+        this.type = payload.type;
+        this.friendlyName = payload.friendlyName;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+        this.tokenUrl = payload.tokenUrl;
+        this.clientId = payload.clientId;
+        this.clientSecret = payload.clientSecret;
+        this.scope = payload.scope;
+        this.audience = payload.audience;
+        this.clientCredentialsAuthMethod = payload.clientCredentialsAuthMethod;
+        this.username = payload.username;
+        this.password = payload.password;
+        this._solution = { authProfileId };
+      }
+      get _proxy() {
+        this._context = this._context || new AuthProfileContextImpl(this._version, this._solution.authProfileId);
+        return this._context;
+      }
+      /**
+       * Remove a AuthProfileInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a AuthProfileInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a AuthProfileInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed AuthProfileInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a AuthProfileInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed AuthProfileInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      patch(params, callback) {
+        return this._proxy.patch(params, callback);
+      }
+      patchWithHttpInfo(params, callback) {
+        return this._proxy.patchWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          type: this.type,
+          friendlyName: this.friendlyName,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt,
+          tokenUrl: this.tokenUrl,
+          clientId: this.clientId,
+          clientSecret: this.clientSecret,
+          scope: this.scope,
+          audience: this.audience,
+          clientCredentialsAuthMethod: this.clientCredentialsAuthMethod,
+          username: this.username,
+          password: this.password
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.AuthProfileInstance = AuthProfileInstance;
+    function AuthProfileListInstance(version) {
+      const instance = ((authProfileId) => instance.get(authProfileId));
+      instance.get = function get(authProfileId) {
+        return new AuthProfileContextImpl(version, authProfileId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/AuthProfiles`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AuthProfileInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new AuthProfileInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new AuthProfilePage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new AuthProfilePage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new AuthProfilePage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new AuthProfilePage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var AuthProfilePage = class extends TokenPage_1.default {
+      /**
+       * Initialize the AuthProfilePage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of AuthProfileInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new AuthProfileInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.AuthProfilePage = AuthProfilePage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/edgeZone.js
+var require_edgeZone = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/edgeZone.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.EdgeZonePage = exports2.EdgeZoneInstance = exports2.EdgeLocation = void 0;
+    exports2.EdgeZoneListInstance = EdgeZoneListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var EdgeLocation = class {
+      constructor(payload) {
+        this.id = payload["id"];
+        this.city = payload["city"];
+        this.country = payload["country"];
+      }
+    };
+    exports2.EdgeLocation = EdgeLocation;
+    function EdgeZoneListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/EdgeZones`;
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new EdgeZonePage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new EdgeZonePage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new EdgeZonePage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new EdgeZonePage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var EdgeZoneInstance = class {
+      constructor(_version, _payload) {
+        this._version = _version;
+        const payload = _payload;
+        this.id = payload.id;
+        this.friendlyName = payload.friendlyName;
+        this.description = payload.description;
+        this.edgeLocations = payload.edgeLocations !== null && payload.edgeLocations !== void 0 ? payload.edgeLocations.map((payload2) => new EdgeLocation(payload2)) : null;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          friendlyName: this.friendlyName,
+          description: this.description,
+          edgeLocations: this.edgeLocations
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.EdgeZoneInstance = EdgeZoneInstance;
+    var EdgeZonePage = class extends TokenPage_1.default {
+      /**
+       * Initialize the EdgeZonePage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of EdgeZoneInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new EdgeZoneInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.EdgeZonePage = EdgeZonePage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/operation.js
+var require_operation4 = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/operation.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.OperationPage = exports2.OperationInstance = exports2.OperationContextImpl = exports2.OperationError = void 0;
+    exports2.OperationListInstance = OperationListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var OperationError = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.title = payload["title"];
+        this.code = payload["code"];
+        this.detail = payload["detail"];
+      }
+    };
+    exports2.OperationError = OperationError;
+    var OperationContextImpl = class {
+      constructor(_version, operationId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(operationId)) {
+          throw new Error("Parameter 'operationId' is not valid.");
+        }
+        this._solution = { operationId };
+        this._uri = `/Webhooks/Operations/${operationId}`;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new OperationInstance(operationVersion, payload, instance._solution.operationId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new OperationInstance(operationVersion, response.body, instance._solution.operationId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.OperationContextImpl = OperationContextImpl;
+    var OperationInstance = class {
+      constructor(_version, _payload, operationId) {
+        this._version = _version;
+        const payload = _payload;
+        this.id = payload.id;
+        this.statusUrl = payload.statusUrl;
+        this.status = payload.status;
+        this.error = payload.error !== null && payload.error !== void 0 ? new OperationError(payload.error) : null;
+        this.resourceId = payload.resourceId;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.completedAt = deserialize.iso8601DateTime(payload.completedAt);
+        this.retentionPeriod = payload.retentionPeriod;
+        this._solution = { operationId };
+      }
+      get _proxy() {
+        this._context = this._context || new OperationContextImpl(this._version, this._solution.operationId);
+        return this._context;
+      }
+      /**
+       * Fetch a OperationInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed OperationInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a OperationInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed OperationInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          statusUrl: this.statusUrl,
+          status: this.status,
+          error: this.error,
+          resourceId: this.resourceId,
+          createdAt: this.createdAt,
+          completedAt: this.completedAt,
+          retentionPeriod: this.retentionPeriod
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.OperationInstance = OperationInstance;
+    function OperationListInstance(version) {
+      const instance = ((operationId) => instance.get(operationId));
+      instance.get = function get(operationId) {
+        return new OperationContextImpl(version, operationId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/Operations`;
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        if (params["resourceId"] !== void 0)
+          data["resourceId"] = params["resourceId"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new OperationPage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new OperationPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["status"] !== void 0)
+          data["status"] = params["status"];
+        if (params["resourceId"] !== void 0)
+          data["resourceId"] = params["resourceId"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new OperationPage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new OperationPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var OperationPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the OperationPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of OperationInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new OperationInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.OperationPage = OperationPage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/rule.js
+var require_rule = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/rule.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.RulePage = exports2.RuleInstance = exports2.RuleContextImpl = exports2.SettingReference = exports2.Rule = exports2.PostRule = exports2.PatchRule = exports2.OperationError = exports2.Operation = void 0;
+    exports2.RuleListInstance = RuleListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var Operation = class {
+      constructor(payload) {
+        this.id = payload["id"];
+        this.statusUrl = payload["statusUrl"];
+        this.status = payload["status"];
+        this.error = payload["error"];
+        this.resourceId = payload["resourceId"];
+        this.createdAt = payload["createdAt"];
+        this.completedAt = payload["completedAt"];
+        this.retentionPeriod = payload["retentionPeriod"];
+      }
+    };
+    exports2.Operation = Operation;
+    var OperationError = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.title = payload["title"];
+        this.code = payload["code"];
+        this.detail = payload["detail"];
+      }
+    };
+    exports2.OperationError = OperationError;
+    var PatchRule = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+        this.description = payload["description"];
+        this.matchType = payload["matchType"];
+        this.prefix = payload["prefix"];
+        this.settings = payload["settings"];
+        this.value = payload["value"];
+      }
+    };
+    exports2.PatchRule = PatchRule;
+    var PostRule = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+        this.description = payload["description"];
+        this.matchType = payload["matchType"];
+        this.settings = payload["settings"];
+        this.prefix = payload["prefix"];
+        this.value = payload["value"];
+      }
+    };
+    exports2.PostRule = PostRule;
+    var Rule = class {
+      constructor(payload) {
+        this.id = payload["id"];
+        this.friendlyName = payload["friendlyName"];
+        this.description = payload["description"];
+        this.matchType = payload["matchType"];
+        this.settings = payload["settings"];
+        this.createdAt = payload["createdAt"];
+        this.updatedAt = payload["updatedAt"];
+        this.prefix = payload["prefix"];
+        this.value = payload["value"];
+      }
+    };
+    exports2.Rule = Rule;
+    var SettingReference = class {
+      constructor(payload) {
+        this.settingId = payload["settingId"];
+        this.percentage = payload["percentage"];
+      }
+    };
+    exports2.SettingReference = SettingReference;
+    var RuleContextImpl = class {
+      constructor(_version, ruleId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(ruleId)) {
+          throw new Error("Parameter 'ruleId' is not valid.");
+        }
+        this._solution = { ruleId };
+        this._uri = `/Webhooks/Rules/${ruleId}`;
+      }
+      remove(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        const headers = {};
+        headers["Accept"] = "application/json";
+        if (params["idempotencyKey"] !== void 0)
+          headers["Idempotency-Key"] = params["idempotencyKey"];
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "delete",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RuleInstance(operationVersion, payload, instance._solution.ruleId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        const headers = {};
+        headers["Accept"] = "application/json";
+        if (params["idempotencyKey"] !== void 0)
+          headers["Idempotency-Key"] = params["idempotencyKey"];
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "delete",
+          params: data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RuleInstance(operationVersion, response.body, instance._solution.ruleId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RuleInstance(operationVersion, payload, instance._solution.ruleId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RuleInstance(operationVersion, response.body, instance._solution.ruleId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patch(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.patch({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RuleInstance(operationVersion, payload, instance._solution.ruleId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patchWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.patchWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RuleInstance(operationVersion, response.body, instance._solution.ruleId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RuleContextImpl = RuleContextImpl;
+    var RuleInstance = class {
+      constructor(_version, _payload, ruleId) {
+        this._version = _version;
+        const payload = _payload;
+        this.operation = payload.operation !== null && payload.operation !== void 0 ? new Operation(payload.operation) : null;
+        this.rule = payload.rule !== null && payload.rule !== void 0 ? new Rule(payload.rule) : null;
+        this.id = payload.id;
+        this.friendlyName = payload.friendlyName;
+        this.description = payload.description;
+        this.matchType = payload.matchType;
+        this.settings = payload.settings !== null && payload.settings !== void 0 ? payload.settings.map((payload2) => new SettingReference(payload2)) : null;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+        this.prefix = payload.prefix;
+        this.value = payload.value;
+        this._solution = { ruleId };
+      }
+      get _proxy() {
+        this._context = this._context || new RuleContextImpl(this._version, this._solution.ruleId);
+        return this._context;
+      }
+      remove(params, callback) {
+        return this._proxy.remove(params, callback);
+      }
+      removeWithHttpInfo(params, callback) {
+        return this._proxy.removeWithHttpInfo(params, callback);
+      }
+      /**
+       * Fetch a RuleInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RuleInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a RuleInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed RuleInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      patch(params, callback) {
+        return this._proxy.patch(params, callback);
+      }
+      patchWithHttpInfo(params, callback) {
+        return this._proxy.patchWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          operation: this.operation,
+          rule: this.rule,
+          id: this.id,
+          friendlyName: this.friendlyName,
+          description: this.description,
+          matchType: this.matchType,
+          settings: this.settings,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt,
+          prefix: this.prefix,
+          value: this.value
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RuleInstance = RuleInstance;
+    function RuleListInstance(version) {
+      const instance = ((ruleId) => instance.get(ruleId));
+      instance.get = function get(ruleId) {
+        return new RuleContextImpl(version, ruleId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/Rules`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RuleInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new RuleInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["settingId"] !== void 0)
+          data["settingId"] = params["settingId"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new RulePage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new RulePage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["settingId"] !== void 0)
+          data["settingId"] = params["settingId"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new RulePage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new RulePage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var RulePage = class extends TokenPage_1.default {
+      /**
+       * Initialize the RulePage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of RuleInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new RuleInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.RulePage = RulePage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/setting.js
+var require_setting2 = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/setting.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.SettingPage = exports2.SettingInstance = exports2.SettingContextImpl = exports2.SignatureSetting = exports2.RetryPolicy = exports2.PostSetting = exports2.PostInlineAuthValue = exports2.PostAuthSetting = exports2.PatchSetting = exports2.InlineAuthValue = exports2.EdgeZones = exports2.ConnectionSetting = exports2.AuthSetting = void 0;
+    exports2.SettingListInstance = SettingListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var AuthSetting = class {
+      constructor(payload) {
+        this.source = payload["source"];
+        this.value = payload["value"];
+        this.authProfileId = payload["authProfileId"];
+      }
+    };
+    exports2.AuthSetting = AuthSetting;
+    var ConnectionSetting = class {
+      constructor(payload) {
+        this.connectTimeoutMs = payload["connectTimeoutMs"];
+        this.readTimeoutMs = payload["readTimeoutMs"];
+        this.totalTimeoutMs = payload["totalTimeoutMs"];
+        this.retryPolicy = payload["retryPolicy"];
+      }
+    };
+    exports2.ConnectionSetting = ConnectionSetting;
+    var EdgeZones = class {
+      constructor(payload) {
+        this.zones = payload["zones"];
+        this.allowZoneFallback = payload["allowZoneFallback"];
+      }
+    };
+    exports2.EdgeZones = EdgeZones;
+    var InlineAuthValue = class {
+      constructor(payload) {
+        this.scheme = payload["scheme"];
+        this.tokenUrl = payload["tokenUrl"];
+        this.clientId = payload["clientId"];
+        this.clientSecret = payload["clientSecret"];
+        this.scope = payload["scope"];
+        this.audience = payload["audience"];
+        this.clientCredentialsAuthMethod = payload["clientCredentialsAuthMethod"];
+        this.username = payload["username"];
+        this.password = payload["password"];
+      }
+    };
+    exports2.InlineAuthValue = InlineAuthValue;
+    var PatchSetting = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+        this.description = payload["description"];
+      }
+    };
+    exports2.PatchSetting = PatchSetting;
+    var PostAuthSetting = class {
+      constructor(payload) {
+        this.source = payload["source"];
+        this.value = payload["value"];
+        this.authProfileId = payload["authProfileId"];
+      }
+    };
+    exports2.PostAuthSetting = PostAuthSetting;
+    var PostInlineAuthValue = class {
+      constructor(payload) {
+        this.scheme = payload["scheme"];
+        this.tokenUrl = payload["tokenUrl"];
+        this.clientId = payload["clientId"];
+        this.clientSecret = payload["clientSecret"];
+        this.scope = payload["scope"];
+        this.audience = payload["audience"];
+        this.clientCredentialsAuthMethod = payload["clientCredentialsAuthMethod"];
+        this.username = payload["username"];
+        this.password = payload["password"];
+      }
+    };
+    exports2.PostInlineAuthValue = PostInlineAuthValue;
+    var PostSetting = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+        this.description = payload["description"];
+        this.auth = payload["auth"];
+        this.signature = payload["signature"];
+        this.connection = payload["connection"];
+        this.edgeZones = payload["edgeZones"];
+      }
+    };
+    exports2.PostSetting = PostSetting;
+    var RetryPolicy = class {
+      constructor(payload) {
+        this.retryCount = payload["retryCount"];
+        this.retryOn = payload["retryOn"];
+      }
+    };
+    exports2.RetryPolicy = RetryPolicy;
+    var SignatureSetting = class {
+      constructor(payload) {
+        this.type = payload["type"];
+        this.sharedKeyId = payload["sharedKeyId"];
+        this.algorithm = payload["algorithm"];
+      }
+    };
+    exports2.SignatureSetting = SignatureSetting;
+    var SettingContextImpl = class {
+      constructor(_version, settingId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(settingId)) {
+          throw new Error("Parameter 'settingId' is not valid.");
+        }
+        this._solution = { settingId };
+        this._uri = `/Webhooks/Settings/${settingId}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SettingInstance(operationVersion, payload, instance._solution.settingId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SettingInstance(operationVersion, response.body, instance._solution.settingId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patch(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.patch({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SettingInstance(operationVersion, payload, instance._solution.settingId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patchWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.patchWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SettingInstance(operationVersion, response.body, instance._solution.settingId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SettingContextImpl = SettingContextImpl;
+    var SettingInstance = class {
+      constructor(_version, _payload, settingId) {
+        this._version = _version;
+        const payload = _payload;
+        this.id = payload.id;
+        this.type = payload.type;
+        this.friendlyName = payload.friendlyName;
+        this.description = payload.description;
+        this.auth = payload.auth !== null && payload.auth !== void 0 ? new AuthSetting(payload.auth) : null;
+        this.signature = payload.signature !== null && payload.signature !== void 0 ? new SignatureSetting(payload.signature) : null;
+        this.connection = payload.connection !== null && payload.connection !== void 0 ? new ConnectionSetting(payload.connection) : null;
+        this.edgeZones = payload.edgeZones !== null && payload.edgeZones !== void 0 ? new EdgeZones(payload.edgeZones) : null;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+        this._solution = { settingId };
+      }
+      get _proxy() {
+        this._context = this._context || new SettingContextImpl(this._version, this._solution.settingId);
+        return this._context;
+      }
+      /**
+       * Remove a SettingInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a SettingInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a SettingInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed SettingInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a SettingInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed SettingInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      patch(params, callback) {
+        return this._proxy.patch(params, callback);
+      }
+      patchWithHttpInfo(params, callback) {
+        return this._proxy.patchWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          type: this.type,
+          friendlyName: this.friendlyName,
+          description: this.description,
+          auth: this.auth,
+          signature: this.signature,
+          connection: this.connection,
+          edgeZones: this.edgeZones,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SettingInstance = SettingInstance;
+    function SettingListInstance(version) {
+      const instance = ((settingId) => instance.get(settingId));
+      instance.get = function get(settingId) {
+        return new SettingContextImpl(version, settingId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/Settings`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SettingInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SettingInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["authProfileId"] !== void 0)
+          data["authProfileId"] = params["authProfileId"];
+        if (params["sharedKeyId"] !== void 0)
+          data["sharedKeyId"] = params["sharedKeyId"];
+        if (params["type"] !== void 0)
+          data["type"] = params["type"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SettingPage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new SettingPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        if (params["authProfileId"] !== void 0)
+          data["authProfileId"] = params["authProfileId"];
+        if (params["sharedKeyId"] !== void 0)
+          data["sharedKeyId"] = params["sharedKeyId"];
+        if (params["type"] !== void 0)
+          data["type"] = params["type"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new SettingPage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new SettingPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var SettingPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the SettingPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of SettingInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new SettingInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SettingPage = SettingPage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/sharedKey.js
+var require_sharedKey = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/sharedKey.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.SharedKeyPage = exports2.SharedKeyInstance = exports2.SharedKeyContextImpl = exports2.PostSharedKey = exports2.PatchSharedKey = void 0;
+    exports2.SharedKeyListInstance = SharedKeyListInstance;
+    var util_1 = require("util");
+    var TokenPage_1 = __importDefault(require_TokenPage());
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var utility_1 = require_utility();
+    var PatchSharedKey = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+      }
+    };
+    exports2.PatchSharedKey = PatchSharedKey;
+    var PostSharedKey = class {
+      constructor(payload) {
+        this.friendlyName = payload["friendlyName"];
+      }
+    };
+    exports2.PostSharedKey = PostSharedKey;
+    var SharedKeyContextImpl = class {
+      constructor(_version, sharedKeyId) {
+        this._version = _version;
+        if (!(0, utility_1.isValidPathParam)(sharedKeyId)) {
+          throw new Error("Parameter 'sharedKeyId' is not valid.");
+        }
+        this._solution = { sharedKeyId };
+        this._uri = `/Webhooks/SharedKeys/${sharedKeyId}`;
+      }
+      remove(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.remove({
+          uri: instance._uri,
+          method: "delete",
+          headers
+        });
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      removeWithHttpInfo(callback) {
+        const headers = {};
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers }).then((response) => ({
+          ...response,
+          body: response.statusCode === 204
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetch(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.fetch({
+          uri: instance._uri,
+          method: "get",
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SharedKeyInstance(operationVersion, payload, instance._solution.sharedKeyId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      fetchWithHttpInfo(callback) {
+        const headers = {};
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.fetchWithResponseInfo({
+          uri: instance._uri,
+          method: "get",
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SharedKeyInstance(operationVersion, response.body, instance._solution.sharedKeyId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patch(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version, operationPromise = operationVersion.patch({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SharedKeyInstance(operationVersion, payload, instance._solution.sharedKeyId));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      patchWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        const instance = this;
+        let operationVersion = instance._version;
+        let operationPromise = operationVersion.patchWithResponseInfo({
+          uri: instance._uri,
+          method: "patch",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SharedKeyInstance(operationVersion, response.body, instance._solution.sharedKeyId)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return this._solution;
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SharedKeyContextImpl = SharedKeyContextImpl;
+    var SharedKeyInstance = class {
+      constructor(_version, _payload, sharedKeyId) {
+        this._version = _version;
+        const payload = _payload;
+        this.id = payload.id;
+        this.friendlyName = payload.friendlyName;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+        this.updatedAt = deserialize.iso8601DateTime(payload.updatedAt);
+        this.secret = payload.secret;
+        this._solution = { sharedKeyId };
+      }
+      get _proxy() {
+        this._context = this._context || new SharedKeyContextImpl(this._version, this._solution.sharedKeyId);
+        return this._context;
+      }
+      /**
+       * Remove a SharedKeyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean
+       */
+      remove(callback) {
+        return this._proxy.remove(callback);
+      }
+      /**
+       * Remove a SharedKeyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed boolean with HTTP metadata
+       */
+      removeWithHttpInfo(callback) {
+        return this._proxy.removeWithHttpInfo(callback);
+      }
+      /**
+       * Fetch a SharedKeyInstance
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed SharedKeyInstance
+       */
+      fetch(callback) {
+        return this._proxy.fetch(callback);
+      }
+      /**
+       * Fetch a SharedKeyInstance and return HTTP info
+       *
+       * @param callback - Callback to handle processed record
+       *
+       * @returns Resolves to processed SharedKeyInstance with HTTP metadata
+       */
+      fetchWithHttpInfo(callback) {
+        return this._proxy.fetchWithHttpInfo(callback);
+      }
+      patch(params, callback) {
+        return this._proxy.patch(params, callback);
+      }
+      patchWithHttpInfo(params, callback) {
+        return this._proxy.patchWithHttpInfo(params, callback);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          id: this.id,
+          friendlyName: this.friendlyName,
+          createdAt: this.createdAt,
+          updatedAt: this.updatedAt,
+          secret: this.secret
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SharedKeyInstance = SharedKeyInstance;
+    function SharedKeyListInstance(version) {
+      const instance = ((sharedKeyId) => instance.get(sharedKeyId));
+      instance.get = function get(sharedKeyId) {
+        return new SharedKeyContextImpl(version, sharedKeyId);
+      };
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/SharedKeys`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SharedKeyInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new SharedKeyInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.page = function page(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.page({
+          uri: instance._uri,
+          method: "get",
+          params: data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new SharedKeyPage(operationVersion, payload, instance._uri, data, instance._solution));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.list = instance._version.list;
+      instance.getPage = function getPage(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((payload) => new SharedKeyPage(instance._version, payload, instance._uri, {}, instance._solution));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.pageWithHttpInfo = function pageWithHttpInfo(params, callback) {
+        if (params instanceof Function) {
+          callback = params;
+          params = {};
+        } else {
+          params = params || {};
+        }
+        let data = {};
+        if (params["pageSize"] !== void 0)
+          data["pageSize"] = params["pageSize"];
+        if (params["pageToken"] !== void 0)
+          data["pageToken"] = params["pageToken"];
+        const headers = {};
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers }).then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new SharedKeyPage(operationVersion, response, instance._uri, data, instance._solution)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.each = instance._version.each;
+      instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+      instance.list = instance._version.list;
+      instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+      instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl, callback) {
+        const operationPromise = instance._version._domain.twilio.request({
+          method: "get",
+          uri: targetUrl
+        });
+        let pagePromise = operationPromise.then((response) => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new SharedKeyPage(instance._version, response, instance._uri, {}, instance._solution)
+        }));
+        pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+        return pagePromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var SharedKeyPage = class extends TokenPage_1.default {
+      /**
+       * Initialize the SharedKeyPage
+       *
+       * @param version - Version of the resource
+       * @param response - Response from the API
+       * @param uri - URI of the resource
+       * @param params - Query parameters
+       * @param solution - Path solution
+       */
+      constructor(version, response, uri, params, solution) {
+        super(version, response, uri, params, solution);
+      }
+      /**
+       * Build an instance of SharedKeyInstance
+       *
+       * @param payload - Payload response from the API
+       */
+      getInstance(payload) {
+        return new SharedKeyInstance(this._version, payload);
+      }
+      [util_1.inspect.custom](depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.SharedKeyPage = SharedKeyPage;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/test.js
+var require_test = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/v1/test.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.TestInstance = exports2.TestRequest = exports2.TestDeliveryResultTiming = exports2.TestDeliveryResultResponse = exports2.TestDeliveryResult = void 0;
+    exports2.TestListInstance = TestListInstance;
+    var util_1 = require("util");
+    var deserialize = require_deserialize();
+    var serialize = require_serialize();
+    var TestDeliveryResult = class {
+      constructor(payload) {
+        this.outcome = payload["outcome"];
+        this.response = payload["response"];
+        this.timing = payload["timing"];
+        this.error = payload["error"];
+      }
+    };
+    exports2.TestDeliveryResult = TestDeliveryResult;
+    var TestDeliveryResultResponse = class {
+      constructor(payload) {
+        this.statusCode = payload["statusCode"];
+        this.headers = payload["headers"];
+      }
+    };
+    exports2.TestDeliveryResultResponse = TestDeliveryResultResponse;
+    var TestDeliveryResultTiming = class {
+      constructor(payload) {
+        this.totalMs = payload["totalMs"];
+      }
+    };
+    exports2.TestDeliveryResultTiming = TestDeliveryResultTiming;
+    var TestRequest = class {
+      constructor(payload) {
+        this.url = payload["url"];
+        this.settingId = payload["settingId"];
+        this.method = payload["method"];
+      }
+    };
+    exports2.TestRequest = TestRequest;
+    function TestListInstance(version) {
+      const instance = {};
+      instance._version = version;
+      instance._solution = {};
+      instance._uri = `/Webhooks/Tests`;
+      instance.create = function create(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version, operationPromise = operationVersion.create({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        });
+        operationPromise = operationPromise.then((payload) => new TestInstance(operationVersion, payload));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.createWithHttpInfo = function createWithHttpInfo(params, headers, callback) {
+        if (params === null || params === void 0) {
+          throw new Error('Required parameter "params" missing.');
+        }
+        let data = {};
+        data = params;
+        if (headers === null || headers === void 0) {
+          headers = {};
+        }
+        headers["Content-Type"] = "application/json";
+        headers["Accept"] = "application/json";
+        let operationVersion = version;
+        let operationPromise = operationVersion.createWithResponseInfo({
+          uri: instance._uri,
+          method: "post",
+          data,
+          headers
+        }).then((response) => ({
+          ...response,
+          body: new TestInstance(operationVersion, response.body)
+        }));
+        operationPromise = instance._version.setPromiseCallback(operationPromise, callback);
+        return operationPromise;
+      };
+      instance.toJSON = function toJSON() {
+        return instance._solution;
+      };
+      instance[util_1.inspect.custom] = function inspectImpl(_depth, options) {
+        return (0, util_1.inspect)(instance.toJSON(), options);
+      };
+      return instance;
+    }
+    var TestInstance = class {
+      constructor(_version, _payload) {
+        this._version = _version;
+        const payload = _payload;
+        this.url = payload.url;
+        this.result = payload.result !== null && payload.result !== void 0 ? new TestDeliveryResult(payload.result) : null;
+        this.createdAt = deserialize.iso8601DateTime(payload.createdAt);
+      }
+      /**
+       * Provide a user-friendly representation
+       *
+       * @returns Object
+       */
+      toJSON() {
+        return {
+          url: this.url,
+          result: this.result,
+          createdAt: this.createdAt
+        };
+      }
+      [util_1.inspect.custom](_depth, options) {
+        return (0, util_1.inspect)(this.toJSON(), options);
+      }
+    };
+    exports2.TestInstance = TestInstance;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/V1.js
+var require_V133 = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/webhooks/V1.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    var Version_1 = __importDefault(require_Version());
+    var authProfile_1 = require_authProfile();
+    var edgeZone_1 = require_edgeZone();
+    var operation_1 = require_operation4();
+    var rule_1 = require_rule();
+    var setting_1 = require_setting2();
+    var sharedKey_1 = require_sharedKey();
+    var test_1 = require_test();
+    var V1 = class extends Version_1.default {
+      /**
+       * Initialize the V1 version of Webhooks
+       *
+       * @param domain - The Twilio (Twilio.Webhooks) domain
+       */
+      constructor(domain) {
+        super(domain, "v1");
+      }
+      /** Getter for authProfiles resource */
+      get authProfiles() {
+        this._authProfiles = this._authProfiles || (0, authProfile_1.AuthProfileListInstance)(this);
+        return this._authProfiles;
+      }
+      /** Getter for edgeZones resource */
+      get edgeZones() {
+        this._edgeZones = this._edgeZones || (0, edgeZone_1.EdgeZoneListInstance)(this);
+        return this._edgeZones;
+      }
+      /** Getter for operations resource */
+      get operations() {
+        this._operations = this._operations || (0, operation_1.OperationListInstance)(this);
+        return this._operations;
+      }
+      /** Getter for rules resource */
+      get rules() {
+        this._rules = this._rules || (0, rule_1.RuleListInstance)(this);
+        return this._rules;
+      }
+      /** Getter for settings resource */
+      get settings() {
+        this._settings = this._settings || (0, setting_1.SettingListInstance)(this);
+        return this._settings;
+      }
+      /** Getter for sharedKeys resource */
+      get sharedKeys() {
+        this._sharedKeys = this._sharedKeys || (0, sharedKey_1.SharedKeyListInstance)(this);
+        return this._sharedKeys;
+      }
+      /** Getter for tests resource */
+      get tests() {
+        this._tests = this._tests || (0, test_1.TestListInstance)(this);
+        return this._tests;
+      }
+    };
+    exports2.default = V1;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/WebhooksBase.js
+var require_WebhooksBase = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/WebhooksBase.js"(exports2, module2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    var Domain_1 = __importDefault(require_Domain());
+    var V1_1 = __importDefault(require_V133());
+    var WebhooksBase = class extends Domain_1.default {
+      /**
+       * Initialize webhooks domain
+       *
+       * @param twilio - The twilio client
+       */
+      constructor(twilio) {
+        super(twilio, "https://webhooks.twilio.com");
+      }
+      get v1() {
+        this._v1 = this._v1 || new V1_1.default(this);
+        return this._v1;
+      }
+    };
+    module2.exports = WebhooksBase;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Webhooks.js
+var require_Webhooks = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Webhooks.js"(exports2, module2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    var WebhooksBase_1 = __importDefault(require_WebhooksBase());
+    var Webhooks = class extends WebhooksBase_1.default {
+    };
+    module2.exports = Webhooks;
+  }
+});
+
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/command.js
 var require_command2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/command.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/command.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219443,7 +222310,7 @@ var require_command2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new CommandContextImpl(this._version, this._solution.sid);
@@ -219724,9 +222591,9 @@ var require_command2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/ratePlan.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/ratePlan.js
 var require_ratePlan2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/ratePlan.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/ratePlan.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -219886,7 +222753,7 @@ var require_ratePlan2 = __commonJS({
         this.dateCreated = deserialize.iso8601DateTime(payload.date_created);
         this.dateUpdated = deserialize.iso8601DateTime(payload.date_updated);
         this.url = payload.url;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new RatePlanContextImpl(this._version, this._solution.sid);
@@ -220183,9 +223050,9 @@ var require_ratePlan2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/dataSession.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/dataSession.js
 var require_dataSession = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/dataSession.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/dataSession.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -220370,9 +223237,9 @@ var require_dataSession = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/usageRecord.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/usageRecord.js
 var require_usageRecord2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/usageRecord.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim/usageRecord.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -220547,9 +223414,9 @@ var require_usageRecord2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim.js
 var require_sim3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/sim.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -220791,7 +223658,7 @@ var require_sim3 = __commonJS({
         this.url = payload.url;
         this.links = payload.links;
         this.ipAddress = payload.ip_address;
-        this._solution = { sid };
+        this._solution = { sid: sid || this.sid };
       }
       get _proxy() {
         this._context = this._context || new SimContextImpl(this._version, this._solution.sid);
@@ -221035,9 +223902,9 @@ var require_sim3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/usageRecord.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/usageRecord.js
 var require_usageRecord3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/usageRecord.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/v1/usageRecord.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -221206,9 +224073,9 @@ var require_usageRecord3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/V1.js
-var require_V133 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/V1.js"(exports2) {
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/V1.js
+var require_V134 = __commonJS({
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/wireless/V1.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -221253,15 +224120,15 @@ var require_V133 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/WirelessBase.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/WirelessBase.js
 var require_WirelessBase = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/WirelessBase.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/WirelessBase.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     var Domain_1 = __importDefault(require_Domain());
-    var V1_1 = __importDefault(require_V133());
+    var V1_1 = __importDefault(require_V134());
     var WirelessBase = class extends Domain_1.default {
       /**
        * Initialize wireless domain
@@ -221280,9 +224147,9 @@ var require_WirelessBase = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Wireless.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Wireless.js
 var require_Wireless2 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Wireless.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Wireless.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -221322,9 +224189,9 @@ var require_Wireless2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Twilio.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Twilio.js
 var require_Twilio = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/rest/Twilio.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/rest/Twilio.js"(exports2, module2) {
     "use strict";
     var BaseTwilio_1 = require_BaseTwilio();
     var Twilio2 = class extends BaseTwilio_1.Client {
@@ -221381,6 +224248,7 @@ var require_Twilio = __commonJS({
           this.verify;
           this.video;
           this.voice;
+          this.webhooks;
           this.wireless;
         }
       }
@@ -221533,6 +224401,10 @@ var require_Twilio = __commonJS({
       get voice() {
         return this._voice ?? (this._voice = new (require_Voice())(this));
       }
+      /** Getter for (Twilio.Webhooks) domain */
+      get webhooks() {
+        return this._webhooks ?? (this._webhooks = new (require_Webhooks())(this));
+      }
       /** Getter for (Twilio.Wireless) domain */
       get wireless() {
         return this._wireless ?? (this._wireless = new (require_Wireless2())(this));
@@ -221638,14 +224510,16 @@ var require_Twilio = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/webhooks/webhooks.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/webhooks/webhooks.js
 var require_webhooks = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/webhooks/webhooks.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/webhooks/webhooks.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.HMAC_SHA256 = exports2.HMAC_SHA1 = exports2.SIGNATURE_SETTINGS_HEADER = exports2.SIGNATURE_HEADER = void 0;
+    exports2.getSignatureAlgorithm = getSignatureAlgorithm;
     exports2.getExpectedTwilioSignature = getExpectedTwilioSignature;
     exports2.getExpectedBodyHash = getExpectedBodyHash;
     exports2.validateRequest = validateRequest;
@@ -221657,6 +224531,10 @@ var require_webhooks = __commonJS({
     var crypto_1 = __importDefault(require("crypto"));
     var url_1 = __importDefault(require("url"));
     var querystring_1 = require("querystring");
+    exports2.SIGNATURE_HEADER = "X-Twilio-Signature";
+    exports2.SIGNATURE_SETTINGS_HEADER = "X-Twilio-Webhooks-Signature-Settings";
+    exports2.HMAC_SHA1 = "HMAC_SHA1";
+    exports2.HMAC_SHA256 = "HMAC_SHA256";
     function splitUrl(url) {
       const match = /^([a-z][a-z0-9+.-]*:\/\/)([^/?#]*)/i.exec(url);
       if (!match) {
@@ -221703,19 +224581,48 @@ var require_webhooks = __commonJS({
       }
       return paramName + paramValue;
     }
-    function getExpectedTwilioSignature(authToken, url, params) {
+    function getSignatureAlgorithm(signatureSettingsHeader) {
+      for (const part of (signatureSettingsHeader || "").split(",")) {
+        const separator = part.indexOf("=");
+        if (separator !== -1 && part.slice(0, separator).trim() === "algorithm") {
+          const algorithm = part.slice(separator + 1).trim();
+          if (algorithm) {
+            return algorithm;
+          }
+        }
+      }
+      return exports2.HMAC_SHA1;
+    }
+    function toHashName(algorithm) {
+      if (!algorithm || algorithm.toUpperCase() === exports2.HMAC_SHA1) {
+        return "sha1";
+      }
+      if (algorithm.toUpperCase() === exports2.HMAC_SHA256) {
+        return "sha256";
+      }
+      return null;
+    }
+    function getExpectedTwilioSignature(authToken, url, params, algorithm) {
+      const hashName = toHashName(algorithm);
+      if (!hashName) {
+        throw new Error(`Unsupported webhook signature algorithm: ${algorithm}`);
+      }
       if (url.indexOf("bodySHA256") !== -1 && params === null) {
         params = {};
       }
       var data = Object.keys(params).sort().reduce((acc, key) => acc + toFormUrlEncodedParam(key, params[key]), url);
-      return crypto_1.default.createHmac("sha1", authToken).update(Buffer.from(data, "utf-8")).digest("base64");
+      return crypto_1.default.createHmac(hashName, authToken).update(Buffer.from(data, "utf-8")).digest("base64");
     }
     function getExpectedBodyHash(body) {
       return crypto_1.default.createHash("sha256").update(Buffer.from(body, "utf-8")).digest("hex");
     }
-    function validateRequest(authToken, twilioHeader, url, params) {
+    function validateRequest(authToken, twilioHeader, url, params, algorithm) {
       twilioHeader = twilioHeader || "";
-      const isValidSignatureAsReceived = [removePort(url), addPort(url)].some((candidateUrl) => validateSignatureWithUrl(authToken, twilioHeader, candidateUrl, params));
+      if (!toHashName(algorithm)) {
+        console.warn(`[Twilio]: Unsupported webhook signature algorithm '${algorithm}'. Supported: ${exports2.HMAC_SHA1}, ${exports2.HMAC_SHA256}. Upgrade twilio if Twilio added a new one.`);
+        return false;
+      }
+      const isValidSignatureAsReceived = [removePort(url), addPort(url)].some((candidateUrl) => validateSignatureWithUrl(authToken, twilioHeader, candidateUrl, params, algorithm));
       if (isValidSignatureAsReceived) {
         return true;
       }
@@ -221727,10 +224634,10 @@ var require_webhooks = __commonJS({
         normalizedUrlWithPort,
         withLegacyQuerystring(normalizedUrlWithoutPort),
         withLegacyQuerystring(normalizedUrlWithPort)
-      ].some((candidateUrl) => validateSignatureWithUrl(authToken, twilioHeader, candidateUrl, params));
+      ].some((candidateUrl) => validateSignatureWithUrl(authToken, twilioHeader, candidateUrl, params, algorithm));
     }
-    function validateSignatureWithUrl(authToken, twilioHeader, url, params) {
-      const signatureWithoutPort = getExpectedTwilioSignature(authToken, url, params);
+    function validateSignatureWithUrl(authToken, twilioHeader, url, params, algorithm) {
+      const signatureWithoutPort = getExpectedTwilioSignature(authToken, url, params, algorithm);
       return safeCompare(Buffer.from(twilioHeader), Buffer.from(signatureWithoutPort));
     }
     function validateBody(body, bodyHash) {
@@ -221740,9 +224647,9 @@ var require_webhooks = __commonJS({
     function safeCompare(a, b) {
       return a.length === b.length && crypto_1.default.timingSafeEqual(a, b);
     }
-    function validateRequestWithBody(authToken, twilioHeader, url, body) {
+    function validateRequestWithBody(authToken, twilioHeader, url, body, algorithm) {
       const urlObject = new URL(url);
-      return validateRequest(authToken, twilioHeader, url, {}) && validateBody(body, urlObject.searchParams.get("bodySHA256") || "");
+      return validateRequest(authToken, twilioHeader, url, {}, algorithm) && validateBody(body, urlObject.searchParams.get("bodySHA256") || "");
     }
     function validateIncomingRequest(request, authToken, opts) {
       var options = opts || {};
@@ -221762,9 +224669,9 @@ var require_webhooks = __commonJS({
         }
       }
       if (webhookUrl.indexOf("bodySHA256") > 0) {
-        return validateRequestWithBody(authToken, request.header("X-Twilio-Signature") || "", webhookUrl, request.rawBody || "{}");
+        return validateRequestWithBody(authToken, request.header(exports2.SIGNATURE_HEADER) || "", webhookUrl, request.rawBody || "{}", options.algorithm);
       } else {
-        return validateRequest(authToken, request.header("X-Twilio-Signature") || "", webhookUrl, request.body || {});
+        return validateRequest(authToken, request.header(exports2.SIGNATURE_HEADER) || "", webhookUrl, request.body || {}, options.algorithm);
       }
     }
     function validateExpressRequest(request, authToken, opts) {
@@ -221810,14 +224717,18 @@ var require_webhooks = __commonJS({
           if (!request.header("X-Twilio-Signature")) {
             return response.type("text/plain").status(400).send("No signature header error - X-Twilio-Signature header does not exist, maybe this request is not coming from Twilio.");
           }
-          if (!options?.authToken) {
-            console.error("[Twilio]: Error - Twilio auth token is required for webhook request validation.");
-            response.type("text/plain").status(500).send("Webhook Error - we attempted to validate this request without first configuring our auth token.");
+          const signatureSettings = request.header(exports2.SIGNATURE_SETTINGS_HEADER);
+          const secret = signatureSettings ? options?.sharedKeySecret : options?.authToken;
+          if (!secret) {
+            const missing = signatureSettings ? "SharedKey secret" : "auth token";
+            console.error(`[Twilio]: Error - Twilio ${missing} is required for webhook request validation.`);
+            response.type("text/plain").status(500).send(`Webhook Error - we attempted to validate this request without first configuring our ${missing}.`);
           } else {
-            var valid = validateExpressRequest(request, options?.authToken, {
+            var valid = validateExpressRequest(request, secret, {
               url: options?.url,
               host: options?.host,
-              protocol: options?.protocol
+              protocol: options?.protocol,
+              algorithm: getSignatureAlgorithm(signatureSettings)
             });
             if (valid) {
               next();
@@ -221833,9 +224744,9 @@ var require_webhooks = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/AccessToken.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/AccessToken.js
 var require_AccessToken = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/AccessToken.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/AccessToken.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -222094,9 +225005,9 @@ var require_AccessToken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/ClientCapability.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/ClientCapability.js
 var require_ClientCapability = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/ClientCapability.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/ClientCapability.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -222213,9 +225124,9 @@ var require_ClientCapability = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/TaskRouterCapability.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/TaskRouterCapability.js
 var require_TaskRouterCapability = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/TaskRouterCapability.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/TaskRouterCapability.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -222316,9 +225227,9 @@ var require_TaskRouterCapability = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/util.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/util.js
 var require_util9 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/util.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/jwt/taskrouter/util.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.defaultWorkerPolicies = defaultWorkerPolicies;
@@ -226574,9 +229485,9 @@ var require_lib2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/TwiML.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/TwiML.js
 var require_TwiML = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/TwiML.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/TwiML.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -226651,9 +229562,9 @@ var require_TwiML = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/VoiceResponse.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/VoiceResponse.js
 var require_VoiceResponse = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/VoiceResponse.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/VoiceResponse.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228306,9 +231217,9 @@ var require_VoiceResponse = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/MessagingResponse.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/MessagingResponse.js
 var require_MessagingResponse = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/MessagingResponse.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/MessagingResponse.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228425,9 +231336,9 @@ var require_MessagingResponse = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/FaxResponse.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/FaxResponse.js
 var require_FaxResponse = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/twiml/FaxResponse.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/twiml/FaxResponse.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228491,9 +231402,9 @@ var require_FaxResponse = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/CredentialProvider.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/CredentialProvider.js
 var require_CredentialProvider = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/CredentialProvider.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/CredentialProvider.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var CredentialProvider = class {
@@ -228508,9 +231419,9 @@ var require_CredentialProvider = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/AuthStrategy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/AuthStrategy.js
 var require_AuthStrategy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/AuthStrategy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/AuthStrategy.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var AuthStrategy = class {
@@ -228525,9 +231436,9 @@ var require_AuthStrategy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/NoAuthStrategy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/NoAuthStrategy.js
 var require_NoAuthStrategy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/NoAuthStrategy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/NoAuthStrategy.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228549,9 +231460,9 @@ var require_NoAuthStrategy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/NoAuthCredentialProvider.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/NoAuthCredentialProvider.js
 var require_NoAuthCredentialProvider = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/NoAuthCredentialProvider.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/NoAuthCredentialProvider.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228574,9 +231485,9 @@ var require_NoAuthCredentialProvider = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/ApiTokenManager.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/ApiTokenManager.js
 var require_ApiTokenManager = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/ApiTokenManager.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/ApiTokenManager.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228611,9 +231522,9 @@ Failed to fetch access token: ${error2.message}`);
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/TokenAuthStrategy.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/TokenAuthStrategy.js
 var require_TokenAuthStrategy = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/TokenAuthStrategy.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/auth_strategy/TokenAuthStrategy.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228668,9 +231579,9 @@ var require_TokenAuthStrategy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/ClientCredentialProvider.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/ClientCredentialProvider.js
 var require_ClientCredentialProvider = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/ClientCredentialProvider.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/ClientCredentialProvider.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228724,9 +231635,9 @@ var require_ClientCredentialProvider = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/OrgsTokenManager.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/OrgsTokenManager.js
 var require_OrgsTokenManager = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/OrgsTokenManager.js"(exports2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/http/bearer_token/OrgsTokenManager.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228761,9 +231672,9 @@ Failed to fetch access token: ${error2.message}`);
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/OrgsCredentialProvider.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/OrgsCredentialProvider.js
 var require_OrgsCredentialProvider = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/OrgsCredentialProvider.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/credential_provider/OrgsCredentialProvider.js"(exports2, module2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -228817,9 +231728,9 @@ var require_OrgsCredentialProvider = __commonJS({
   }
 });
 
-// node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/index.js
+// node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/index.js
 var require_lib3 = __commonJS({
-  "node_modules/.pnpm/twilio@6.2.0_debug@4.4.3/node_modules/twilio/lib/index.js"(exports2, module2) {
+  "node_modules/.pnpm/twilio@6.3.0_debug@4.4.3/node_modules/twilio/lib/index.js"(exports2, module2) {
     "use strict";
     var __createBinding = exports2 && exports2.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -228910,6 +231821,11 @@ var require_lib3 = __commonJS({
       TwilioSDK2.validateIncomingRequest = webhooks.validateIncomingRequest;
       TwilioSDK2.getExpectedBodyHash = webhooks.getExpectedBodyHash;
       TwilioSDK2.getExpectedTwilioSignature = webhooks.getExpectedTwilioSignature;
+      TwilioSDK2.getSignatureAlgorithm = webhooks.getSignatureAlgorithm;
+      TwilioSDK2.SIGNATURE_HEADER = webhooks.SIGNATURE_HEADER;
+      TwilioSDK2.SIGNATURE_SETTINGS_HEADER = webhooks.SIGNATURE_SETTINGS_HEADER;
+      TwilioSDK2.HMAC_SHA1 = webhooks.HMAC_SHA1;
+      TwilioSDK2.HMAC_SHA256 = webhooks.HMAC_SHA256;
       TwilioSDK2.webhook = webhooks.webhook;
     })(TwilioSDK || (TwilioSDK = {}));
     module2.exports = TwilioSDK;
@@ -229447,7 +232363,7 @@ mime-types/index.js:
    *)
 
 axios/dist/node/axios.cjs:
-  (*! Axios v1.21.0 Copyright (c) 2026 Matt Zabriskie and contributors *)
+  (*! Axios v1.21.1 Copyright (c) 2026 Matt Zabriskie and contributors *)
 
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
