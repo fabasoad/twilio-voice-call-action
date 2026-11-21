@@ -31,14 +31,14 @@
   "dependencies": {
     "@actions/core": "~3.0.1",
     "@actions/github": "~9.1.1",
-    "twilio": "~6.3.0"
+    "twilio": "~6.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.6.7",
+    "@biomejs/biome": "~2.6.8",
     "@types/node": "~26.6.6",
-    "@vitest/coverage-v8": "~5.1.0",
+    "@vitest/coverage-v8": "~5.1.1",
     "esbuild": "~0.28.2",
     "typescript": "~7.0.2",
-    "vitest": "~5.1.0"
+    "vitest": "~5.1.1"
   }
 }
